@@ -1,0 +1,74 @@
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CheckCircle2, Loader2 } from 'lucide-react'
+import { useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { Link } from 'react-router-dom'
+import { forgotPassword } from '@/api/auth'
+import { Button } from '@/components/ui/button'
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import { AuthCard } from '@/features/auth/components/AuthCard'
+import { forgotPasswordSchema, type ForgotPasswordFormValues } from '@/features/auth/schemas/authSchemas'
+import { useMutation } from '@tanstack/react-query'
+
+export function ForgotPasswordPage() {
+  const [sent, setSent] = useState(false)
+  const mutation = useMutation({ mutationFn: forgotPassword })
+
+  const form = useForm<ForgotPasswordFormValues>({
+    resolver: zodResolver(forgotPasswordSchema),
+    defaultValues: { email: '' },
+  })
+
+  const onSubmit = form.handleSubmit((values) => {
+    mutation.mutate(values.email, {
+      onSuccess: () => setSent(true),
+      onError: () => {
+        form.setError('email', { message: "We can't find an account with that email address." })
+      },
+    })
+  })
+
+  return (
+    <AuthCard
+      title="Reset your password"
+      description="We'll email you a link to reset it"
+      footer={
+        <Link to="/login" className="font-medium text-foreground hover:underline">
+          Back to sign in
+        </Link>
+      }
+    >
+      {sent ? (
+        <div className="flex flex-col items-center gap-2 py-4 text-center">
+          <CheckCircle2 className="size-8 text-success" />
+          <p className="text-sm text-muted-foreground">
+            Check your inbox for a link to reset your password.
+          </p>
+        </div>
+      ) : (
+        <Form {...form}>
+          <form onSubmit={onSubmit} className="space-y-4">
+            <FormField
+              control={form.control}
+              name="email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Email</FormLabel>
+                  <FormControl>
+                    <Input type="email" placeholder="you@example.com" autoComplete="email" {...field} />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+            <Button type="submit" className="w-full" disabled={mutation.isPending}>
+              {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
+              Send reset link
+            </Button>
+          </form>
+        </Form>
+      )}
+    </AuthCard>
+  )
+}

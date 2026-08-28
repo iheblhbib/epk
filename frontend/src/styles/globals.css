@@ -1,0 +1,156 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
+@import "@fontsource-variable/space-grotesk";
+@import "@fontsource-variable/inter";
+@import "@fontsource-variable/jetbrains-mono";
+@import "@fontsource-variable/lora";
+@plugin "@tailwindcss/typography";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+    --font-sans: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+    --font-heading: 'Space Grotesk Variable', var(--font-sans);
+    --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+    --color-sidebar-ring: var(--sidebar-ring);
+    --color-sidebar-border: var(--sidebar-border);
+    --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+    --color-sidebar-accent: var(--sidebar-accent);
+    --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+    --color-sidebar-primary: var(--sidebar-primary);
+    --color-sidebar-foreground: var(--sidebar-foreground);
+    --color-sidebar: var(--sidebar);
+    --color-chart-5: var(--chart-5);
+    --color-chart-4: var(--chart-4);
+    --color-chart-3: var(--chart-3);
+    --color-chart-2: var(--chart-2);
+    --color-chart-1: var(--chart-1);
+    --color-ring: var(--ring);
+    --color-input: var(--input);
+    --color-border: var(--border);
+    --color-destructive: var(--destructive);
+    --color-destructive-foreground: var(--destructive-foreground);
+    --color-success: var(--success);
+    --color-success-foreground: var(--success-foreground);
+    --color-warning: var(--warning);
+    --color-warning-foreground: var(--warning-foreground);
+    --color-accent-foreground: var(--accent-foreground);
+    --color-accent: var(--accent);
+    --color-muted-foreground: var(--muted-foreground);
+    --color-muted: var(--muted);
+    --color-secondary-foreground: var(--secondary-foreground);
+    --color-secondary: var(--secondary);
+    --color-primary-foreground: var(--primary-foreground);
+    --color-primary: var(--primary);
+    --color-popover-foreground: var(--popover-foreground);
+    --color-popover: var(--popover);
+    --color-card-foreground: var(--card-foreground);
+    --color-card: var(--card);
+    --color-foreground: var(--foreground);
+    --color-background: var(--background);
+    --radius-sm: calc(var(--radius) * 0.6);
+    --radius-md: calc(var(--radius) * 0.8);
+    --radius-lg: var(--radius);
+    --radius-xl: calc(var(--radius) * 1.4);
+    --radius-2xl: calc(var(--radius) * 1.8);
+    --radius-3xl: calc(var(--radius) * 2.2);
+    --radius-4xl: calc(var(--radius) * 2.6);
+}
+
+/*
+ * Kitfolio design tokens.
+ * Neutral scale is warm (not default Tailwind gray), accent is an
+ * indigo-violet distinct from generic "SaaS blue". Headings use
+ * Space Grotesk for an editorial, premium feel; body copy uses Inter.
+ */
+:root {
+    --background: #faf9f6;
+    --foreground: #17151f;
+    --card: #ffffff;
+    --card-foreground: #17151f;
+    --popover: #ffffff;
+    --popover-foreground: #17151f;
+    --primary: #6d5ef9;
+    --primary-foreground: #ffffff;
+    --secondary: #f1efea;
+    --secondary-foreground: #17151f;
+    --muted: #f1efea;
+    --muted-foreground: #6b6875;
+    --accent: #ededfe;
+    --accent-foreground: #4b3fd1;
+    --destructive: #e11d48;
+    --destructive-foreground: #ffffff;
+    --success: #16a34a;
+    --success-foreground: #ffffff;
+    --warning: #d97706;
+    --warning-foreground: #ffffff;
+    --border: #e7e4dd;
+    --input: #e7e4dd;
+    --ring: #6d5ef9;
+    --chart-1: #6d5ef9;
+    --chart-2: #3b82f6;
+    --chart-3: #16a34a;
+    --chart-4: #d97706;
+    --chart-5: #f43f5e;
+    --radius: 0.625rem;
+    --sidebar: #f5f3ee;
+    --sidebar-foreground: #17151f;
+    --sidebar-primary: #6d5ef9;
+    --sidebar-primary-foreground: #ffffff;
+    --sidebar-accent: #ededfe;
+    --sidebar-accent-foreground: #4b3fd1;
+    --sidebar-border: #e7e4dd;
+    --sidebar-ring: #6d5ef9;
+}
+
+.dark {
+    --background: #0e0d13;
+    --foreground: #f4f3f8;
+    --card: #17151f;
+    --card-foreground: #f4f3f8;
+    --popover: #17151f;
+    --popover-foreground: #f4f3f8;
+    --primary: #8b7fff;
+    --primary-foreground: #0e0d13;
+    --secondary: #1f1c29;
+    --secondary-foreground: #f4f3f8;
+    --muted: #1f1c29;
+    --muted-foreground: #9b96a8;
+    --accent: #241f35;
+    --accent-foreground: #c4bbff;
+    --destructive: #fb7185;
+    --destructive-foreground: #17151f;
+    --success: #4ade80;
+    --success-foreground: #0e0d13;
+    --warning: #fbbf24;
+    --warning-foreground: #0e0d13;
+    --border: color-mix(in oklab, white 10%, transparent);
+    --input: color-mix(in oklab, white 15%, transparent);
+    --ring: #8b7fff;
+    --chart-1: #8b7fff;
+    --chart-2: #60a5fa;
+    --chart-3: #4ade80;
+    --chart-4: #fbbf24;
+    --chart-5: #fb7185;
+    --sidebar: #131019;
+    --sidebar-foreground: #f4f3f8;
+    --sidebar-primary: #8b7fff;
+    --sidebar-primary-foreground: #0e0d13;
+    --sidebar-accent: #241f35;
+    --sidebar-accent-foreground: #c4bbff;
+    --sidebar-border: color-mix(in oklab, white 10%, transparent);
+    --sidebar-ring: #8b7fff;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+    }
+  body {
+    @apply bg-background text-foreground font-sans;
+    }
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-heading;
+    }
+}

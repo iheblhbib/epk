@@ -1,0 +1,42 @@
+# Backend (Laravel)
+backend/vendor/
+backend/node_modules/
+backend/.env
+backend/.env.backup
+backend/.phpunit.cache
+backend/storage/*.key
+backend/storage/app/public/*
+!backend/storage/app/public/.gitkeep
+backend/storage/framework/cache/data/*
+backend/storage/framework/sessions/*
+backend/storage/framework/testing/*
+backend/storage/framework/views/*
+!backend/storage/framework/cache/data/.gitkeep
+!backend/storage/framework/sessions/.gitkeep
+!backend/storage/framework/testing/.gitkeep
+!backend/storage/framework/views/.gitkeep
+backend/storage/logs/*.log
+backend/public/storage
+backend/public/build
+backend/bootstrap/cache/*.php
+!backend/bootstrap/cache/.gitkeep
+backend/auth.json
+
+# Frontend (Vite/React)
+frontend/node_modules/
+frontend/dist/
+frontend/.env
+frontend/.env.local
+frontend/*.local
+
+# Editors / OS
+.idea/
+.vscode/
+.DS_Store
+Thumbs.db
+*.log
+npm-debug.log*
+
+# Local Claude Code tooling config (dev server launch shortcuts) — personal,
+# not project content.
+.claude/
