@@ -7,7 +7,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PublicEpkResource;
 use App\Models\Epk;
 use App\Models\Media;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -21,9 +23,31 @@ class PublicEpkController extends Controller
      */
     public function show(string $slug): JsonResponse
     {
-        $epk = Epk::query()
-            ->published()
-            ->where('slug', $slug)
+        return $this->respondWith(fn ($query) => $query->where('slug', $slug));
+    }
+
+    /**
+     * Same lookup, keyed by a verified custom domain instead of the app's
+     * own slug — this is what the SPA calls when it notices it's being
+     * loaded from a hostname other than its own (see the frontend's
+     * usePublicEpk hook). An unverified custom_domain never matches here,
+     * so simply typing someone else's live domain into the "domain" field
+     * does nothing until DNS ownership has actually been proven.
+     */
+    public function showByDomain(Request $request): JsonResponse
+    {
+        $domain = strtolower((string) $request->query('domain'));
+        abort_if($domain === '', 404);
+
+        return $this->respondWith(fn ($query) => $query->where('custom_domain', $domain)->whereNotNull('custom_domain_verified_at'));
+    }
+
+    /**
+     * @param  callable(Builder<Epk>): Builder<Epk>  $scope
+     */
+    private function respondWith(callable $scope): JsonResponse
+    {
+        $epk = $scope(Epk::query()->published())
             ->with([
                 'artist',
                 'sections' => fn ($query) => $query->where('is_enabled', true)->orderBy('position'),

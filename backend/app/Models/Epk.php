@@ -28,6 +28,9 @@ class Epk extends Model
         'custom_settings',
         'seo_title',
         'seo_description',
+        'custom_domain',
+        'custom_domain_token',
+        'custom_domain_verified_at',
         'published_at',
     ];
 
@@ -43,8 +46,14 @@ class Epk extends Model
         return [
             'status' => EpkStatus::class,
             'custom_settings' => 'array',
+            'custom_domain_verified_at' => 'datetime',
             'published_at' => 'datetime',
         ];
+    }
+
+    public function hasVerifiedCustomDomain(): bool
+    {
+        return $this->custom_domain !== null && $this->custom_domain_verified_at !== null;
     }
 
     /**

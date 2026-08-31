@@ -1,9 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Users } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useNavigate, useParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { z } from 'zod'
+import type { TFunction } from 'i18next'
 import { Button } from '@/components/ui/button'
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
@@ -17,40 +19,44 @@ import {
   useLoginForInvitation,
   useRegisterForInvitation,
 } from '@/features/workspaces/hooks/useWorkspaces'
-import { isStrongPassword, PASSWORD_STRENGTH_MESSAGE } from '@/lib/passwordStrength'
+import { isStrongPassword, passwordStrengthMessage } from '@/lib/passwordStrength'
 import { useAuth } from '@/providers/AuthProvider'
 
-const ROLE_LABELS: Record<string, string> = {
-  admin: 'Admin',
-  editor: 'Editor',
-  viewer: 'Viewer',
+function invitationLoginSchema(t: TFunction) {
+  return z.object({
+    password: z.string().min(1, t('validation.passwordRequired')),
+  })
 }
 
-const loginSchema = z.object({
-  password: z.string().min(1, 'Password is required'),
-})
-
-const registerSchema = z
-  .object({
-    name: z.string().min(1, 'Name is required').max(255),
-    password: z.string().min(1, 'Password is required').refine(isStrongPassword, { message: PASSWORD_STRENGTH_MESSAGE }),
-    password_confirmation: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: 'Passwords do not match',
-    path: ['password_confirmation'],
-  })
+function invitationRegisterSchema(t: TFunction) {
+  return z
+    .object({
+      name: z.string().min(1, t('validation.nameRequired')).max(255),
+      password: z
+        .string()
+        .min(1, t('validation.passwordRequired'))
+        .refine(isStrongPassword, { message: passwordStrengthMessage(t) }),
+      password_confirmation: z.string().min(1, t('validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: t('validation.passwordsDoNotMatch'),
+      path: ['password_confirmation'],
+    })
+}
 
 function InviteBlurb({ workspaceName, role, invitedBy }: { workspaceName: string; role: string; invitedBy: string | null }) {
+  const { t } = useTranslation()
+  const roleLabel = ['admin', 'editor', 'viewer'].includes(role) ? t(`common.roles.${role}`) : role
+
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
         <Users className="size-6 text-primary" />
       </div>
       <p className="text-sm text-muted-foreground">
-        {invitedBy ? `${invitedBy} has invited you` : "You've been invited"} to join{' '}
-        <span className="font-medium text-foreground">{workspaceName}</span> as{' '}
-        <span className="font-medium text-foreground">{ROLE_LABELS[role] ?? role}</span>.
+        {invitedBy
+          ? t('invitation.invitedByBlurb', { inviter: invitedBy, workspace: workspaceName, role: roleLabel })
+          : t('invitation.invitedBlurb', { workspace: workspaceName, role: roleLabel })}
       </p>
     </div>
   )
@@ -58,6 +64,7 @@ function InviteBlurb({ workspaceName, role, invitedBy }: { workspaceName: string
 
 /** Already signed in as the right account — nothing to fill in. */
 function AcceptAsCurrentUser({ token, workspaceName }: { token: string; workspaceName: string }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const acceptInvitation = useAcceptInvitation()
 
@@ -68,28 +75,28 @@ function AcceptAsCurrentUser({ token, workspaceName }: { token: string; workspac
       onClick={() =>
         acceptInvitation.mutate(token, {
           onSuccess: () => {
-            toast.success(`You've joined ${workspaceName}`)
+            toast.success(t('invitation.joinedToast', { workspace: workspaceName }))
             navigate('/', { replace: true })
           },
-          onError: () => toast.error('Could not accept this invitation'),
+          onError: () => toast.error(t('invitation.acceptError')),
         })
       }
     >
       {acceptInvitation.isPending && <Loader2 className="size-4 animate-spin" />}
-      Accept invitation
+      {t('invitation.accept')}
     </Button>
   )
 }
 
 /** Signed in, but as someone else — offer to switch accounts. */
 function WrongAccount({ currentEmail, invitedEmail }: { currentEmail: string; invitedEmail: string }) {
+  const { t } = useTranslation()
   const logout = useLogout()
 
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <p className="text-sm text-muted-foreground">
-        This invitation is for <span className="font-medium text-foreground">{invitedEmail}</span>, but you're
-        signed in as <span className="font-medium text-foreground">{currentEmail}</span>.
+        {t('invitation.wrongAccount.description', { invitedEmail, currentEmail })}
       </p>
       <Button
         variant="outline"
@@ -98,7 +105,7 @@ function WrongAccount({ currentEmail, invitedEmail }: { currentEmail: string; in
         onClick={() => logout.mutate()}
       >
         {logout.isPending && <Loader2 className="size-4 animate-spin" />}
-        Log out and switch accounts
+        {t('invitation.wrongAccount.switchAccounts')}
       </Button>
     </div>
   )
@@ -106,6 +113,7 @@ function WrongAccount({ currentEmail, invitedEmail }: { currentEmail: string; in
 
 /** Not signed in, and this email already has an account — just needs the password. */
 function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: string }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   // One request that logs in AND accepts server-side (see
   // WorkspaceInvitationController::login) — not two chained mutations.
@@ -115,8 +123,8 @@ function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: 
   // visible error.
   const loginForInvitation = useLoginForInvitation()
 
-  const form = useForm<z.infer<typeof loginSchema>>({
-    resolver: zodResolver(loginSchema),
+  const form = useForm<z.infer<ReturnType<typeof invitationLoginSchema>>>({
+    resolver: zodResolver(invitationLoginSchema(t)),
     defaultValues: { password: '' },
   })
 
@@ -125,10 +133,10 @@ function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: 
       { token, password: values.password },
       {
         onSuccess: () => {
-          toast.success('Welcome — invitation accepted')
+          toast.success(t('invitation.welcomeAccepted'))
           navigate('/', { replace: true })
         },
-        onError: () => form.setError('password', { message: 'Incorrect password' }),
+        onError: () => form.setError('password', { message: t('invitation.incorrectPassword') }),
       }
     )
   })
@@ -137,14 +145,14 @@ function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: 
     <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-4">
         <p className="text-center text-sm text-muted-foreground">
-          Signing in as <span className="font-medium text-foreground">{invitedEmail}</span>
+          {t('invitation.signingInAs')} <span className="font-medium text-foreground">{invitedEmail}</span>
         </p>
         <FormField
           control={form.control}
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('auth.login.password')}</FormLabel>
               <FormControl>
                 <PasswordInput autoComplete="current-password" autoFocus {...field} />
               </FormControl>
@@ -154,7 +162,7 @@ function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: 
         />
         <Button type="submit" className="w-full" disabled={loginForInvitation.isPending}>
           {loginForInvitation.isPending && <Loader2 className="size-4 animate-spin" />}
-          Sign in &amp; accept
+          {t('invitation.signInAndAccept')}
         </Button>
       </form>
     </Form>
@@ -163,11 +171,12 @@ function LoginAndAccept({ token, invitedEmail }: { token: string; invitedEmail: 
 
 /** Not signed in, and nobody has this email yet — create the account right here. */
 function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmail: string }) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const registerForInvitation = useRegisterForInvitation()
 
-  const form = useForm<z.infer<typeof registerSchema>>({
-    resolver: zodResolver(registerSchema),
+  const form = useForm<z.infer<ReturnType<typeof invitationRegisterSchema>>>({
+    resolver: zodResolver(invitationRegisterSchema(t)),
     defaultValues: { name: '', password: '', password_confirmation: '' },
   })
 
@@ -176,10 +185,10 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
       { token, payload: values },
       {
         onSuccess: () => {
-          toast.success('Account created — invitation accepted')
+          toast.success(t('invitation.accountCreatedAccepted'))
           navigate('/', { replace: true })
         },
-        onError: () => toast.error('Could not create your account'),
+        onError: () => toast.error(t('auth.register.createAccountError')),
       }
     )
   })
@@ -188,14 +197,14 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
     <Form {...form}>
       <form onSubmit={onSubmit} className="space-y-4">
         <p className="text-center text-sm text-muted-foreground">
-          Creating an account for <span className="font-medium text-foreground">{invitedEmail}</span>
+          {t('invitation.creatingAccountFor')} <span className="font-medium text-foreground">{invitedEmail}</span>
         </p>
         <FormField
           control={form.control}
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Your name</FormLabel>
+              <FormLabel>{t('invitation.yourName')}</FormLabel>
               <FormControl>
                 <Input autoComplete="name" autoFocus {...field} />
               </FormControl>
@@ -208,7 +217,7 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Choose a password</FormLabel>
+              <FormLabel>{t('invitation.choosePassword')}</FormLabel>
               <FormControl>
                 <PasswordInput autoComplete="new-password" {...field} />
               </FormControl>
@@ -222,7 +231,7 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
           name="password_confirmation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel>{t('auth.register.confirmPassword')}</FormLabel>
               <FormControl>
                 <PasswordInput autoComplete="new-password" {...field} />
               </FormControl>
@@ -232,7 +241,7 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
         />
         <Button type="submit" className="w-full" disabled={registerForInvitation.isPending}>
           {registerForInvitation.isPending && <Loader2 className="size-4 animate-spin" />}
-          Create account &amp; accept
+          {t('invitation.createAccountAndAccept')}
         </Button>
       </form>
     </Form>
@@ -240,6 +249,7 @@ function RegisterAndAccept({ token, invitedEmail }: { token: string; invitedEmai
 }
 
 export function AcceptInvitationPage() {
+  const { t } = useTranslation()
   const { token } = useParams<{ token: string }>()
   const navigate = useNavigate()
   const { user, isAuthenticated, isLoading: authLoading } = useAuth()
@@ -247,7 +257,7 @@ export function AcceptInvitationPage() {
 
   if (authLoading || invitationLoading) {
     return (
-      <AuthCard title="Invitation">
+      <AuthCard title={t('invitation.title')}>
         <div className="flex justify-center py-4">
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
         </div>
@@ -257,9 +267,9 @@ export function AcceptInvitationPage() {
 
   if (isError || !invitation) {
     return (
-      <AuthCard title="Invitation" description="This invitation is invalid or has already been used.">
+      <AuthCard title={t('invitation.title')} description={t('invitation.invalidOrUsed')}>
         <Button variant="outline" className="w-full" onClick={() => navigate('/')}>
-          Go to dashboard
+          {t('invitation.goToDashboard')}
         </Button>
       </AuthCard>
     )
@@ -269,7 +279,7 @@ export function AcceptInvitationPage() {
     isAuthenticated && user && user.email.toLowerCase() === invitation.invited_email.toLowerCase()
 
   return (
-    <AuthCard title="You've been invited">
+    <AuthCard title={t('invitation.youveBeenInvited')}>
       <div className="space-y-6">
         <InviteBlurb workspaceName={invitation.workspace.name} role={invitation.role} invitedBy={invitation.invited_by} />
 

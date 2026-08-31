@@ -1,5 +1,7 @@
 import { Download, ExternalLink, Globe, Mail, MapPin, PlayCircle, Phone, Quote, Sparkles } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
+import type { TFunction } from 'i18next'
 import { SOCIAL_PLATFORM_ICON } from '@/features/epks/builder/socialPlatforms'
 import { useMediaList } from '@/features/media/hooks/useMedia'
 import { buttonRadiusClass, resolveTheme, themeToCssVars, type EpkCustomSettings, type HeaderStyle } from '@/lib/epkThemes'
@@ -125,33 +127,33 @@ function HeroPreview({
   )
 }
 
-function BiographyPreview({ config, headerStyle }: { config: BiographyConfig; headerStyle: HeaderStyle }) {
+function BiographyPreview({ config, headerStyle, t }: { config: BiographyConfig; headerStyle: HeaderStyle; t: TFunction }) {
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Biography" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.biography')} headerStyle={headerStyle} />
       {config.html ? (
         // Rendered from the same HTML the rich-text editor just produced (and
         // the backend re-sanitizes on save) — no new injection surface here.
         <div className={cn('prose prose-sm max-w-none', PROSE_THEME_CLASSES)} dangerouslySetInnerHTML={{ __html: config.html }} />
       ) : (
-        <p className="text-sm text-[var(--epk-muted)]">No biography yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noBiography')}</p>
       )}
     </div>
   )
 }
 
-function SocialNetworksPreview({ config, headerStyle }: { config: SocialNetworksConfig; headerStyle: HeaderStyle }) {
+function SocialNetworksPreview({ config, headerStyle, t }: { config: SocialNetworksConfig; headerStyle: HeaderStyle; t: TFunction }) {
   const links = (config.links ?? []).filter((link) => link.url)
 
   if (links.length === 0) {
     return (
-      <div className="px-8 py-10 text-center text-sm text-[var(--epk-muted)]">No social links added yet.</div>
+      <div className="px-8 py-10 text-center text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noSocialLinks')}</div>
     )
   }
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Social Networks" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.socialNetworks')} headerStyle={headerStyle} />
       <div className="flex flex-wrap justify-center gap-4">
         {links.map((link) => {
           const Icon = SOCIAL_PLATFORM_ICON[link.platform] ?? Globe
@@ -173,20 +175,20 @@ function SocialNetworksPreview({ config, headerStyle }: { config: SocialNetworks
   )
 }
 
-function ContactPreview({ config, headerStyle }: { config: ContactConfig; headerStyle: HeaderStyle }) {
+function ContactPreview({ config, headerStyle, t }: { config: ContactConfig; headerStyle: HeaderStyle; t: TFunction }) {
   const rows: { icon: LucideIcon; label: string }[] = []
-  if (config.booking_email) rows.push({ icon: Mail, label: `Booking: ${config.booking_email}` })
-  if (config.press_email) rows.push({ icon: Mail, label: `Press: ${config.press_email}` })
-  if (config.management_email) rows.push({ icon: Mail, label: `Management: ${config.management_email}` })
+  if (config.booking_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.booking')}: ${config.booking_email}` })
+  if (config.press_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.press')}: ${config.press_email}` })
+  if (config.management_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.management')}: ${config.management_email}` })
   if (config.website) rows.push({ icon: Globe, label: config.website })
   if (config.show_phone && config.phone) rows.push({ icon: Phone, label: config.phone })
   if (config.show_address && config.address) rows.push({ icon: MapPin, label: config.address })
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Contact" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.contact')} headerStyle={headerStyle} />
       {rows.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No contact details yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noContactDetails')}</p>
       ) : (
         <ul className="space-y-2">
           {rows.map((row, index) => (
@@ -201,15 +203,15 @@ function ContactPreview({ config, headerStyle }: { config: ContactConfig; header
   )
 }
 
-function DownloadsPreview({ config, workspaceId, headerStyle }: { config: DownloadsConfig; workspaceId: number; headerStyle: HeaderStyle }) {
+function DownloadsPreview({ config, workspaceId, headerStyle, t }: { config: DownloadsConfig; workspaceId: number; headerStyle: HeaderStyle; t: TFunction }) {
   const { data: media } = useMediaList(workspaceId)
   const files = (config.media_ids ?? []).map((id) => media?.find((item) => item.id === id)).filter(Boolean)
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Downloads" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.downloads')} headerStyle={headerStyle} />
       {files.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No downloadable files selected yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noFilesSelected')}</p>
       ) : (
         <ul className="space-y-2">
           {files.map((file) => (
@@ -228,14 +230,14 @@ function DownloadsPreview({ config, workspaceId, headerStyle }: { config: Downlo
   )
 }
 
-function CreditsPreview({ config, headerStyle }: { config: CreditsConfig; headerStyle: HeaderStyle }) {
+function CreditsPreview({ config, headerStyle, t }: { config: CreditsConfig; headerStyle: HeaderStyle; t: TFunction }) {
   const items = config.items ?? []
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Credits" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.credits')} headerStyle={headerStyle} />
       {items.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No credits yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noCredits')}</p>
       ) : (
         <ul className="space-y-1 text-sm">
           {items.map((item, index) => (
@@ -250,20 +252,20 @@ function CreditsPreview({ config, headerStyle }: { config: CreditsConfig; header
   )
 }
 
-function CustomPreview({ config, headerStyle }: { config: CustomConfig; headerStyle: HeaderStyle }) {
+function CustomPreview({ config, headerStyle, t }: { config: CustomConfig; headerStyle: HeaderStyle; t: TFunction }) {
   return (
     <div className="px-8 py-10">
       {config.heading && <SectionHeading title={config.heading} headerStyle={headerStyle} />}
       {config.html ? (
         <div className={cn('prose prose-sm max-w-none', PROSE_THEME_CLASSES)} dangerouslySetInnerHTML={{ __html: config.html }} />
       ) : (
-        <p className="text-sm text-[var(--epk-muted)]">Empty section.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.emptySection')}</p>
       )}
     </div>
   )
 }
 
-function PhotosPreview({ config, workspaceId, headerStyle }: { config: PhotosConfig; workspaceId: number; headerStyle: HeaderStyle }) {
+function PhotosPreview({ config, workspaceId, headerStyle, t }: { config: PhotosConfig; workspaceId: number; headerStyle: HeaderStyle; t: TFunction }) {
   const { data: media } = useMediaList(workspaceId)
   const items = (config.items ?? [])
     .map((item) => ({ ...item, media: media?.find((m) => m.id === item.media_id) }))
@@ -271,9 +273,9 @@ function PhotosPreview({ config, workspaceId, headerStyle }: { config: PhotosCon
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Photos" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.photos')} headerStyle={headerStyle} />
       {items.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No photos yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noPhotos')}</p>
       ) : (
         <div className="grid grid-cols-3 gap-2">
           {items.map((item, index) => (
@@ -299,25 +301,41 @@ function PhotosPreview({ config, workspaceId, headerStyle }: { config: PhotosCon
   )
 }
 
-function MusicPreview({ config, workspaceId, headerStyle }: { config: MusicConfig; workspaceId: number; headerStyle: HeaderStyle }) {
+function MusicPreview({ config, workspaceId, headerStyle, t }: { config: MusicConfig; workspaceId: number; headerStyle: HeaderStyle; t: TFunction }) {
   const { data: media } = useMediaList(workspaceId)
-  const tracks = (config.tracks ?? [])
-    .map((track) => ({ ...track, media: media?.find((m) => m.id === track.audio_media_id) }))
-    .filter((track) => track.media)
+  const tracks = config.tracks ?? []
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Music" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.music')} headerStyle={headerStyle} />
       {tracks.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No tracks yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noTracks')}</p>
       ) : (
         <ul className="space-y-3">
-          {tracks.map((track, index) => (
-            <li key={index}>
-              <p className="mb-1 text-sm font-medium text-[var(--epk-fg)]">{track.title || track.media!.original_filename}</p>
-              <audio controls src={track.media!.url} className="h-9 w-full" onClick={(event) => event.preventDefault()} />
-            </li>
-          ))}
+          {tracks.map((track, index) => {
+            if ((track.provider ?? 'upload') === 'upload') {
+              const file = media?.find((m) => m.id === track.audio_media_id)
+              return (
+                <li key={index}>
+                  <p className="mb-1 text-sm font-medium text-[var(--epk-fg)]">{track.title || file?.original_filename}</p>
+                  {file ? (
+                    <audio controls src={file.url} className="h-9 w-full" onClick={(event) => event.preventDefault()} />
+                  ) : (
+                    <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noFileSelected')}</p>
+                  )}
+                </li>
+              )
+            }
+            // Embed rendering for Spotify/SoundCloud is left to the public
+            // page (which has the server-resolved embed URL) — the builder
+            // just confirms a link was entered, same as YouTube/Vimeo below.
+            return (
+              <li key={index} className="flex items-center gap-2 rounded-md border border-[var(--epk-border)] px-3 py-2 text-sm">
+                <PlayCircle className="size-4 shrink-0 text-[var(--epk-muted)]" />
+                <span className="truncate text-[var(--epk-fg)]">{track.title || track.url || t('epkBuilder.preview.untitledTrack')}</span>
+              </li>
+            )
+          })}
         </ul>
       )}
     </div>
@@ -329,20 +347,22 @@ function ReleasesPreview({
   workspaceId,
   headerStyle,
   buttonStyle,
+  t,
 }: {
   config: ReleasesConfig
   workspaceId: number
   headerStyle: HeaderStyle
   buttonStyle: ReturnType<typeof resolveTheme>['buttonStyle']
+  t: TFunction
 }) {
   const { data: media } = useMediaList(workspaceId)
   const releases = config.releases ?? []
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Releases" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.releases')} headerStyle={headerStyle} />
       {releases.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No releases yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noReleases')}</p>
       ) : (
         <div className="grid grid-cols-2 gap-4">
           {releases.map((release, index) => {
@@ -353,7 +373,7 @@ function ReleasesPreview({
                 <div className="aspect-square overflow-hidden rounded-md bg-muted">
                   {cover && <img src={cover.thumbnail_url ?? cover.url} alt="" className="size-full object-cover" />}
                 </div>
-                <p className="text-sm font-medium text-[var(--epk-fg)]">{release.title || 'Untitled release'}</p>
+                <p className="text-sm font-medium text-[var(--epk-fg)]">{release.title || t('epkBuilder.preview.untitledRelease')}</p>
                 {links.length > 0 && (
                   <div className="flex flex-wrap gap-1.5">
                     {links.map(([key, url]) => (
@@ -379,15 +399,15 @@ function ReleasesPreview({
   )
 }
 
-function VideosPreview({ config, workspaceId, headerStyle }: { config: VideosConfig; workspaceId: number; headerStyle: HeaderStyle }) {
+function VideosPreview({ config, workspaceId, headerStyle, t }: { config: VideosConfig; workspaceId: number; headerStyle: HeaderStyle; t: TFunction }) {
   const { data: media } = useMediaList(workspaceId)
   const videos = config.videos ?? []
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Videos" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.videos')} headerStyle={headerStyle} />
       {videos.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No videos yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noVideos')}</p>
       ) : (
         <ul className="space-y-2">
           {videos.map((video, index) => {
@@ -399,7 +419,7 @@ function VideosPreview({ config, workspaceId, headerStyle }: { config: VideosCon
                   {file ? (
                     <video src={file.url} controls className="aspect-video w-full rounded-md bg-black" onClick={(event) => event.preventDefault()} />
                   ) : (
-                    <p className="text-sm text-[var(--epk-muted)]">No file selected yet.</p>
+                    <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noFileSelected')}</p>
                   )}
                 </li>
               )
@@ -410,7 +430,7 @@ function VideosPreview({ config, workspaceId, headerStyle }: { config: VideosCon
             return (
               <li key={index} className="flex items-center gap-2 rounded-md border border-[var(--epk-border)] px-3 py-2 text-sm">
                 <PlayCircle className="size-4 shrink-0 text-[var(--epk-muted)]" />
-                <span className="truncate text-[var(--epk-fg)]">{video.title || video.url || 'Untitled video'}</span>
+                <span className="truncate text-[var(--epk-fg)]">{video.title || video.url || t('epkBuilder.preview.untitledVideo')}</span>
               </li>
             )
           })}
@@ -420,14 +440,14 @@ function VideosPreview({ config, workspaceId, headerStyle }: { config: VideosCon
   )
 }
 
-function PressPreview({ config, headerStyle }: { config: PressConfig; headerStyle: HeaderStyle }) {
+function PressPreview({ config, headerStyle, t }: { config: PressConfig; headerStyle: HeaderStyle; t: TFunction }) {
   const items = (config.items ?? []).filter((item) => item.outlet)
 
   return (
     <div className="px-8 py-10">
-      <SectionHeading title="Press" headerStyle={headerStyle} />
+      <SectionHeading title={t('epkBuilder.sectionTypes.press')} headerStyle={headerStyle} />
       {items.length === 0 ? (
-        <p className="text-sm text-[var(--epk-muted)]">No press coverage yet.</p>
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noPress')}</p>
       ) : (
         <ul className="space-y-4">
           {items.map((item, index) => (
@@ -449,7 +469,7 @@ function PressPreview({ config, headerStyle }: { config: PressConfig; headerStyl
                     onClick={(event) => event.preventDefault()}
                     className="ms-1 inline-flex items-center gap-0.5 text-[var(--epk-accent)]"
                   >
-                    Read <ExternalLink className="size-3" />
+                    {t('epkBuilder.preview.read')} <ExternalLink className="size-3" />
                   </a>
                 )}
               </p>
@@ -461,11 +481,11 @@ function PressPreview({ config, headerStyle }: { config: PressConfig; headerStyl
   )
 }
 
-function ComingSoonPreview({ label }: { label: string }) {
+function ComingSoonPreview({ label, t }: { label: string; t: TFunction }) {
   return (
     <div className="flex flex-col items-center gap-2 px-8 py-10 text-center">
       <Sparkles className="size-5 text-[var(--epk-muted)]" />
-      <p className="text-sm text-[var(--epk-muted)]">{label} content arrives in a later phase.</p>
+      <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.comingSoon', { label })}</p>
     </div>
   )
 }
@@ -483,6 +503,7 @@ export function LivePreview({
   selectedSectionId: number | null
   onSelectSection: (id: number) => void
 }) {
+  const { t } = useTranslation()
   const enabled = sections.filter((section) => section.is_enabled)
   const theme = resolveTheme(epk.theme, epk.custom_settings as EpkCustomSettings | null)
   const themeStyle = { ...themeToCssVars(theme), fontFamily: 'var(--epk-font)' }
@@ -493,7 +514,7 @@ export function LivePreview({
         className="flex h-full items-center justify-center bg-[var(--epk-bg)] p-10 text-center text-sm text-[var(--epk-muted)]"
         style={themeStyle}
       >
-        No sections enabled. Add or enable a section to see the preview.
+        {t('epkBuilder.preview.noSectionsEnabled')}
       </div>
     )
   }
@@ -522,30 +543,31 @@ export function LivePreview({
                   />
                 )
               case 'biography':
-                return <BiographyPreview config={section.config as BiographyConfig} headerStyle={theme.headerStyle} />
+                return <BiographyPreview config={section.config as BiographyConfig} headerStyle={theme.headerStyle} t={t} />
               case 'social_networks':
-                return <SocialNetworksPreview config={section.config as SocialNetworksConfig} headerStyle={theme.headerStyle} />
+                return <SocialNetworksPreview config={section.config as SocialNetworksConfig} headerStyle={theme.headerStyle} t={t} />
               case 'contact':
-                return <ContactPreview config={section.config as ContactConfig} headerStyle={theme.headerStyle} />
+                return <ContactPreview config={section.config as ContactConfig} headerStyle={theme.headerStyle} t={t} />
               case 'downloads':
                 return (
                   <DownloadsPreview
                     config={section.config as DownloadsConfig}
                     workspaceId={workspaceId}
                     headerStyle={theme.headerStyle}
+                    t={t}
                   />
                 )
               case 'credits':
-                return <CreditsPreview config={section.config as CreditsConfig} headerStyle={theme.headerStyle} />
+                return <CreditsPreview config={section.config as CreditsConfig} headerStyle={theme.headerStyle} t={t} />
               case 'custom':
-                return <CustomPreview config={section.config as CustomConfig} headerStyle={theme.headerStyle} />
+                return <CustomPreview config={section.config as CustomConfig} headerStyle={theme.headerStyle} t={t} />
               case 'photos':
                 return (
-                  <PhotosPreview config={section.config as PhotosConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} />
+                  <PhotosPreview config={section.config as PhotosConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} t={t} />
                 )
               case 'music':
                 return (
-                  <MusicPreview config={section.config as MusicConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} />
+                  <MusicPreview config={section.config as MusicConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} t={t} />
                 )
               case 'releases':
                 return (
@@ -554,16 +576,17 @@ export function LivePreview({
                     workspaceId={workspaceId}
                     headerStyle={theme.headerStyle}
                     buttonStyle={theme.buttonStyle}
+                    t={t}
                   />
                 )
               case 'videos':
                 return (
-                  <VideosPreview config={section.config as VideosConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} />
+                  <VideosPreview config={section.config as VideosConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} t={t} />
                 )
               case 'press':
-                return <PressPreview config={section.config as PressConfig} headerStyle={theme.headerStyle} />
+                return <PressPreview config={section.config as PressConfig} headerStyle={theme.headerStyle} t={t} />
               default:
-                return <ComingSoonPreview label={section.label} />
+                return <ComingSoonPreview label={section.label} t={t} />
             }
           })()}
         </button>

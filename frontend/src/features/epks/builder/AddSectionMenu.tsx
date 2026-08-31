@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -20,6 +21,7 @@ export function AddSectionMenu({
   sections: EpkSection[]
   onAdded: (sectionId: number) => void
 }) {
+  const { t } = useTranslation()
   const addSection = useAddSection(epkId)
   const existingTypes = new Set(sections.map((section) => section.type))
 
@@ -28,10 +30,10 @@ export function AddSectionMenu({
       { type },
       {
         onSuccess: (section) => {
-          toast.success(`${SECTION_TYPE_META[type].label} section added`)
+          toast.success(t('epkBuilder.sectionAdded', { section: t(SECTION_TYPE_META[type].labelKey) }))
           onAdded(section.id)
         },
-        onError: () => toast.error('Could not add this section'),
+        onError: () => toast.error(t('epkBuilder.sectionAddError')),
       }
     )
   }
@@ -40,7 +42,7 @@ export function AddSectionMenu({
     <DropdownMenu>
       <DropdownMenuTrigger render={<Button size="sm" />}>
         <Plus className="size-4" />
-        Add section
+        {t('epkBuilder.addSection')}
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="max-h-80 overflow-y-auto">
         {ADDABLE_SECTION_ORDER.map((type) => {
@@ -49,8 +51,8 @@ export function AddSectionMenu({
           return (
             <DropdownMenuItem key={type} disabled={disabled} onClick={() => handleAdd(type)}>
               <meta.icon className="size-4" />
-              {meta.label}
-              {disabled && <span className="ml-auto text-xs text-muted-foreground">Added</span>}
+              {t(meta.labelKey)}
+              {disabled && <span className="ml-auto text-xs text-muted-foreground">{t('epkBuilder.added')}</span>}
             </DropdownMenuItem>
           )
         })}

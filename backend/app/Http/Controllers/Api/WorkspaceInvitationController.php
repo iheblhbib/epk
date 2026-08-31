@@ -2,16 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\Locale;
 use App\Enums\UserRole;
 use App\Enums\WorkspaceMemberStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\WorkspaceMemberResource;
 use App\Models\User;
 use App\Models\WorkspaceMember;
+use App\Notifications\TeamMemberJoinedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Validation\ValidationException;
 
@@ -147,6 +150,7 @@ class WorkspaceInvitationController extends Controller
             'email' => $email,
             'password' => Hash::make($validated['password']),
             'role' => UserRole::User,
+            'locale' => Locale::from(app()->getLocale()),
         ]);
         // Not mass-assignable (email_verified_at isn't in $fillable, by
         // design — the same reason admin suspension sets suspended_at via a
@@ -185,5 +189,37 @@ class WorkspaceInvitationController extends Controller
             'joined_at' => now(),
             'invite_token' => null,
         ]);
+
+        // Clears the bell notification for this invite now that it's been
+        // acted on — a JSON-path match on the payload rather than a foreign
+        // key, since DatabaseNotification's `data` is an opaque blob by
+        // design (any notification type can shape it however it needs).
+        User::find($userId)?->notifications()
+            ->where('data->member_id', $member->id)
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        $this->notifyExistingMembers($member, $userId);
+    }
+
+    /**
+     * "Existing" — everyone who was already active before this join, minus
+     * the person who just joined (they don't need a bell telling them they
+     * joined; the invite-accepted UI flow they're already on covers that).
+     */
+    private function notifyExistingMembers(WorkspaceMember $member, int $newUserId): void
+    {
+        $recipients = User::query()
+            ->whereIn('id', $member->workspace->members()
+                ->where('status', WorkspaceMemberStatus::Active)
+                ->whereNotNull('user_id')
+                ->where('user_id', '!=', $newUserId)
+                ->pluck('user_id'))
+            ->get();
+
+        if ($recipients->isNotEmpty()) {
+            $member->setRelation('user', User::find($newUserId));
+            Notification::send($recipients, new TeamMemberJoinedNotification($member));
+        }
     }
 }

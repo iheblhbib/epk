@@ -1,0 +1,1030 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "myEpks": "My EPKs",
+    "mediaLibrary": "Media Library",
+    "analytics": "Analytics",
+    "contacts": "Contacts",
+    "team": "Team",
+    "admin": "Admin",
+    "settings": "Settings",
+    "billing": "Billing"
+  },
+  "topbar": {
+    "settings": "Settings",
+    "logout": "Log out",
+    "logoutError": "Could not log out"
+  },
+  "search": {
+    "trigger": "Search",
+    "placeholder": "Search EPKs, artists, contacts, media…",
+    "hint": "Keep typing to search this workspace.",
+    "empty": "No results found.",
+    "groups": {
+      "epks": "EPKs",
+      "artists": "Artists",
+      "contacts": "Contacts",
+      "media": "Media"
+    }
+  },
+  "theme": {
+    "toggle": "Toggle theme",
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "language": {
+    "toggle": "Change language"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "workspaces": "Workspaces",
+      "epks": "EPKs",
+      "auditLog": "Audit log",
+      "backToApp": "Back to app"
+    },
+    "dashboard": {
+      "title": "Admin dashboard",
+      "description": "Platform-wide usage at a glance.",
+      "totalUsers": "Total users",
+      "newUsers30d": "New users (30d)",
+      "workspaces": "Workspaces",
+      "totalEpks": "Total EPKs",
+      "publishedEpks": "Published EPKs",
+      "pageViews30d": "Page views (30d)",
+      "contacts": "Contacts",
+      "mediaFiles": "Media files",
+      "storageUsed": "Storage used"
+    },
+    "pagination": {
+      "total": "{{count}} total",
+      "previous": "Previous",
+      "next": "Next",
+      "pageOf": "Page {{page}} of {{lastPage}}"
+    },
+    "users": {
+      "title": "Users",
+      "description": "Every account on the platform.",
+      "searchPlaceholder": "Search name or email…",
+      "you": "(you)",
+      "roleAdmin": "admin",
+      "roleUser": "user",
+      "suspended": "Suspended",
+      "active": "Active",
+      "revokeAdmin": "Revoke admin",
+      "makeAdmin": "Make admin",
+      "unsuspend": "Unsuspend",
+      "suspend": "Suspend",
+      "roleUpdateError": "Could not update this user's role",
+      "updateError": "Could not update this user",
+      "columns": {
+        "name": "Name",
+        "email": "Email",
+        "role": "Role",
+        "status": "Status"
+      }
+    },
+    "workspaces": {
+      "title": "Workspaces",
+      "description": "Every workspace on the platform.",
+      "searchPlaceholder": "Search by name…",
+      "planFree": "Free",
+      "planPro": "Pro",
+      "planBusiness": "Business",
+      "planUpdated": "Plan updated to {{plan}}",
+      "planUpdateError": "Could not update the plan",
+      "deleted": "Workspace deleted",
+      "deleteError": "Could not delete this workspace",
+      "columns": {
+        "name": "Name",
+        "owner": "Owner",
+        "members": "Members",
+        "epks": "EPKs",
+        "plan": "Plan",
+        "created": "Created"
+      }
+    },
+    "epks": {
+      "title": "EPKs",
+      "description": "Every EPK on the platform.",
+      "searchPlaceholder": "Search by title…",
+      "allStatuses": "All statuses",
+      "unpublish": "Unpublish",
+      "unpublishedToast": "Unpublished \"{{title}}\"",
+      "unpublishError": "Could not unpublish this EPK",
+      "columns": {
+        "workspace": "Workspace"
+      }
+    },
+    "auditLog": {
+      "description": "Actions taken from this admin panel.",
+      "noneTitle": "No activity yet",
+      "noneDescription": "Admin actions will show up here.",
+      "system": "System",
+      "columns": {
+        "action": "Action",
+        "admin": "Admin",
+        "subject": "Subject",
+        "ipAddress": "IP address",
+        "when": "When"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "description": "Sign in to manage your press kits",
+      "email": "Email",
+      "password": "Password",
+      "forgotPassword": "Forgot password?",
+      "signIn": "Sign in",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "justVerified": "Your email has been verified. You can sign in now.",
+      "credentialsMismatch": "These credentials do not match our records.",
+      "failedToast": "Login failed",
+      "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
+      "twoFactorDescription": "Enter the 6-digit code from your authenticator app.",
+      "twoFactorCodeLabel": "Authentication code",
+      "recoveryCodeLabel": "Recovery code",
+      "verifyCode": "Verify",
+      "useRecoveryCodeInstead": "Use a recovery code instead",
+      "useAuthenticatorInstead": "Use your authenticator app instead",
+      "twoFactorInvalid": "That code didn't work. Please try again."
+    },
+    "register": {
+      "title": "Create your account",
+      "description": "Start building your press kit in minutes",
+      "alreadyHaveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "name": "Name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "createAccount": "Create account",
+      "createAccountError": "Could not create your account",
+      "tooManyAttempts": "Too many attempts. Please wait a minute and try again."
+    },
+    "forgotPassword": {
+      "title": "Reset your password",
+      "description": "We'll email you a link to reset it",
+      "backToSignIn": "Back to sign in",
+      "email": "Email",
+      "sendResetLink": "Send reset link",
+      "checkInbox": "Check your inbox for a link to reset your password.",
+      "notFound": "We can't find an account with that email address."
+    },
+    "resetPassword": {
+      "title": "Set a new password",
+      "backToSignIn": "Back to sign in",
+      "email": "Email",
+      "newPassword": "New password",
+      "confirmNewPassword": "Confirm new password",
+      "submit": "Reset password",
+      "success": "Password reset. You can sign in now.",
+      "invalidLink": "This reset link is invalid or has expired."
+    },
+    "verifyEmail": {
+      "title": "Verify your email",
+      "description": "We sent a verification link to {{email}}",
+      "logout": "Log out",
+      "instructions": "Click the link in that email to activate your account. Didn't get it?",
+      "resend": "Resend verification email",
+      "sent": "Email sent",
+      "sentToast": "Verification email sent",
+      "sendError": "Could not send the email right now"
+    }
+  },
+  "validation": {
+    "nameRequired": "Name is required",
+    "emailRequired": "Email is required",
+    "emailInvalid": "Enter a valid email address",
+    "emailInvalidShort": "Enter a valid email",
+    "passwordRequired": "Password is required",
+    "passwordStrength": "Password must be at least 8 characters and include an uppercase letter, a lowercase letter, a number, and a symbol.",
+    "confirmPasswordRequired": "Please confirm your password",
+    "passwordsDoNotMatch": "Passwords do not match",
+    "currentPasswordRequired": "Current password is required",
+    "titleRequired": "Title is required",
+    "selectOrCreateArtist": "Select or create an artist",
+    "artistNameRequired": "Artist name is required"
+  },
+  "password": {
+    "show": "Show password",
+    "hide": "Hide password",
+    "requirements": {
+      "length": "At least 8 characters",
+      "lowercase": "A lowercase letter",
+      "uppercase": "An uppercase letter",
+      "number": "A number",
+      "symbol": "A symbol (e.g. !@#$%)"
+    }
+  },
+  "contacts": {
+    "dialog": {
+      "editTitle": "Edit contact",
+      "addTitle": "Add contact",
+      "description": "Journalists, radio, blogs, labels, and anyone else you work with on press and promo."
+    },
+    "fields": {
+      "name": "Name",
+      "email": "Email",
+      "phone": "Phone",
+      "category": "Category",
+      "organization": "Organization",
+      "notes": "Notes (optional)"
+    },
+    "categories": {
+      "journalist": "Journalist",
+      "radio": "Radio",
+      "blog": "Blog",
+      "label": "Label",
+      "booking": "Booking",
+      "management": "Management",
+      "pr": "PR",
+      "other": "Other"
+    },
+    "toasts": {
+      "updated": "Contact updated",
+      "added": "Contact added",
+      "updateError": "Could not update the contact",
+      "addError": "Could not add the contact",
+      "deleted": "Contact deleted",
+      "deleteError": "Could not delete the contact"
+    },
+    "allCategories": "All categories",
+    "pageDescription": "Journalists, radio, blogs, and everyone else you work with on press and promo.",
+    "searchPlaceholder": "Search name, email, organization…",
+    "deleteDialog": {
+      "title": "Delete contact",
+      "description": "\"{{name}}\" will be permanently removed."
+    },
+    "import": {
+      "importing": "Importing…",
+      "button": "Import CSV",
+      "created": "{{count}} imported",
+      "skipped": "{{count}} skipped",
+      "error": "Could not import the file"
+    },
+    "export": {
+      "button": "Export CSV",
+      "error": "Could not export contacts"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard before adding contacts.",
+      "noMatchTitle": "No matching contacts",
+      "noneTitle": "No contacts yet",
+      "noMatchDescription": "Try a different search or category.",
+      "canEditDescription": "Add your first contact, or import a CSV to bring in a whole list at once.",
+      "viewOnlyDescription": "No contacts have been added to this workspace yet."
+    }
+  },
+  "epks": {
+    "artistDialog": {
+      "title": "New artist",
+      "description": "You can fill in the rest of their profile later.",
+      "submit": "Create artist",
+      "toastCreated": "Artist created",
+      "toastError": "Could not create the artist"
+    },
+    "formDialog": {
+      "editTitle": "Edit EPK",
+      "createTitle": "Create an EPK",
+      "editDescription": "Update the title, artist, and SEO details.",
+      "createDescription": "The visual builder for sections and theming arrives in a later phase — this creates the EPK record.",
+      "submitCreate": "Create EPK"
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Artist or band name",
+      "genre": "Genre",
+      "genrePlaceholder": "Electronic, Rock, Jazz…",
+      "country": "Country",
+      "selectCountry": "Select a country",
+      "title": "Title",
+      "titlePlaceholder": "Summer Tour 2026 EPK",
+      "artist": "Artist",
+      "selectArtist": "Select an artist",
+      "seoTitle": "SEO title (optional)",
+      "seoTitlePlaceholder": "Defaults to the EPK title"
+    },
+    "toasts": {
+      "updated": "EPK updated",
+      "created": "EPK created",
+      "updateError": "Could not update the EPK",
+      "createError": "Could not create the EPK",
+      "published": "EPK published",
+      "unpublished": "EPK unpublished",
+      "statusError": "Could not update the EPK status",
+      "duplicated": "EPK duplicated",
+      "duplicateError": "Could not duplicate the EPK",
+      "deleted": "EPK deleted",
+      "deleteError": "Could not delete the EPK"
+    },
+    "status": {
+      "draft": "Draft",
+      "published": "Published",
+      "archived": "Archived"
+    },
+    "duplicate": "Duplicate",
+    "noArtist": "No artist",
+    "builder": "Builder",
+    "pageDescription": "Manage the press kits for {{workspace}}.",
+    "deleteDialog": {
+      "title": "Delete EPK",
+      "description": "\"{{title}}\" will be permanently removed."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard before adding EPKs.",
+      "noneTitle": "No EPKs yet",
+      "canEditDescription": "Create your first press kit to get started. The visual builder for sections and theming arrives in a later phase.",
+      "viewOnlyDescription": "No press kits have been created in this workspace yet."
+    }
+  },
+  "settings": {
+    "pageDescription": "Manage your account and workspace details.",
+    "tabs": {
+      "profile": "Profile",
+      "password": "Password",
+      "workspace": "Workspace",
+      "notifications": "Notifications",
+      "activity": "Activity",
+      "apiTokens": "API tokens",
+      "twoFactor": "Two-factor auth"
+    },
+    "profile": {
+      "title": "Profile",
+      "description": "Update your name and email address.",
+      "name": "Name",
+      "email": "Email",
+      "updated": "Profile updated",
+      "updateError": "Could not update your profile"
+    },
+    "password": {
+      "title": "Password",
+      "description": "Choose a strong, unique password.",
+      "current": "Current password",
+      "new": "New password",
+      "confirmNew": "Confirm new password",
+      "submit": "Update password",
+      "updated": "Password updated",
+      "incorrect": "Your current password is incorrect."
+    },
+    "workspace": {
+      "title": "Workspace details",
+      "description": "Update {{workspace}}'s name and description.",
+      "descriptionField": "Description",
+      "updated": "Workspace updated",
+      "updateError": "Could not update the workspace"
+    },
+    "dangerZone": {
+      "title": "Danger zone",
+      "ownerDescription": "Leaving or deleting this workspace cannot be undone.",
+      "memberDescription": "Leaving removes your access to this workspace's EPKs, media, and contacts.",
+      "leave": "Leave workspace",
+      "delete": "Delete workspace",
+      "leaveConfirm": "Leave",
+      "leaveDialogDescription": "You'll lose access to \"{{workspace}}\" until someone invites you back.",
+      "leftToast": "Left {{workspace}}",
+      "leaveError": "Could not leave this workspace — as the sole owner you'll need to transfer or delete it first.",
+      "deleteDialogDescription": "\"{{workspace}}\" and everything in it — EPKs, media, contacts — will be permanently deleted.",
+      "deletedToast": "Deleted {{workspace}}",
+      "deleteError": "Could not delete this workspace"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Choose how you're notified for each kind of event.",
+      "updateError": "Could not update your notification preferences",
+      "channel": {
+        "email": "Email",
+        "inApp": "In-app"
+      },
+      "workspaceInvitation": {
+        "title": "Workspace invitations",
+        "mailDescription": "Get an email when someone invites you to a workspace.",
+        "databaseDescription": "Show a bell notification when someone invites you to a workspace."
+      },
+      "epkPublished": {
+        "title": "EPK published",
+        "databaseDescription": "Show a bell notification when a teammate publishes an EPK."
+      },
+      "teamMemberJoined": {
+        "title": "Team member joined",
+        "databaseDescription": "Show a bell notification when someone joins your workspace."
+      }
+    },
+    "activity": {
+      "title": "Activity",
+      "description": "Recent changes made in this workspace.",
+      "emptyTitle": "No activity yet",
+      "emptyDescription": "Actions taken in this workspace will show up here.",
+      "system": "System",
+      "pageOf": "Page {{page}} of {{lastPage}}",
+      "actions": {
+        "epkCreated": "Created the EPK \"{{title}}\"",
+        "epkPublished": "Published the EPK \"{{title}}\"",
+        "epkUnpublished": "Unpublished the EPK \"{{title}}\"",
+        "epkDeleted": "Deleted the EPK \"{{title}}\"",
+        "epkDuplicated": "Duplicated \"{{from}}\" as \"{{title}}\"",
+        "memberInvited": "Invited {{email}} to the workspace",
+        "memberRoleChanged": "Changed {{member}}'s role to {{role}}",
+        "memberRemoved": "Removed {{member}} from the workspace",
+        "workspaceUpdated": "Updated the workspace details"
+      }
+    },
+    "apiTokens": {
+      "title": "API tokens",
+      "description": "Personal access tokens for scripting against this API as yourself.",
+      "nameField": "Token name",
+      "namePlaceholder": "e.g. CI script",
+      "createToken": "Create token",
+      "createError": "Could not create this token",
+      "none": "No API tokens yet.",
+      "created": "Created {{date}}",
+      "lastUsed": "Last used {{when}}",
+      "neverUsed": "Never used",
+      "revoke": "Revoke",
+      "revokeConfirm": "Revoke this token? Anything using it will stop working immediately.",
+      "revoked": "Token revoked",
+      "revokeError": "Could not revoke this token",
+      "createdTitle": "Token created",
+      "createdDescription": "Copy this token now — you won't be able to see it again.",
+      "copy": "Copy",
+      "copied": "Copied to clipboard"
+    },
+    "twoFactor": {
+      "title": "Two-factor authentication",
+      "description": "Require a code from an authenticator app in addition to your password when signing in.",
+      "enabled": "Enabled",
+      "disabled": "Disabled",
+      "enable": "Enable two-factor authentication",
+      "disable": "Disable two-factor authentication",
+      "enableError": "Could not start two-factor setup",
+      "confirmPasswordDescription": "Confirm your password to start setup.",
+      "scanDescription": "Scan this QR code with your authenticator app (Google Authenticator, 1Password, Authy…), or enter the code below manually.",
+      "qrAlt": "Two-factor authentication QR code",
+      "secretLabel": "Setup key",
+      "confirmCodeLabel": "Enter the 6-digit code from your app",
+      "confirmAndEnable": "Confirm and enable",
+      "confirmError": "That code didn't work. Please try again.",
+      "enabledSuccess": "Two-factor authentication is now enabled",
+      "viewRecoveryCodes": "View recovery codes",
+      "regenerateCodes": "Generate new codes",
+      "recoveryCodesTitle": "Recovery codes",
+      "recoveryCodesDescription": "Store these somewhere safe. Each code can be used once to sign in if you lose access to your authenticator app.",
+      "recoveryCodesRegenerated": "New recovery codes generated — the old ones no longer work",
+      "recoveryCodesRegenerateError": "Could not generate new recovery codes",
+      "disableConfirm": "Disable two-factor authentication? Your account will only need a password to sign in.",
+      "disableError": "Could not disable two-factor authentication"
+    }
+  },
+  "billing": {
+    "currentPlan": "Current plan",
+    "unlimitedEpks": "Unlimited EPKs",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPKs",
+    "unlimitedTeamMembers": "Unlimited team members",
+    "teamMemberCount_one": "{{count}} team member",
+    "teamMemberCount_other": "{{count}} team members",
+    "storage": "storage",
+    "pageDescription": "{{workspace}} is on the {{plan}} plan.",
+    "plans": "Plans",
+    "upgradeTo": "Upgrade to {{plan}}",
+    "manageBilling": "Manage billing",
+    "pastDueWarning": "Your last payment failed. Update your payment method to avoid losing access to paid features.",
+    "checkoutSuccess": "Subscription updated — thanks!",
+    "checkoutCanceled": "Checkout canceled — no changes were made.",
+    "checkoutError": "Could not start checkout",
+    "portalError": "Could not open the billing portal",
+    "usage": {
+      "title": "Usage",
+      "description": "What this workspace is using against its plan limits.",
+      "epks": "EPKs",
+      "teamMembers": "Team members",
+      "storage": "Storage"
+    },
+    "features": {
+      "customThemes": "Custom theme overrides",
+      "privateLinks": "Private share links",
+      "whiteLabel": "White-label branding",
+      "customDomains": "Custom domains"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard to see billing details."
+    }
+  },
+  "team": {
+    "inviteButton": "Invite member",
+    "pending": "Pending",
+    "remove": "Remove",
+    "pageDescription": "Manage who has access to {{workspace}}.",
+    "fields": {
+      "email": "Email",
+      "role": "Role"
+    },
+    "inviteDialog": {
+      "title": "Invite a teammate",
+      "description": "They'll be added as a pending member until they accept.",
+      "submit": "Send invite"
+    },
+    "removeDialog": {
+      "title": "Remove member",
+      "description": "{{name}} will lose access to this workspace."
+    },
+    "toasts": {
+      "invited": "Invitation sent",
+      "inviteError": "Could not send the invitation",
+      "roleError": "Could not update role",
+      "removeError": "Could not remove this member"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard to start inviting teammates.",
+      "noneTitle": "No members yet",
+      "noneDescription": "Invite your team to collaborate."
+    }
+  },
+  "workspaces": {
+    "selectWorkspace": "Select workspace",
+    "label": "Workspaces",
+    "newWorkspace": "New workspace",
+    "create": {
+      "title": "Create a workspace",
+      "description": "Workspaces group your EPKs, media, and team members.",
+      "name": "Name",
+      "nameRequired": "Workspace name is required",
+      "submit": "Create workspace",
+      "created": "Workspace created",
+      "error": "Could not create the workspace"
+    }
+  },
+  "invitation": {
+    "title": "Invitation",
+    "invalidOrUsed": "This invitation is invalid or has already been used.",
+    "goToDashboard": "Go to dashboard",
+    "youveBeenInvited": "You've been invited",
+    "invitedByBlurb": "{{inviter}} has invited you to join {{workspace}} as {{role}}.",
+    "invitedBlurb": "You've been invited to join {{workspace}} as {{role}}.",
+    "accept": "Accept invitation",
+    "joinedToast": "You've joined {{workspace}}",
+    "acceptError": "Could not accept this invitation",
+    "wrongAccount": {
+      "description": "This invitation is for {{invitedEmail}}, but you're signed in as {{currentEmail}}.",
+      "switchAccounts": "Log out and switch accounts"
+    },
+    "signingInAs": "Signing in as",
+    "signInAndAccept": "Sign in & accept",
+    "welcomeAccepted": "Welcome — invitation accepted",
+    "incorrectPassword": "Incorrect password",
+    "creatingAccountFor": "Creating an account for",
+    "yourName": "Your name",
+    "choosePassword": "Choose a password",
+    "createAccountAndAccept": "Create account & accept",
+    "accountCreatedAccepted": "Account created — invitation accepted"
+  },
+  "media": {
+    "pageDescription": "Photos, tracks, videos, and documents for {{workspace}}.",
+    "searchPlaceholder": "Search files…",
+    "rename": "Rename",
+    "download": "Download",
+    "types": {
+      "all": "All types",
+      "image": "Images",
+      "audio": "Audio",
+      "video": "Video",
+      "document": "Documents"
+    },
+    "sort": {
+      "newest": "Newest first",
+      "oldest": "Oldest first",
+      "nameAsc": "Name (A–Z)",
+      "nameDesc": "Name (Z–A)",
+      "sizeDesc": "Largest first",
+      "sizeAsc": "Smallest first"
+    },
+    "renameDialog": {
+      "title": "Rename file",
+      "submit": "Save"
+    },
+    "deleteDialog": {
+      "title": "Delete file",
+      "description": "\"{{name}}\" will be permanently removed."
+    },
+    "toasts": {
+      "renamed": "Renamed",
+      "renameError": "Could not rename the file",
+      "deleted": "File deleted",
+      "deleteError": "Could not delete the file",
+      "downloadError": "Could not download the file"
+    },
+    "upload": {
+      "oneFileUploaded": "File uploaded",
+      "filesUploaded": "{{count}} files uploaded",
+      "error": "Could not upload one or more files",
+      "uploading": "Uploading…",
+      "uploadingPercent": "Uploading — {{percent}}%",
+      "clickToUpload": "Click to upload",
+      "orDragAndDrop": "or drag and drop",
+      "acceptedTypes": "Images, audio, video, and documents"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard before uploading media.",
+      "noMatchTitle": "No files match",
+      "noneTitle": "No files yet",
+      "noMatchDescription": "Try a different search or filter.",
+      "canEditDescription": "Upload photos, tracks, videos, or documents to get started.",
+      "viewOnlyDescription": "No files have been uploaded to this workspace yet."
+    }
+  },
+  "epkBuilder": {
+    "sectionTypes": {
+      "hero": "Hero",
+      "biography": "Biography",
+      "photos": "Photos",
+      "music": "Music",
+      "releases": "Releases",
+      "videos": "Videos",
+      "press": "Press",
+      "events": "Events",
+      "socialNetworks": "Social Networks",
+      "contact": "Contact",
+      "downloads": "Downloads",
+      "credits": "Credits",
+      "custom": "Custom Section"
+    },
+    "addSection": "Add section",
+    "added": "Added",
+    "sectionAdded": "{{section}} section added",
+    "sectionAddError": "Could not add this section",
+    "device": {
+      "desktop": "Desktop preview",
+      "tablet": "Tablet preview",
+      "mobile": "Mobile preview"
+    },
+    "notFound": {
+      "title": "EPK not found",
+      "description": "This press kit may have been deleted."
+    },
+    "viewPublicPage": "View public page",
+    "viewPublicPageDisabledTitle": "Publish this EPK to make its public page live",
+    "downloadPdf": "Download PDF",
+    "downloadPdfError": "Could not download the PDF",
+    "copyShareLink": "Copy share link",
+    "shareLinkCopied": "Share link copied — link previews will show its title, description, and cover image",
+    "shareLinkDisabledTitle": "Publish this EPK to get a shareable link",
+    "customDomain": {
+      "trigger": "Custom domain",
+      "description": "Serve this EPK's public page from your own domain, like press.yourband.com. Requires the Business plan.",
+      "setupDescription": "Enter the domain you'd like to use. You'll add two DNS records to prove you own it and point it here.",
+      "domainField": "Domain",
+      "setup": "Set up",
+      "setupError": "Could not set up this domain",
+      "recordHost": "Host",
+      "recordValue": "Value",
+      "copied": "Copied to clipboard",
+      "verified": "Verified",
+      "pending": "Pending verification",
+      "verifyDescription": "Add these two DNS records at your domain provider, then check verification. DNS changes can take a while to propagate.",
+      "checkVerification": "Check verification",
+      "verifySuccess": "Domain verified — your public page is now live on it",
+      "verifyError": "Could not verify this domain yet",
+      "removeConfirm": "Remove this custom domain? The EPK will still be reachable at its normal KORAX link.",
+      "removed": "Custom domain removed",
+      "removeError": "Could not remove this domain"
+    },
+    "tabs": {
+      "section": "Section",
+      "comments": "Comments",
+      "theme": "Theme"
+    },
+    "comments": {
+      "empty": "No comments yet. Leave the first one.",
+      "placeholder": "Leave feedback on this section…",
+      "post": "Post",
+      "deletedUser": "Deleted user",
+      "addError": "Could not post your comment",
+      "updateError": "Could not update your comment",
+      "deleteError": "Could not delete this comment"
+    },
+    "hidden": "Hidden",
+    "noSectionsCanEdit": "No sections yet. Add one to start building this EPK.",
+    "noSections": "No sections yet.",
+    "deleteSectionDialog": {
+      "title": "Delete section",
+      "description": "\"{{title}}\" will be permanently removed from this EPK."
+    },
+    "toasts": {
+      "sectionDuplicated": "Section duplicated",
+      "sectionDuplicateError": "Could not duplicate this section",
+      "sectionDeleted": "Section deleted",
+      "sectionDeleteError": "Could not delete this section"
+    },
+    "settingsPanel": {
+      "noSectionTitle": "No section selected",
+      "noSectionDescription": "Pick a section on the left to edit it.",
+      "titleOverride": "Section title override (optional)",
+      "saveError": "Could not save changes"
+    },
+    "theme": {
+      "font": { "sans": "Sans", "serif": "Serif", "display": "Display", "mono": "Mono" },
+      "buttonStyle": { "rounded": "Rounded", "pill": "Pill", "square": "Square" },
+      "radius": { "none": "None", "small": "Small", "medium": "Medium", "large": "Large" },
+      "spacing": { "compact": "Compact", "comfortable": "Comfortable", "spacious": "Spacious" },
+      "headerStyle": { "centered": "Centered", "left": "Left-aligned", "minimal": "Minimal" },
+      "defaultOption": "Default ({{value}})",
+      "reset": "Reset",
+      "baseTheme": "Base theme",
+      "customize": "Customize",
+      "backgroundColor": "Background color",
+      "textColor": "Text color",
+      "accentColor": "Accent color",
+      "fontLabel": "Font",
+      "buttonStyleLabel": "Button style",
+      "radiusLabel": "Corner radius",
+      "spacingLabel": "Section spacing",
+      "headerStyleLabel": "Header style",
+      "currently": "Currently: {{preset}} · {{font}} · {{buttonStyle}} buttons",
+      "saveError": "Could not save the theme"
+    },
+    "privateLinks": {
+      "trigger": "Private links",
+      "description": "Share this EPK with specific people without publishing it — works even while it's still a draft.",
+      "status": { "revoked": "Revoked", "expired": "Expired", "active": "Active" },
+      "untitledLink": "Untitled link",
+      "passwordProtected": "Password-protected",
+      "noPassword": "No password",
+      "expires": "Expires {{date}}",
+      "viewCount_one": "{{count}} view",
+      "viewCount_other": "{{count}} views",
+      "copyLink": "Copy link",
+      "reactivate": "Reactivate",
+      "revoke": "Revoke",
+      "deleteConfirm": "Delete this link permanently?",
+      "deleting": "Deleting…",
+      "none": "No private links yet.",
+      "labelField": "Label (optional)",
+      "passwordField": "Password (optional)",
+      "passwordPlaceholder": "Leave blank for none",
+      "expiresField": "Expires (optional)",
+      "createLink": "Create link",
+      "toasts": {
+        "copied": "Link copied",
+        "reactivated": "Link reactivated",
+        "reactivateError": "Could not reactivate the link",
+        "revoked": "Link revoked",
+        "revokeError": "Could not revoke the link",
+        "deleted": "Link deleted",
+        "deleteError": "Could not delete the link",
+        "created": "Private link created",
+        "createError": "Could not create the link"
+      }
+    },
+    "preview": {
+      "noBiography": "No biography yet.",
+      "noSocialLinks": "No social links added yet.",
+      "booking": "Booking",
+      "press": "Press",
+      "management": "Management",
+      "noContactDetails": "No contact details yet.",
+      "noFilesSelected": "No downloadable files selected yet.",
+      "noCredits": "No credits yet.",
+      "emptySection": "Empty section.",
+      "noPhotos": "No photos yet.",
+      "noTracks": "No tracks yet.",
+      "noReleases": "No releases yet.",
+      "untitledRelease": "Untitled release",
+      "noVideos": "No videos yet.",
+      "noFileSelected": "No file selected yet.",
+      "untitledVideo": "Untitled video",
+      "untitledTrack": "Untitled track",
+      "noPress": "No press coverage yet.",
+      "read": "Read",
+      "comingSoon": "{{label}} content arrives in a later phase.",
+      "noSectionsEnabled": "No sections enabled. Add or enable a section to see the preview."
+    },
+    "gallery": {
+      "moveUp": "Move up",
+      "moveDown": "Move down",
+      "remove": "Remove"
+    },
+    "mediaPicker": {
+      "selectImage": "Select image",
+      "change": "Change",
+      "selectFromLibrary": "Select from Media Library",
+      "noFilesYet": "No files yet — upload some in the Media Library first.",
+      "addFiles": "Add files from Media Library",
+      "selectDownloadable": "Select downloadable files"
+    },
+    "hero": {
+      "headline": "Headline",
+      "headlinePlaceholder": "Defaults to the artist's name",
+      "subtitle": "Subtitle",
+      "description": "Short description",
+      "profileImage": "Profile image",
+      "backgroundImage": "Background image",
+      "alignment": "Alignment",
+      "alignmentLeft": "Left",
+      "alignmentCenter": "Center",
+      "alignmentRight": "Right",
+      "height": "Height",
+      "heightSmall": "Small",
+      "heightMedium": "Medium",
+      "heightLarge": "Large",
+      "darkOverlay": "Dark overlay",
+      "ctaLabel": "CTA button label",
+      "ctaLabelPlaceholder": "Listen now",
+      "ctaUrl": "CTA URL"
+    },
+    "biography": {
+      "placeholder": "Tell the artist's story…"
+    },
+    "comingSoon": {
+      "title": "{{label}} editor coming soon",
+      "description": "Full content management for this section arrives in a later phase. You can still add, reorder, and toggle it now."
+    },
+    "contact": {
+      "bookingEmail": "Booking email",
+      "pressEmail": "Press email",
+      "managementEmail": "Management email",
+      "website": "Website",
+      "phone": "Phone",
+      "address": "Address",
+      "privacyNote": "Private information is never shown on the public page unless you explicitly enable it below.",
+      "showPhonePublicly": "Show phone publicly",
+      "showAddressPublicly": "Show address publicly"
+    },
+    "credits": {
+      "rolePlaceholder": "Role (e.g. Producer)",
+      "namePlaceholder": "Name",
+      "addCredit": "Add credit"
+    },
+    "custom": {
+      "heading": "Heading",
+      "content": "Content",
+      "placeholder": "Write anything…"
+    },
+    "downloads": {
+      "files": "Downloadable files"
+    },
+    "music": {
+      "trackTitlePlaceholder": "Track title (defaults to the filename)",
+      "directUpload": "Direct upload",
+      "selectAudioFile": "Select audio file",
+      "addTrack": "Add track"
+    },
+    "photos": {
+      "captionPlaceholder": "Caption (optional)",
+      "creditPlaceholder": "Credit (optional, e.g. Photo: Jane Doe)",
+      "addPhoto": "Add photo"
+    },
+    "press": {
+      "label": "Press coverage",
+      "outletPlaceholder": "Outlet (e.g. Pitchfork)",
+      "quotePlaceholder": "Quote",
+      "articleUrlPlaceholder": "Article URL (optional)",
+      "authorPlaceholder": "Author (optional)",
+      "addMention": "Add press mention"
+    },
+    "releases": {
+      "typeAlbum": "Album",
+      "typeEp": "EP",
+      "typeSingle": "Single",
+      "titlePlaceholder": "Release title",
+      "selectCoverArt": "Select cover art",
+      "streamingLinks": "Streaming links (optional)",
+      "addRelease": "Add release"
+    },
+    "videos": {
+      "directUpload": "Direct upload",
+      "titlePlaceholder": "Video title (optional)",
+      "selectVideoFile": "Select video file",
+      "addVideo": "Add video"
+    },
+    "richText": {
+      "heading2": "Heading 2",
+      "heading3": "Heading 3",
+      "bold": "Bold",
+      "italic": "Italic",
+      "bulletList": "Bullet list",
+      "numberedList": "Numbered list",
+      "quote": "Quote",
+      "link": "Link",
+      "linkUrlPrompt": "Link URL"
+    }
+  },
+  "analytics": {
+    "pageViews": "Page views",
+    "noPageViews": "No page views in this range yet.",
+    "range": {
+      "days7": "7 days",
+      "days30": "30 days",
+      "days90": "90 days"
+    },
+    "stats": {
+      "pageViews": "Page views",
+      "uniqueVisitors": "Unique visitors",
+      "downloads": "Downloads",
+      "audioPlays": "Audio plays",
+      "videoPlays": "Video plays"
+    },
+    "breakdowns": {
+      "topReferrers": "Top referrers",
+      "noReferrerData": "No referrer data yet.",
+      "topCountries": "Top countries",
+      "noCountryData": "No country data yet — this needs GEOIP_COUNTRY_CODE (Apache mod_geoip2) or a CF-IPCountry header from your host/CDN.",
+      "devices": "Devices",
+      "noDeviceData": "No device data yet.",
+      "topDownloads": "Top downloads",
+      "noDownloadData": "No downloads yet.",
+      "topPrivateLinks": "Top private links",
+      "noPrivateLinkData": "No private-link traffic yet."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard before viewing analytics.",
+      "noEpksDescription": "Create and publish an EPK to start seeing page views, downloads, and plays here."
+    }
+  },
+  "dashboard": {
+    "welcome": "Welcome to KORAX",
+    "welcomeWithName": "Welcome to KORAX, {{name}}",
+    "welcomeBack": "Welcome back",
+    "welcomeBackWithName": "Welcome back, {{name}}",
+    "noWorkspaceDescription": "Create a workspace to start building your first press kit.",
+    "createFirstWorkspace": "Create your first workspace",
+    "createFirstEpk": "Create your first EPK",
+    "whatsHappening": "Here's what's happening in {{workspace}}.",
+    "stats": {
+      "totalEpks": "Total EPKs",
+      "publishedEpks": "Published EPKs",
+      "totalViews": "Total views",
+      "downloads": "Downloads"
+    }
+  },
+  "notFound": {
+    "description": "This page doesn't exist.",
+    "backToDashboard": "Back to dashboard"
+  },
+  "layout": {
+    "openNavigation": "Open navigation",
+    "navigation": "Navigation"
+  },
+  "publicEpk": {
+    "notAvailable": {
+      "title": "This press kit isn't available",
+      "description": "It may have been unpublished or the link may be incorrect."
+    },
+    "readThePiece": "Read the piece",
+    "downloadPdf": "Download PDF"
+  },
+  "privateEpk": {
+    "passwordGate": {
+      "title": "This press kit is password-protected",
+      "description": "Enter the password you were given to view it.",
+      "checking": "Checking…",
+      "submit": "View press kit"
+    },
+    "notAvailable": {
+      "title": "This link isn't available",
+      "description": "The link may be incorrect."
+    },
+    "expired": {
+      "title": "This link is no longer available",
+      "description": "It may have expired or been revoked by its owner. Ask them for a new one."
+    }
+  },
+  "notifications": {
+    "trigger": "Notifications",
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "empty": "No notifications yet.",
+    "invitedByBlurb": "{{inviter}} invited you to join {{workspace}} as {{role}}",
+    "invitedBlurb": "You were invited to join {{workspace}} as {{role}}",
+    "epkPublishedByBlurb": "{{publisher}} published \"{{epk}}\"",
+    "epkPublishedBlurb": "\"{{epk}}\" was published",
+    "teamMemberJoinedBlurb": "{{member}} joined {{workspace}} as {{role}}",
+    "someone": "Someone"
+  },
+  "common": {
+    "save": "Save changes",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "close": "Close",
+    "loading": "Loading…",
+    "confirm": "Confirm",
+    "back": "Back",
+    "next": "Next",
+    "search": "Search",
+    "actions": "Actions",
+    "viewOnlyAccess": "You have view-only access to this workspace.",
+    "noWorkspaceYet": "No workspace yet",
+    "roles": {
+      "owner": "Owner",
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Viewer"
+    }
+  }
+}

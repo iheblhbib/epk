@@ -1,5 +1,6 @@
 import { BarChart3, Download, Eye, Music2, Users, Video } from 'lucide-react'
 import { useMemo, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { Button } from '@/components/ui/button'
@@ -12,9 +13,9 @@ import { useEpks } from '@/features/epks/hooks/useEpks'
 import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorkspace'
 
 const RANGE_OPTIONS = [
-  { days: 7, label: '7 days' },
-  { days: 30, label: '30 days' },
-  { days: 90, label: '90 days' },
+  { days: 7, labelKey: 'analytics.range.days7' },
+  { days: 30, labelKey: 'analytics.range.days30' },
+  { days: 90, labelKey: 'analytics.range.days90' },
 ] as const
 
 function toDateString(date: Date): string {
@@ -22,6 +23,7 @@ function toDateString(date: Date): string {
 }
 
 export function AnalyticsPage() {
+  const { t } = useTranslation()
   const { currentWorkspace, isLoading: workspaceLoading } = useCurrentWorkspace()
   const { data: epks, isLoading: epksLoading } = useEpks(currentWorkspace?.id)
   const [selectedEpkId, setSelectedEpkId] = useState<number | null>(null)
@@ -46,8 +48,8 @@ export function AnalyticsPage() {
     return (
       <EmptyState
         icon={BarChart3}
-        title="No workspace yet"
-        description="Create a workspace from the dashboard before viewing analytics."
+        title={t('common.noWorkspaceYet')}
+        description={t('analytics.emptyState.noWorkspaceDescription')}
       />
     )
   }
@@ -55,11 +57,11 @@ export function AnalyticsPage() {
   if (!epks || epks.length === 0) {
     return (
       <div className="space-y-6">
-        <h1 className="font-heading text-2xl font-semibold text-foreground">Analytics</h1>
+        <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.analytics')}</h1>
         <EmptyState
           icon={BarChart3}
-          title="No EPKs yet"
-          description="Create and publish an EPK to start seeing page views, downloads, and plays here."
+          title={t('epks.emptyState.noneTitle')}
+          description={t('analytics.emptyState.noEpksDescription')}
         />
       </div>
     )
@@ -68,7 +70,7 @@ export function AnalyticsPage() {
   return (
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <h1 className="font-heading text-2xl font-semibold text-foreground">Analytics</h1>
+        <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.analytics')}</h1>
 
         <div className="flex flex-wrap items-center gap-2">
           <Select
@@ -97,7 +99,7 @@ export function AnalyticsPage() {
                 variant={rangeDays === option.days ? 'secondary' : 'ghost'}
                 onClick={() => setRangeDays(option.days)}
               >
-                {option.label}
+                {t(option.labelKey)}
               </Button>
             ))}
           </div>
@@ -109,39 +111,39 @@ export function AnalyticsPage() {
       ) : (
         <>
           <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            <StatTile icon={Eye} label="Page views" value={analytics.totals.page_views} />
-            <StatTile icon={Users} label="Unique visitors" value={analytics.totals.unique_visitors} />
-            <StatTile icon={Download} label="Downloads" value={analytics.totals.downloads} />
-            <StatTile icon={Music2} label="Audio plays" value={analytics.totals.audio_plays} />
-            <StatTile icon={Video} label="Video plays" value={analytics.totals.video_plays} />
+            <StatTile icon={Eye} label={t('analytics.stats.pageViews')} value={analytics.totals.page_views} />
+            <StatTile icon={Users} label={t('analytics.stats.uniqueVisitors')} value={analytics.totals.unique_visitors} />
+            <StatTile icon={Download} label={t('analytics.stats.downloads')} value={analytics.totals.downloads} />
+            <StatTile icon={Music2} label={t('analytics.stats.audioPlays')} value={analytics.totals.audio_plays} />
+            <StatTile icon={Video} label={t('analytics.stats.videoPlays')} value={analytics.totals.video_plays} />
           </div>
 
           <PageViewsChart points={analytics.daily_page_views} />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <BreakdownCard
-              title="Top referrers"
-              emptyLabel="No referrer data yet."
+              title={t('analytics.breakdowns.topReferrers')}
+              emptyLabel={t('analytics.breakdowns.noReferrerData')}
               rows={analytics.top_referrers.map((row) => ({ label: row.referrer, count: row.count }))}
             />
             <BreakdownCard
-              title="Top countries"
-              emptyLabel="No country data yet — this needs GEOIP_COUNTRY_CODE (Apache mod_geoip2) or a CF-IPCountry header from your host/CDN."
+              title={t('analytics.breakdowns.topCountries')}
+              emptyLabel={t('analytics.breakdowns.noCountryData')}
               rows={analytics.top_countries.map((row) => ({ label: row.country, count: row.count }))}
             />
             <BreakdownCard
-              title="Devices"
-              emptyLabel="No device data yet."
+              title={t('analytics.breakdowns.devices')}
+              emptyLabel={t('analytics.breakdowns.noDeviceData')}
               rows={analytics.devices.map((row) => ({ label: row.device_type, count: row.count }))}
             />
             <BreakdownCard
-              title="Top downloads"
-              emptyLabel="No downloads yet."
+              title={t('analytics.breakdowns.topDownloads')}
+              emptyLabel={t('analytics.breakdowns.noDownloadData')}
               rows={analytics.top_downloads.map((row) => ({ label: row.filename, count: row.count }))}
             />
             <BreakdownCard
-              title="Top private links"
-              emptyLabel="No private-link traffic yet."
+              title={t('analytics.breakdowns.topPrivateLinks')}
+              emptyLabel={t('analytics.breakdowns.noPrivateLinkData')}
               rows={analytics.top_private_links.map((row) => ({ label: row.label, count: row.count }))}
             />
           </div>

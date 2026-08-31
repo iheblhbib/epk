@@ -1,4 +1,5 @@
 import { Plus, Sparkles } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -9,6 +10,7 @@ import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorks
 import { isEditorLevel } from '@/lib/permissions'
 
 export function EpksListPage() {
+  const { t } = useTranslation()
   const { currentWorkspace, isLoading: workspaceLoading } = useCurrentWorkspace()
   const { data: epks, isLoading } = useEpks(currentWorkspace?.id)
   const canEdit = isEditorLevel(currentWorkspace?.my_role)
@@ -21,8 +23,8 @@ export function EpksListPage() {
     return (
       <EmptyState
         icon={Sparkles}
-        title="No workspace yet"
-        description="Create a workspace from the dashboard before adding EPKs."
+        title={t('common.noWorkspaceYet')}
+        description={t('epks.emptyState.noWorkspaceDescription')}
       />
     )
   }
@@ -31,9 +33,9 @@ export function EpksListPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="font-heading text-2xl font-semibold text-foreground">My EPKs</h1>
+          <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.myEpks')}</h1>
           <p className="text-sm text-muted-foreground">
-            Manage the press kits for {currentWorkspace.name}.
+            {t('epks.pageDescription', { workspace: currentWorkspace.name })}
           </p>
         </div>
         {canEdit && (
@@ -42,7 +44,7 @@ export function EpksListPage() {
             trigger={
               <Button>
                 <Plus className="size-4" />
-                Create EPK
+                {t('epks.formDialog.submitCreate')}
               </Button>
             }
           />
@@ -54,12 +56,8 @@ export function EpksListPage() {
       ) : !epks || epks.length === 0 ? (
         <EmptyState
           icon={Sparkles}
-          title="No EPKs yet"
-          description={
-            canEdit
-              ? 'Create your first press kit to get started. The visual builder for sections and theming arrives in a later phase.'
-              : 'No press kits have been created in this workspace yet.'
-          }
+          title={t('epks.emptyState.noneTitle')}
+          description={canEdit ? t('epks.emptyState.canEditDescription') : t('epks.emptyState.viewOnlyDescription')}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">

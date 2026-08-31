@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,12 +10,16 @@ import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSec
 import { moveItem } from '@/lib/arrayMove'
 import type { EpkSection, VideoItem, VideosConfig } from '@/types'
 
-const PROVIDER_ITEMS = { youtube: 'YouTube', vimeo: 'Vimeo', upload: 'Direct upload' }
-
 export function VideosSettings({ epkId, workspaceId, section }: { epkId: number; workspaceId: number; section: EpkSection }) {
+  const { t } = useTranslation()
   const config = section.config as VideosConfig
   const setConfig = useDraftSectionConfig<VideosConfig>(epkId, section)
   const videos = config.videos ?? []
+  const providerItems = {
+    youtube: 'YouTube',
+    vimeo: 'Vimeo',
+    upload: t('epkBuilder.videos.directUpload'),
+  }
 
   const updateVideo = (index: number, patch: Partial<VideoItem>) =>
     setConfig((prev) => ({
@@ -24,7 +29,7 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
 
   return (
     <div className="space-y-3">
-      <Label>Videos</Label>
+      <Label>{t('epkBuilder.sectionTypes.videos')}</Label>
       {videos.map((video, index) => (
         <GalleryItemRow
           key={index}
@@ -35,12 +40,12 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
           onRemove={() => setConfig((prev) => ({ ...prev, videos: (prev.videos ?? []).filter((_, i) => i !== index) }))}
         >
           <Input
-            placeholder="Video title (optional)"
+            placeholder={t('epkBuilder.videos.titlePlaceholder')}
             value={video.title ?? ''}
             onChange={(event) => updateVideo(index, { title: event.target.value })}
           />
           <Select
-            items={PROVIDER_ITEMS}
+            items={providerItems}
             value={video.provider ?? 'youtube'}
             onValueChange={(value) => updateVideo(index, { provider: value as VideoItem['provider'] })}
           >
@@ -48,7 +53,7 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(PROVIDER_ITEMS).map(([value, label]) => (
+              {Object.entries(providerItems).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -61,7 +66,7 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
               value={video.media_id}
               onChange={(id) => updateVideo(index, { media_id: id })}
               type="video"
-              label="Select video file"
+              label={t('epkBuilder.videos.selectVideoFile')}
             />
           ) : (
             <Input
@@ -79,7 +84,7 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
         onClick={() => setConfig((prev) => ({ ...prev, videos: [...(prev.videos ?? []), { provider: 'youtube' }] }))}
       >
         <Plus className="size-4" />
-        Add video
+        {t('epkBuilder.videos.addVideo')}
       </Button>
     </div>
   )

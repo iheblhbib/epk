@@ -1,6 +1,6 @@
 # cPanel Deployment Guide
 
-This covers deploying Kitfolio to standard shared cPanel hosting — no Docker, no root access, no persistent Node process, no Redis. If your host offers something better (a VPS, Laravel Forge, Ploi, etc.), this guide still mostly applies but you have more options than assumed here.
+This covers deploying KORAX to standard shared cPanel hosting — no Docker, no root access, no persistent Node process, no Redis. If your host offers something better (a VPS, Laravel Forge, Ploi, etc.), this guide still mostly applies but you have more options than assumed here.
 
 See [`architecture.md`](architecture.md) for *why* the app is split into a static-built `frontend/` and an API-only `backend/` — this doc is the *how*.
 
@@ -14,15 +14,15 @@ See [`architecture.md`](architecture.md) for *why* the app is split into a stati
 
 ## 1. Topology: subdomain split (recommended)
 
-- `app.yourdomain.com` → document root **`frontend/dist`** (the static SPA build)
-- `api.yourdomain.com` → document root **`backend/public`** (Laravel's public dir, same as any Laravel deploy)
+- `epk.karthagopm.com` → document root **`frontend/dist`** (the static SPA build)
+- `api.karthagopm.com` → document root **`backend/public`** (Laravel's public dir, same as any Laravel deploy)
 
-Create both as Subdomains in cPanel (not Addon Domains) pointing at two new, otherwise-empty directories — e.g. `~/app.yourdomain.com` and `~/api.yourdomain.com` — cPanel creates the document root for you when you create the subdomain.
+Create both as Subdomains in cPanel (not Addon Domains) pointing at two new, otherwise-empty directories — e.g. `~/epk.karthagopm.com` and `~/api.karthagopm.com` — cPanel creates the document root for you when you create the subdomain.
 
 ## 2. Deploy the backend
 
-1. Upload the `backend/` directory's contents to `~/api.yourdomain.com` — everything **except** `vendor/` and `node_modules/` (there is no `node_modules/` in the backend; `vendor/` you'll generate on the server in the next step). Easiest via `git clone`/`git pull` over SSH if your repo is on GitHub/GitLab; otherwise `rsync` or the cPanel File Manager's upload+extract-zip flow both work.
-2. SSH in, `cd ~/api.yourdomain.com`, and run:
+1. Upload the `backend/` directory's contents to `~/api.karthagopm.com` — everything **except** `vendor/` and `node_modules/` (there is no `node_modules/` in the backend; `vendor/` you'll generate on the server in the next step). Easiest via `git clone`/`git pull` over SSH if your repo is on GitHub/GitLab; otherwise `rsync` or the cPanel File Manager's upload+extract-zip flow both work.
+2. SSH in, `cd ~/api.karthagopm.com`, and run:
    ```bash
    composer install --no-dev --optimize-autoloader
    cp .env.example .env
@@ -37,7 +37,7 @@ Create both as Subdomains in cPanel (not Addon Domains) pointing at two new, oth
    ```
    `--force` is required because `APP_ENV=production` otherwise refuses to run a migration without confirmation (there's no interactive prompt over a non-interactive deploy). `php artisan optimize` caches config/routes/views/events in one command — re-run it after every deploy that changes code (see [Redeploying](#redeploying-after-the-first-deploy)).
 5. Confirm `storage/` and `bootstrap/cache/` are writable by the PHP process (they usually are by default under cPanel's per-account permission model; if not, `chmod -R 775 storage bootstrap/cache`).
-6. Sanity check: `curl https://api.yourdomain.com/api/user` should return a `401 Unauthorized` JSON body (not a 500, not raw PHP source, not a blank page) — that's the API correctly up and correctly rejecting an unauthenticated request.
+6. Sanity check: `curl https://api.karthagopm.com/api/user` should return a `401 Unauthorized` JSON body (not a 500, not raw PHP source, not a blank page) — that's the API correctly up and correctly rejecting an unauthenticated request.
 
 ### Environment variables
 
@@ -45,12 +45,18 @@ The checked-in [`backend/.env.example`](../backend/.env.example) already has the
 
 | Variable | Value |
 |---|---|
-| `APP_URL` | `https://api.yourdomain.com` |
+| `APP_URL` | `https://api.karthagopm.com` |
 | `DB_DATABASE` / `DB_USERNAME` / `DB_PASSWORD` | From cPanel's MySQL Databases tool |
-| `SESSION_DOMAIN` | `.yourdomain.com` (leading dot — shares the cookie between `app.` and `api.`) |
-| `FRONTEND_URL` | `https://app.yourdomain.com` |
-| `SANCTUM_STATEFUL_DOMAINS` | `app.yourdomain.com` |
-| `MAIL_*` | Your real SMTP credentials (cPanel usually provides one, or use a transactional provider) |
+| `SESSION_DOMAIN` | `.karthagopm.com` (leading dot — shares the cookie between `epk.` and `api.`) |
+| `FRONTEND_URL` | `https://epk.karthagopm.com` |
+| `SANCTUM_STATEFUL_DOMAINS` | `epk.karthagopm.com` |
+| `MAIL_MAILER` | `smtp` |
+| `MAIL_SCHEME` | `smtps` (implicit TLS — required for port 465) |
+| `MAIL_HOST` | `epk.karthagopm.com` |
+| `MAIL_PORT` | `465` |
+| `MAIL_USERNAME` | `no-reply@epk.karthagopm.com` |
+| `MAIL_PASSWORD` | The mailbox password (from cPanel's Email Accounts tool) |
+| `MAIL_FROM_ADDRESS` | `no-reply@epk.karthagopm.com` |
 
 Leave `AWS_*` blank unless you've decided to move media off local disk onto S3-compatible storage (`FILESYSTEM_DISK=public` — local disk under `storage/app/public` — is the default and is fine for most shared-hosting-scale usage; switch to `s3` only if you outgrow the host's disk quota).
 
@@ -62,12 +68,12 @@ The frontend needs **zero PHP-side setup** — it's a static build. Build it loc
    ```bash
    cd frontend
    cp .env.example .env
-   # set VITE_API_URL=https://api.yourdomain.com in frontend/.env
+   # set VITE_API_URL=https://api.karthagopm.com in frontend/.env
    npm install
    npm run build
    ```
-2. Upload the **contents** of `frontend/dist/` (not the `dist` folder itself — its contents) to `~/app.yourdomain.com`. `dist/.htaccess` (checked into `frontend/public/.htaccess`, copied verbatim into every build — see below) goes up with everything else automatically.
-3. Sanity check: visiting `https://app.yourdomain.com` should show the login page, and `https://app.yourdomain.com/epks` (typed directly, not clicked to) should also load the SPA rather than an Apache 404 — that second check specifically confirms the `.htaccess` rewrite is in place.
+2. Upload the **contents** of `frontend/dist/` (not the `dist` folder itself — its contents) to `~/epk.karthagopm.com`. `dist/.htaccess` (checked into `frontend/public/.htaccess`, copied verbatim into every build — see below) goes up with everything else automatically.
+3. Sanity check: visiting `https://epk.karthagopm.com` should show the login page, and `https://epk.karthagopm.com/epks` (typed directly, not clicked to) should also load the SPA rather than an Apache 404 — that second check specifically confirms the `.htaccess` rewrite is in place.
 
 ### Why the frontend needs its own `.htaccess`
 
@@ -75,14 +81,14 @@ React Router handles routes like `/epks/5/builder` entirely client-side — ther
 
 ## 4. SSL
 
-Almost every cPanel host includes **AutoSSL** (free Let's Encrypt certificates, auto-renewing) — under cPanel → Security → SSL/TLS Status, select both subdomains and run AutoSSL if it hasn't already issued certificates automatically (it usually does this within minutes of a subdomain's DNS resolving). Once both `app.` and `api.` have valid certs, force HTTPS: cPanel's "Domains" page has a "Force HTTPS Redirect" toggle per (sub)domain — enable it for both rather than hand-writing redirect rules into either `.htaccess`.
+Almost every cPanel host includes **AutoSSL** (free Let's Encrypt certificates, auto-renewing) — under cPanel → Security → SSL/TLS Status, select both subdomains and run AutoSSL if it hasn't already issued certificates automatically (it usually does this within minutes of a subdomain's DNS resolving). Once both `epk.` and `api.` have valid certs, force HTTPS: cPanel's "Domains" page has a "Force HTTPS Redirect" toggle per (sub)domain — enable it for both rather than hand-writing redirect rules into either `.htaccess`.
 
 ## 5. Cron (`schedule:run`)
 
 Laravel's scheduler needs exactly one cron entry, regardless of how many scheduled tasks the app defines — cPanel → Cron Jobs:
 
 ```
-* * * * * cd /home/youruser/api.yourdomain.com && php artisan schedule:run >> /dev/null 2>&1
+* * * * * cd /home/youruser/api.karthagopm.com && php artisan schedule:run >> /dev/null 2>&1
 ```
 
 **As of this phase, `routes/console.php` doesn't register any scheduled tasks** — there's nothing for this cron entry to actually trigger yet (no queued jobs exist anywhere in the app either — every notification sends synchronously specifically so a deploy with no queue worker never silently drops one, see [`WorkspaceInvitationNotification`](../backend/app/Notifications/WorkspaceInvitationNotification.php)). Set up the cron entry anyway; it's inert until something is scheduled and costs nothing to have running. Laravel's database-driven session garbage collection (pruning expired rows from the `sessions` table) already happens automatically via its built-in probabilistic "lottery" on ordinary requests — no cron needed for that specifically.
@@ -91,7 +97,7 @@ Laravel's scheduler needs exactly one cron entry, regardless of how many schedul
 
 **Backend:**
 ```bash
-cd ~/api.yourdomain.com
+cd ~/api.karthagopm.com
 git pull   # or re-upload changed files
 composer install --no-dev --optimize-autoloader   # only if composer.lock changed
 php artisan migrate --force                        # only if there are new migrations
@@ -102,10 +108,10 @@ php artisan optimize:clear && php artisan optimize  # always — stale route/con
 
 ## 7. Post-deploy checklist
 
-- [ ] `https://api.yourdomain.com/api/user` → `401` JSON (not a 500 or blank page)
-- [ ] `https://api.yourdomain.com/sanctum/csrf-cookie` → `204` with a `Set-Cookie` header
-- [ ] `https://app.yourdomain.com` → login page renders with real styling (not unstyled HTML — confirms the CSS bundle loaded)
-- [ ] `https://app.yourdomain.com/epks` typed directly → loads the SPA, not a 404
+- [ ] `https://api.karthagopm.com/api/user` → `401` JSON (not a 500 or blank page)
+- [ ] `https://api.karthagopm.com/sanctum/csrf-cookie` → `204` with a `Set-Cookie` header
+- [ ] `https://epk.karthagopm.com` → login page renders with real styling (not unstyled HTML — confirms the CSS bundle loaded)
+- [ ] `https://epk.karthagopm.com/epks` typed directly → loads the SPA, not a 404
 - [ ] Register a real account → confirm the verification email actually arrives (tests `MAIL_*`)
 - [ ] Log in → create a workspace → create an EPK → confirms DB writes, migrations, and Sanctum's cross-subdomain cookie are all working together
 - [ ] Upload a media file → confirms `storage:link` and file permissions

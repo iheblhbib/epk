@@ -124,16 +124,28 @@ class PublicSectionConfigResolver
             SectionType::Music => [
                 'tracks' => collect($config['tracks'] ?? [])
                     ->map(function ($track) {
-                        $media = $this->mediaFor($track['audio_media_id'] ?? null);
-                        if (! $media) {
+                        $provider = $track['provider'] ?? 'upload';
+
+                        if ($provider === 'upload') {
+                            $media = $this->mediaFor($track['audio_media_id'] ?? null);
+                            if (! $media) {
+                                return null;
+                            }
+
+                            return [
+                                'title' => $track['title'] ?: $media->original_filename,
+                                'provider' => 'upload',
+                                'audio_url' => $media->url(),
+                                'mime_type' => $media->mime_type,
+                            ];
+                        }
+
+                        $embedUrl = $this->embedUrlFor($provider, $track['url'] ?? null);
+                        if (! $embedUrl) {
                             return null;
                         }
 
-                        return [
-                            'title' => $track['title'] ?: $media->original_filename,
-                            'audio_url' => $media->url(),
-                            'mime_type' => $media->mime_type,
-                        ];
+                        return ['title' => $track['title'] ?? '', 'provider' => $provider, 'embed_url' => $embedUrl];
                     })
                     ->filter()
                     ->values()
@@ -208,10 +220,10 @@ class PublicSectionConfigResolver
     }
 
     /**
-     * Converts a normal YouTube/Vimeo watch URL into its embeddable form.
-     * Returns null for anything that doesn't look like a valid URL for that
-     * provider, so a malformed/empty entry is dropped rather than rendered
-     * as a broken iframe.
+     * Converts a normal YouTube/Vimeo/Spotify/SoundCloud share URL into its
+     * embeddable iframe-src form. Returns null for anything that doesn't
+     * look like a valid URL for that provider, so a malformed/empty entry is
+     * dropped rather than rendered as a broken iframe.
      */
     private function embedUrlFor(string $provider, ?string $url): ?string
     {
@@ -230,6 +242,27 @@ class PublicSectionConfigResolver
         if ($provider === 'vimeo') {
             if (preg_match('/vimeo\.com\/(?:video\/)?(\d+)/', $url, $matches)) {
                 return "https://player.vimeo.com/video/{$matches[1]}";
+            }
+
+            return null;
+        }
+
+        if ($provider === 'spotify') {
+            if (preg_match('#open\.spotify\.com/(track|album|playlist|artist|episode|show)/([A-Za-z0-9]+)#', $url, $matches)) {
+                return "https://open.spotify.com/embed/{$matches[1]}/{$matches[2]}";
+            }
+
+            return null;
+        }
+
+        if ($provider === 'soundcloud') {
+            // SoundCloud's own embed player takes the *original* track/set
+            // URL as a query param (there's no short numeric id to extract
+            // the way Spotify/YouTube/Vimeo have) — restricted to
+            // soundcloud.com hosts so this can't become an open redirect
+            // into an arbitrary iframe src.
+            if (preg_match('#^https://(?:www\.|on\.)?soundcloud\.com/[\w-]+(?:/[\w-]+)?/?(?:\?.*)?$#', $url)) {
+                return 'https://w.soundcloud.com/player/?url='.rawurlencode($url).'&color=%23ff5500&auto_play=false&show_comments=false&visual=false';
             }
 
             return null;

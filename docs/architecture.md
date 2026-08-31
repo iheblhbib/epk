@@ -23,10 +23,10 @@ The tradeoff is that the SPA and the API are not same-origin by default, so Sanc
 
 Recommended: a **subdomain split**, each with its own document root (cPanel subdomains are free/unlimited on shared hosting):
 
-- `app.yourdomain.com` → document root = `frontend/dist` (static SPA)
-- `api.yourdomain.com` → document root = `backend/public` (Laravel)
+- `epk.karthagopm.com` → document root = `frontend/dist` (static SPA)
+- `api.karthagopm.com` → document root = `backend/public` (Laravel)
 
-This avoids needing SPA-fallback rewrite rules inside Laravel's `public/.htaccess`, and gives Sanctum a clean model: `SESSION_DOMAIN=.yourdomain.com` (leading dot) shares the session cookie across both subdomains, and CORS is configured with `supports_credentials => true` and `allowed_origins => ['https://app.yourdomain.com']`.
+This avoids needing SPA-fallback rewrite rules inside Laravel's `public/.htaccess`, and gives Sanctum a clean model: `SESSION_DOMAIN=.karthagopm.com` (leading dot) shares the session cookie across both subdomains, and CORS is configured with `supports_credentials => true` and `allowed_origins => ['https://epk.karthagopm.com']`.
 
 **Fallback** if only one domain/subdomain slot is available: copy `frontend/dist/*` into `backend/public/` at deploy time, and add a `Route::fallback()` in Laravel that serves `frontend/dist/index.html` for any non-`/api` path (client-side routing takes over from there). This doesn't require any change to the repo layout above — it's purely a deploy-script decision.
 
@@ -34,7 +34,7 @@ Full step-by-step cPanel instructions are in [`cpanel-deployment.md`](cpanel-dep
 
 ## Authentication (Sanctum SPA mode)
 
-The frontend is a separate origin from the API in dev (`localhost:5173` vs `localhost:8000`) and in the target production topology (`app.` vs `api.` subdomains), so Sanctum's **SPA authentication** mode is used — not personal access tokens. Flow:
+The frontend is a separate origin from the API in dev (`localhost:5173` vs `localhost:8000`) and in the target production topology (`epk.` vs `api.` subdomains), so Sanctum's **SPA authentication** mode is used — not personal access tokens. Flow:
 
 1. Frontend calls `GET /sanctum/csrf-cookie` once (on app load / before first mutating request) to receive an `XSRF-TOKEN` cookie.
 2. Axios automatically echoes that token back as the `X-XSRF-TOKEN` header on subsequent requests (its built-in default behavior when `withCredentials: true`).

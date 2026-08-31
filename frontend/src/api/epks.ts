@@ -1,5 +1,5 @@
 import { apiClient } from '@/api/client'
-import type { ApiCollection, ApiResource, Epk } from '@/types'
+import type { ApiCollection, ApiResource, CustomDomainSetup, Epk } from '@/types'
 
 export interface CreateEpkPayload {
   workspace_id: number
@@ -57,4 +57,28 @@ export async function publishEpk(epkId: number): Promise<Epk> {
 export async function unpublishEpk(epkId: number): Promise<Epk> {
   const { data } = await apiClient.post<ApiResource<Epk>>(`/api/epks/${epkId}/unpublish`)
   return data.data
+}
+
+export function epkPdfUrl(epkId: number): string {
+  const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+  return `${apiUrl}/api/epks/${epkId}/pdf`
+}
+
+export async function getEpkCustomDomain(epkId: number): Promise<CustomDomainSetup | null> {
+  const { data } = await apiClient.get<ApiResource<CustomDomainSetup | null>>(`/api/epks/${epkId}/custom-domain`)
+  return data.data
+}
+
+export async function setEpkCustomDomain(epkId: number, domain: string): Promise<CustomDomainSetup> {
+  const { data } = await apiClient.post<ApiResource<CustomDomainSetup>>(`/api/epks/${epkId}/custom-domain`, { domain })
+  return data.data
+}
+
+export async function verifyEpkCustomDomain(epkId: number): Promise<CustomDomainSetup> {
+  const { data } = await apiClient.post<ApiResource<CustomDomainSetup>>(`/api/epks/${epkId}/custom-domain/verify`)
+  return data.data
+}
+
+export async function removeEpkCustomDomain(epkId: number): Promise<void> {
+  await apiClient.delete(`/api/epks/${epkId}/custom-domain`)
 }

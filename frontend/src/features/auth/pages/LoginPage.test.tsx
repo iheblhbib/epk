@@ -56,4 +56,31 @@ describe('LoginPage', () => {
 
     await waitFor(() => expect(screen.getByText('Dashboard home')).toBeInTheDocument())
   })
+
+  it('does not blame the password for a 429 rate-limit response the way it does a real credentials mismatch', async () => {
+    server.use(
+      http.get(`${API_URL}/sanctum/csrf-cookie`, () => new HttpResponse(null, { status: 204 })),
+      http.post(
+        `${API_URL}/api/login`,
+        () => HttpResponse.json({ message: 'Too Many Attempts.' }, { status: 429 })
+      )
+    )
+
+    const user = userEvent.setup()
+    renderLoginPage()
+
+    await user.type(screen.getByLabelText('Email'), 'ada@example.com')
+    await user.type(screen.getByLabelText('Password'), 'wrong-password')
+    const submitButton = screen.getByRole('button', { name: /sign in/i })
+    await user.click(submitButton)
+
+    // Waits for the mutation to actually settle (the button re-enables once
+    // login.isPending flips back to false) before asserting on its outcome.
+    await waitFor(() => expect(submitButton).not.toBeDisabled())
+
+    // The bug this guards: every login failure — a real wrong password *and*
+    // being rate-limited — used to set this same "credentials do not match"
+    // field error, making a 429 indistinguishable from just another typo.
+    expect(screen.queryByText(/credentials do not match/i)).not.toBeInTheDocument()
+  })
 })

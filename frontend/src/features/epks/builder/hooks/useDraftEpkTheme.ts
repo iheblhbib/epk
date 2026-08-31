@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import i18n from '@/i18n'
 import { updateEpk } from '@/api/epks'
 import { epkKey } from '@/features/epks/hooks/useEpks'
 import type { EpkCustomSettings, ThemePreset } from '@/lib/epkThemes'
@@ -23,7 +24,7 @@ export function useDraftEpkTheme(epkId: number) {
       queryClient.setQueryData<Epk>(epkKey(epkId), (old) => (old ? { ...old, theme: preset } : old))
       clearTimeout(timer.current)
       updateEpk(epkId, { theme: preset }).catch(() => {
-        toast.error('Could not save the theme')
+        toast.error(i18n.t('epkBuilder.theme.saveError'))
         queryClient.invalidateQueries({ queryKey: epkKey(epkId) })
       })
     },
@@ -45,7 +46,7 @@ export function useDraftEpkTheme(epkId: number) {
       clearTimeout(timer.current)
       timer.current = setTimeout(() => {
         updateEpk(epkId, { custom_settings: next as Record<string, unknown> }).catch(() => {
-          toast.error('Could not save the theme')
+          toast.error(i18n.t('epkBuilder.theme.saveError'))
           queryClient.invalidateQueries({ queryKey: epkKey(epkId) })
         })
       }, 500)

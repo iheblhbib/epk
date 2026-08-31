@@ -1,6 +1,8 @@
 import { EyeOff, Search } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import type { TFunction } from 'i18next'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -11,11 +13,13 @@ import { AdminPagination } from '@/features/admin/components/AdminPagination'
 import { useAdminEpks, useUnpublishAdminEpk } from '@/features/admin/hooks/useAdmin'
 import type { AdminEpk, EpkStatus } from '@/types'
 
-const STATUS_FILTER_ITEMS: Record<'all' | EpkStatus, string> = {
-  all: 'All statuses',
-  draft: 'Draft',
-  published: 'Published',
-  archived: 'Archived',
+function statusFilterItems(t: TFunction): Record<'all' | EpkStatus, string> {
+  return {
+    all: t('admin.epks.allStatuses'),
+    draft: t('epks.status.draft'),
+    published: t('epks.status.published'),
+    archived: t('epks.status.archived'),
+  }
 }
 
 const STATUS_BADGE_VARIANT: Record<EpkStatus, 'secondary' | 'default' | 'outline'> = {
@@ -24,7 +28,14 @@ const STATUS_BADGE_VARIANT: Record<EpkStatus, 'secondary' | 'default' | 'outline
   archived: 'outline',
 }
 
+const STATUS_LABEL_KEY: Record<EpkStatus, string> = {
+  draft: 'epks.status.draft',
+  published: 'epks.status.published',
+  archived: 'epks.status.archived',
+}
+
 function EpkRow({ epk }: { epk: AdminEpk }) {
+  const { t } = useTranslation()
   const unpublish = useUnpublishAdminEpk()
 
   return (
@@ -34,7 +45,7 @@ function EpkRow({ epk }: { epk: AdminEpk }) {
       <TableCell className="text-muted-foreground">{epk.artist?.name ?? '—'}</TableCell>
       <TableCell>
         <Badge variant={STATUS_BADGE_VARIANT[epk.status]} className="capitalize">
-          {epk.status}
+          {t(STATUS_LABEL_KEY[epk.status])}
         </Badge>
       </TableCell>
       <TableCell className="text-end">
@@ -45,13 +56,13 @@ function EpkRow({ epk }: { epk: AdminEpk }) {
             disabled={unpublish.isPending}
             onClick={() =>
               unpublish.mutate(epk.id, {
-                onSuccess: () => toast.success(`Unpublished "${epk.title}"`),
-                onError: () => toast.error('Could not unpublish this EPK'),
+                onSuccess: () => toast.success(t('admin.epks.unpublishedToast', { title: epk.title })),
+                onError: () => toast.error(t('admin.epks.unpublishError')),
               })
             }
           >
             <EyeOff className="size-4" />
-            Unpublish
+            {t('admin.epks.unpublish')}
           </Button>
         )}
       </TableCell>
@@ -60,6 +71,7 @@ function EpkRow({ epk }: { epk: AdminEpk }) {
 }
 
 export function AdminEpksPage() {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [status, setStatus] = useState<'all' | EpkStatus>('all')
   const [page, setPage] = useState(1)
@@ -68,19 +80,20 @@ export function AdminEpksPage() {
     status: status === 'all' ? undefined : status,
     page,
   })
+  const filterItems = statusFilterItems(t)
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold text-foreground">EPKs</h1>
-        <p className="text-sm text-muted-foreground">Every EPK on the platform.</p>
+        <h1 className="font-heading text-2xl font-semibold text-foreground">{t('admin.epks.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('admin.epks.description')}</p>
       </div>
 
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search by title…"
+            placeholder={t('admin.epks.searchPlaceholder')}
             className="ps-8"
             value={search}
             onChange={(event) => {
@@ -90,7 +103,7 @@ export function AdminEpksPage() {
           />
         </div>
         <Select
-          items={STATUS_FILTER_ITEMS}
+          items={filterItems}
           value={status}
           onValueChange={(value) => {
             setStatus(value as 'all' | EpkStatus)
@@ -101,7 +114,7 @@ export function AdminEpksPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(STATUS_FILTER_ITEMS).map(([value, label]) => (
+            {Object.entries(filterItems).map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}
               </SelectItem>
@@ -118,11 +131,11 @@ export function AdminEpksPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Workspace</TableHead>
-                  <TableHead>Artist</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-end">Actions</TableHead>
+                  <TableHead>{t('epks.fields.title')}</TableHead>
+                  <TableHead>{t('admin.epks.columns.workspace')}</TableHead>
+                  <TableHead>{t('epks.fields.artist')}</TableHead>
+                  <TableHead>{t('admin.users.columns.status')}</TableHead>
+                  <TableHead className="text-end">{t('common.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

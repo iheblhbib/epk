@@ -1,4 +1,4 @@
-# Kitfolio
+# KORAX
 
 An Electronic Press Kit (EPK) SaaS platform — build, theme, and share professional press kits for artists, labels, and agencies. Built to run on standard shared cPanel hosting (Apache, PHP, MySQL — no Docker, no Redis, no persistent Node server in production).
 
@@ -64,7 +64,7 @@ php artisan serve
 
 The API is now running at `http://localhost:8000`. `storage:link` uses PHP's `symlink()` — on Windows this needs either **Developer Mode** enabled (Settings → Update & Security → For Developers) or an elevated terminal; it works without any special privileges on cPanel/Linux.
 
-The seeder creates a demo login: **demo@kitfolio.test** / **password**, already a member of a seeded "Kitfolio Demo" workspace (as owner), with a second teammate and one pending invitation — so the dashboard isn't empty on first login.
+The seeder creates a demo login: **demo@korax.test** / **password**, already a member of a seeded "KORAX Demo" workspace (as owner), with a second teammate and one pending invitation — so the dashboard isn't empty on first login.
 
 ### 4. Frontend (`frontend/`)
 

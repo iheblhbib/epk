@@ -1,5 +1,6 @@
 import { FolderOpen, Search } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { Input } from '@/components/ui/input'
@@ -11,31 +12,38 @@ import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorks
 import { isEditorLevel } from '@/lib/permissions'
 import type { MediaListParams } from '@/api/media'
 import type { MediaType } from '@/types'
+import type { TFunction } from 'i18next'
 
-const TYPE_OPTIONS: { value: MediaType | 'all'; label: string }[] = [
-  { value: 'all', label: 'All types' },
-  { value: 'image', label: 'Images' },
-  { value: 'audio', label: 'Audio' },
-  { value: 'video', label: 'Video' },
-  { value: 'document', label: 'Documents' },
-]
+const TYPE_VALUES: (MediaType | 'all')[] = ['all', 'image', 'audio', 'video', 'document']
+const TYPE_LABEL_KEYS: Record<MediaType | 'all', string> = {
+  all: 'media.types.all',
+  image: 'media.types.image',
+  audio: 'media.types.audio',
+  video: 'media.types.video',
+  document: 'media.types.document',
+}
 
-const SORT_OPTIONS: { value: string; sortBy: MediaListParams['sortBy']; sortDir: MediaListParams['sortDir']; label: string }[] = [
-  { value: 'newest', sortBy: 'created_at', sortDir: 'desc', label: 'Newest first' },
-  { value: 'oldest', sortBy: 'created_at', sortDir: 'asc', label: 'Oldest first' },
-  { value: 'name_asc', sortBy: 'name', sortDir: 'asc', label: 'Name (A–Z)' },
-  { value: 'name_desc', sortBy: 'name', sortDir: 'desc', label: 'Name (Z–A)' },
-  { value: 'size_desc', sortBy: 'size', sortDir: 'desc', label: 'Largest first' },
-  { value: 'size_asc', sortBy: 'size', sortDir: 'asc', label: 'Smallest first' },
+const SORT_OPTIONS: { value: string; sortBy: MediaListParams['sortBy']; sortDir: MediaListParams['sortDir']; labelKey: string }[] = [
+  { value: 'newest', sortBy: 'created_at', sortDir: 'desc', labelKey: 'media.sort.newest' },
+  { value: 'oldest', sortBy: 'created_at', sortDir: 'asc', labelKey: 'media.sort.oldest' },
+  { value: 'name_asc', sortBy: 'name', sortDir: 'asc', labelKey: 'media.sort.nameAsc' },
+  { value: 'name_desc', sortBy: 'name', sortDir: 'desc', labelKey: 'media.sort.nameDesc' },
+  { value: 'size_desc', sortBy: 'size', sortDir: 'desc', labelKey: 'media.sort.sizeDesc' },
+  { value: 'size_asc', sortBy: 'size', sortDir: 'asc', labelKey: 'media.sort.sizeAsc' },
 ]
 
 // Select.Value only shows the selected item's label automatically when
 // Select.Root is given this value->label map — otherwise (since these
 // values differ from their display labels) it falls back to the raw value.
-const TYPE_ITEMS = Object.fromEntries(TYPE_OPTIONS.map((option) => [option.value, option.label]))
-const SORT_ITEMS = Object.fromEntries(SORT_OPTIONS.map((option) => [option.value, option.label]))
+function typeItems(t: TFunction) {
+  return Object.fromEntries(TYPE_VALUES.map((value) => [value, t(TYPE_LABEL_KEYS[value])]))
+}
+function sortItems(t: TFunction) {
+  return Object.fromEntries(SORT_OPTIONS.map((option) => [option.value, t(option.labelKey)]))
+}
 
 export function MediaLibraryPage() {
+  const { t } = useTranslation()
   const { currentWorkspace, isLoading: workspaceLoading } = useCurrentWorkspace()
   const [search, setSearch] = useState('')
   const [type, setType] = useState<MediaType | 'all'>('all')
@@ -43,6 +51,8 @@ export function MediaLibraryPage() {
 
   const sortOption = SORT_OPTIONS.find((option) => option.value === sort) ?? SORT_OPTIONS[0]
   const canEdit = isEditorLevel(currentWorkspace?.my_role)
+  const typeOpts = typeItems(t)
+  const sortOpts = sortItems(t)
 
   const { data: media, isLoading } = useMediaList(currentWorkspace?.id, {
     search: search || undefined,
@@ -59,8 +69,8 @@ export function MediaLibraryPage() {
     return (
       <EmptyState
         icon={FolderOpen}
-        title="No workspace yet"
-        description="Create a workspace from the dashboard before uploading media."
+        title={t('common.noWorkspaceYet')}
+        description={t('media.emptyState.noWorkspaceDescription')}
       />
     )
   }
@@ -68,9 +78,9 @@ export function MediaLibraryPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold text-foreground">Media Library</h1>
+        <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.mediaLibrary')}</h1>
         <p className="text-sm text-muted-foreground">
-          Photos, tracks, videos, and documents for {currentWorkspace.name}.
+          {t('media.pageDescription', { workspace: currentWorkspace.name })}
         </p>
       </div>
 
@@ -80,14 +90,14 @@ export function MediaLibraryPage() {
         <div className="relative flex-1">
           <Search className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search files…"
+            placeholder={t('media.searchPlaceholder')}
             className="ps-8"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
         </div>
         <Select
-          items={TYPE_ITEMS}
+          items={typeOpts}
           value={type}
           onValueChange={(value) => setType((value ?? 'all') as MediaType | 'all')}
         >
@@ -95,21 +105,21 @@ export function MediaLibraryPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {TYPE_OPTIONS.map((option) => (
-              <SelectItem key={option.value} value={option.value}>
-                {option.label}
+            {TYPE_VALUES.map((value) => (
+              <SelectItem key={value} value={value}>
+                {typeOpts[value]}
               </SelectItem>
             ))}
           </SelectContent>
         </Select>
-        <Select items={SORT_ITEMS} value={sort} onValueChange={(value) => setSort(value ?? 'newest')}>
+        <Select items={sortOpts} value={sort} onValueChange={(value) => setSort(value ?? 'newest')}>
           <SelectTrigger className="w-full sm:w-44">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
             {SORT_OPTIONS.map((option) => (
               <SelectItem key={option.value} value={option.value}>
-                {option.label}
+                {sortOpts[option.value]}
               </SelectItem>
             ))}
           </SelectContent>
@@ -121,13 +131,13 @@ export function MediaLibraryPage() {
       ) : !media || media.length === 0 ? (
         <EmptyState
           icon={FolderOpen}
-          title={search || type !== 'all' ? 'No files match' : 'No files yet'}
+          title={search || type !== 'all' ? t('media.emptyState.noMatchTitle') : t('media.emptyState.noneTitle')}
           description={
             search || type !== 'all'
-              ? 'Try a different search or filter.'
+              ? t('media.emptyState.noMatchDescription')
               : canEdit
-                ? 'Upload photos, tracks, videos, or documents to get started.'
-                : 'No files have been uploaded to this workspace yet.'
+                ? t('media.emptyState.canEditDescription')
+                : t('media.emptyState.viewOnlyDescription')
           }
         />
       ) : (

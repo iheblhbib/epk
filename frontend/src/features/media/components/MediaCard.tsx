@@ -2,9 +2,10 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Download, FileText, Film, Loader2, MoreHorizontal, Music, Pencil, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { z } from 'zod'
-import { mediaDownloadUrl } from '@/api/media'
+import type { TFunction } from 'i18next'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
 import {
@@ -24,6 +25,7 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '
 import { Input } from '@/components/ui/input'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { useDeleteMedia, useRenameMedia } from '@/features/media/hooks/useMedia'
+import { downloadAuthenticatedFile } from '@/lib/downloadFile'
 import { formatBytes } from '@/lib/formatBytes'
 import { isEditorLevel } from '@/lib/permissions'
 import type { Media, WorkspaceRole } from '@/types'
@@ -48,9 +50,11 @@ function splitFilename(filename: string): { baseName: string; extension: string 
   return { baseName: filename.slice(0, lastDot), extension: filename.slice(lastDot + 1) }
 }
 
-const renameSchema = z.object({
-  base_name: z.string().min(1, 'Name is required').max(255),
-})
+function renameSchema(t: TFunction) {
+  return z.object({
+    base_name: z.string().min(1, t('validation.nameRequired')).max(255),
+  })
+}
 
 export function MediaCard({
   media,
@@ -61,8 +65,10 @@ export function MediaCard({
   workspaceId: number
   myRole: WorkspaceRole | null
 }) {
+  const { t } = useTranslation()
   const [renameOpen, setRenameOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
+  const [isDownloading, setIsDownloading] = useState(false)
   const renameMedia = useRenameMedia(workspaceId)
   const deleteMedia = useDeleteMedia(workspaceId)
   const canEdit = isEditorLevel(myRole)
@@ -73,8 +79,8 @@ export function MediaCard({
   // there would resync the form on every re-render of this card — including a
   // background refetch of the media list while the rename dialog is open —
   // silently discarding whatever the user is mid-typing.
-  const form = useForm<z.infer<typeof renameSchema>>({
-    resolver: zodResolver(renameSchema),
+  const form = useForm<z.infer<ReturnType<typeof renameSchema>>>({
+    resolver: zodResolver(renameSchema(t)),
     defaultValues: { base_name: baseName },
   })
 
@@ -92,10 +98,10 @@ export function MediaCard({
       { mediaId: media.id, name: newName },
       {
         onSuccess: () => {
-          toast.success('Renamed')
+          toast.success(t('media.toasts.renamed'))
           setRenameOpen(false)
         },
-        onError: () => toast.error('Could not rename the file'),
+        onError: () => toast.error(t('media.toasts.renameError')),
       }
     )
   })
@@ -130,17 +136,26 @@ export function MediaCard({
             {canEdit && (
               <DropdownMenuItem onClick={() => setRenameOpen(true)}>
                 <Pencil className="size-4" />
-                Rename
+                {t('media.rename')}
               </DropdownMenuItem>
             )}
-            <DropdownMenuItem render={<a href={mediaDownloadUrl(media.id)} />}>
-              <Download className="size-4" />
-              Download
+            <DropdownMenuItem
+              onSelect={(event) => event.preventDefault()}
+              disabled={isDownloading}
+              onClick={() => {
+                setIsDownloading(true)
+                downloadAuthenticatedFile(`/api/media/${media.id}/download`, media.original_filename)
+                  .catch(() => toast.error(t('media.toasts.downloadError')))
+                  .finally(() => setIsDownloading(false))
+              }}
+            >
+              {isDownloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+              {t('media.download')}
             </DropdownMenuItem>
             {canEdit && (
               <DropdownMenuItem onClick={() => setConfirmDeleteOpen(true)} className="text-destructive">
                 <Trash2 className="size-4" />
-                Delete
+                {t('common.delete')}
               </DropdownMenuItem>
             )}
           </DropdownMenuContent>
@@ -150,7 +165,7 @@ export function MediaCard({
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Rename file</DialogTitle>
+            <DialogTitle>{t('media.renameDialog.title')}</DialogTitle>
           </DialogHeader>
           <Form {...form}>
             <form onSubmit={onSubmit} className="space-y-4">
@@ -159,7 +174,7 @@ export function MediaCard({
                 name="base_name"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Name</FormLabel>
+                    <FormLabel>{t('contacts.fields.name')}</FormLabel>
                     <FormControl>
                       <div className="flex items-center gap-1.5">
                         <Input autoFocus className="flex-1" {...field} />
@@ -175,7 +190,7 @@ export function MediaCard({
               <DialogFooter>
                 <Button type="submit" disabled={renameMedia.isPending}>
                   {renameMedia.isPending && <Loader2 className="size-4 animate-spin" />}
-                  Save
+                  {t('media.renameDialog.submit')}
                 </Button>
               </DialogFooter>
             </form>
@@ -186,18 +201,18 @@ export function MediaCard({
       <ConfirmDialog
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        title="Delete file"
-        description={`"${media.original_filename}" will be permanently removed.`}
-        confirmLabel="Delete"
+        title={t('media.deleteDialog.title')}
+        description={t('media.deleteDialog.description', { name: media.original_filename })}
+        confirmLabel={t('common.delete')}
         destructive
         isLoading={deleteMedia.isPending}
         onConfirm={() =>
           deleteMedia.mutate(media.id, {
             onSuccess: () => {
-              toast.success('File deleted')
+              toast.success(t('media.toasts.deleted'))
               setConfirmDeleteOpen(false)
             },
-            onError: () => toast.error('Could not delete the file'),
+            onError: () => toast.error(t('media.toasts.deleteError')),
           })
         }
       />

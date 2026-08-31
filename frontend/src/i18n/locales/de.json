@@ -1,0 +1,1030 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "myEpks": "Meine EPKs",
+    "mediaLibrary": "Medienbibliothek",
+    "analytics": "Statistiken",
+    "contacts": "Kontakte",
+    "team": "Team",
+    "admin": "Verwaltung",
+    "settings": "Einstellungen",
+    "billing": "Abrechnung"
+  },
+  "topbar": {
+    "settings": "Einstellungen",
+    "logout": "Abmelden",
+    "logoutError": "Abmelden nicht möglich"
+  },
+  "search": {
+    "trigger": "Suchen",
+    "placeholder": "EPKs, Künstler, Kontakte, Medien durchsuchen…",
+    "hint": "Tippen Sie weiter, um in diesem Arbeitsbereich zu suchen.",
+    "empty": "Keine Ergebnisse gefunden.",
+    "groups": {
+      "epks": "EPKs",
+      "artists": "Künstler",
+      "contacts": "Kontakte",
+      "media": "Medien"
+    }
+  },
+  "theme": {
+    "toggle": "Design wechseln",
+    "light": "Hell",
+    "dark": "Dunkel",
+    "system": "System"
+  },
+  "language": {
+    "toggle": "Sprache ändern"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "users": "Benutzer",
+      "workspaces": "Arbeitsbereiche",
+      "epks": "EPKs",
+      "auditLog": "Audit-Protokoll",
+      "backToApp": "Zurück zur App"
+    },
+    "dashboard": {
+      "title": "Admin-Dashboard",
+      "description": "Plattformweite Nutzung auf einen Blick.",
+      "totalUsers": "Benutzer insgesamt",
+      "newUsers30d": "Neue Benutzer (30T)",
+      "workspaces": "Arbeitsbereiche",
+      "totalEpks": "EPKs insgesamt",
+      "publishedEpks": "Veröffentlichte EPKs",
+      "pageViews30d": "Seitenaufrufe (30T)",
+      "contacts": "Kontakte",
+      "mediaFiles": "Mediendateien",
+      "storageUsed": "Genutzter Speicher"
+    },
+    "pagination": {
+      "total": "{{count}} insgesamt",
+      "previous": "Zurück",
+      "next": "Weiter",
+      "pageOf": "Seite {{page}} von {{lastPage}}"
+    },
+    "users": {
+      "title": "Benutzer",
+      "description": "Alle Konten auf der Plattform.",
+      "searchPlaceholder": "Name oder E-Mail suchen…",
+      "you": "(Sie)",
+      "roleAdmin": "Admin",
+      "roleUser": "Benutzer",
+      "suspended": "Gesperrt",
+      "active": "Aktiv",
+      "revokeAdmin": "Admin-Rechte entziehen",
+      "makeAdmin": "Zum Admin machen",
+      "unsuspend": "Entsperren",
+      "suspend": "Sperren",
+      "roleUpdateError": "Die Rolle dieses Benutzers konnte nicht aktualisiert werden",
+      "updateError": "Dieser Benutzer konnte nicht aktualisiert werden",
+      "columns": {
+        "name": "Name",
+        "email": "E-Mail",
+        "role": "Rolle",
+        "status": "Status"
+      }
+    },
+    "workspaces": {
+      "title": "Arbeitsbereiche",
+      "description": "Alle Arbeitsbereiche auf der Plattform.",
+      "searchPlaceholder": "Nach Name suchen…",
+      "planFree": "Kostenlos",
+      "planPro": "Pro",
+      "planBusiness": "Business",
+      "planUpdated": "Tarif auf {{plan}} aktualisiert",
+      "planUpdateError": "Der Tarif konnte nicht aktualisiert werden",
+      "deleted": "Arbeitsbereich gelöscht",
+      "deleteError": "Dieser Arbeitsbereich konnte nicht gelöscht werden",
+      "columns": {
+        "name": "Name",
+        "owner": "Inhaber",
+        "members": "Mitglieder",
+        "epks": "EPKs",
+        "plan": "Tarif",
+        "created": "Erstellt"
+      }
+    },
+    "epks": {
+      "title": "EPKs",
+      "description": "Alle EPKs auf der Plattform.",
+      "searchPlaceholder": "Nach Titel suchen…",
+      "allStatuses": "Alle Status",
+      "unpublish": "Veröffentlichung aufheben",
+      "unpublishedToast": "„{{title}}“ nicht mehr veröffentlicht",
+      "unpublishError": "Die Veröffentlichung dieses EPK konnte nicht aufgehoben werden",
+      "columns": {
+        "workspace": "Arbeitsbereich"
+      }
+    },
+    "auditLog": {
+      "description": "Aktionen, die über dieses Admin-Panel ausgeführt wurden.",
+      "noneTitle": "Noch keine Aktivität",
+      "noneDescription": "Admin-Aktionen werden hier angezeigt.",
+      "system": "System",
+      "columns": {
+        "action": "Aktion",
+        "admin": "Admin",
+        "subject": "Betreff",
+        "ipAddress": "IP-Adresse",
+        "when": "Wann"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Willkommen zurück",
+      "description": "Melden Sie sich an, um Ihre Pressemappen zu verwalten",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "forgotPassword": "Passwort vergessen?",
+      "signIn": "Anmelden",
+      "noAccount": "Noch kein Konto?",
+      "signUp": "Registrieren",
+      "justVerified": "Ihre E-Mail wurde bestätigt. Sie können sich jetzt anmelden.",
+      "credentialsMismatch": "Diese Anmeldedaten stimmen nicht mit unseren Datensätzen überein.",
+      "failedToast": "Anmeldung fehlgeschlagen",
+      "tooManyAttempts": "Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut.",
+      "twoFactorDescription": "Geben Sie den 6-stelligen Code aus Ihrer Authenticator-App ein.",
+      "twoFactorCodeLabel": "Authentifizierungscode",
+      "recoveryCodeLabel": "Wiederherstellungscode",
+      "verifyCode": "Überprüfen",
+      "useRecoveryCodeInstead": "Stattdessen einen Wiederherstellungscode verwenden",
+      "useAuthenticatorInstead": "Stattdessen Ihre Authenticator-App verwenden",
+      "twoFactorInvalid": "Dieser Code hat nicht funktioniert. Bitte versuchen Sie es erneut."
+    },
+    "register": {
+      "title": "Erstellen Sie Ihr Konto",
+      "description": "Erstellen Sie Ihre Pressemappe in wenigen Minuten",
+      "alreadyHaveAccount": "Haben Sie bereits ein Konto?",
+      "signIn": "Anmelden",
+      "name": "Name",
+      "email": "E-Mail",
+      "password": "Passwort",
+      "confirmPassword": "Passwort bestätigen",
+      "createAccount": "Konto erstellen",
+      "createAccountError": "Ihr Konto konnte nicht erstellt werden",
+      "tooManyAttempts": "Zu viele Versuche. Bitte warten Sie eine Minute und versuchen Sie es erneut."
+    },
+    "forgotPassword": {
+      "title": "Setzen Sie Ihr Passwort zurück",
+      "description": "Wir senden Ihnen einen Link zum Zurücksetzen",
+      "backToSignIn": "Zurück zur Anmeldung",
+      "email": "E-Mail",
+      "sendResetLink": "Link senden",
+      "checkInbox": "Prüfen Sie Ihr Postfach für den Link zum Zurücksetzen des Passworts.",
+      "notFound": "Wir konnten kein Konto mit dieser E-Mail-Adresse finden."
+    },
+    "resetPassword": {
+      "title": "Neues Passwort festlegen",
+      "backToSignIn": "Zurück zur Anmeldung",
+      "email": "E-Mail",
+      "newPassword": "Neues Passwort",
+      "confirmNewPassword": "Neues Passwort bestätigen",
+      "submit": "Passwort zurücksetzen",
+      "success": "Passwort zurückgesetzt. Sie können sich jetzt anmelden.",
+      "invalidLink": "Dieser Link zum Zurücksetzen ist ungültig oder abgelaufen."
+    },
+    "verifyEmail": {
+      "title": "Bestätigen Sie Ihre E-Mail",
+      "description": "Wir haben einen Bestätigungslink an {{email}} gesendet",
+      "logout": "Abmelden",
+      "instructions": "Klicken Sie auf den Link in dieser E-Mail, um Ihr Konto zu aktivieren. Nicht erhalten?",
+      "resend": "Bestätigungs-E-Mail erneut senden",
+      "sent": "E-Mail gesendet",
+      "sentToast": "Bestätigungs-E-Mail gesendet",
+      "sendError": "Die E-Mail konnte gerade nicht gesendet werden"
+    }
+  },
+  "validation": {
+    "nameRequired": "Name ist erforderlich",
+    "emailRequired": "E-Mail ist erforderlich",
+    "emailInvalid": "Geben Sie eine gültige E-Mail-Adresse ein",
+    "emailInvalidShort": "Geben Sie eine gültige E-Mail ein",
+    "passwordRequired": "Passwort ist erforderlich",
+    "passwordStrength": "Das Passwort muss mindestens 8 Zeichen lang sein und einen Groß- sowie Kleinbuchstaben, eine Zahl und ein Symbol enthalten.",
+    "confirmPasswordRequired": "Bitte bestätigen Sie Ihr Passwort",
+    "passwordsDoNotMatch": "Die Passwörter stimmen nicht überein",
+    "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
+    "titleRequired": "Titel ist erforderlich",
+    "selectOrCreateArtist": "Wählen oder erstellen Sie einen Künstler",
+    "artistNameRequired": "Künstlername ist erforderlich"
+  },
+  "password": {
+    "show": "Passwort anzeigen",
+    "hide": "Passwort verbergen",
+    "requirements": {
+      "length": "Mindestens 8 Zeichen",
+      "lowercase": "Ein Kleinbuchstabe",
+      "uppercase": "Ein Großbuchstabe",
+      "number": "Eine Zahl",
+      "symbol": "Ein Symbol (z. B. !@#$%)"
+    }
+  },
+  "contacts": {
+    "dialog": {
+      "editTitle": "Kontakt bearbeiten",
+      "addTitle": "Kontakt hinzufügen",
+      "description": "Journalisten, Radiosender, Blogs, Labels und alle anderen, mit denen Sie in Presse und Promotion zusammenarbeiten."
+    },
+    "fields": {
+      "name": "Name",
+      "email": "E-Mail",
+      "phone": "Telefon",
+      "category": "Kategorie",
+      "organization": "Organisation",
+      "notes": "Notizen (optional)"
+    },
+    "categories": {
+      "journalist": "Journalist",
+      "radio": "Radio",
+      "blog": "Blog",
+      "label": "Label",
+      "booking": "Booking",
+      "management": "Management",
+      "pr": "PR",
+      "other": "Sonstiges"
+    },
+    "toasts": {
+      "updated": "Kontakt aktualisiert",
+      "added": "Kontakt hinzugefügt",
+      "updateError": "Der Kontakt konnte nicht aktualisiert werden",
+      "addError": "Der Kontakt konnte nicht hinzugefügt werden",
+      "deleted": "Kontakt gelöscht",
+      "deleteError": "Der Kontakt konnte nicht gelöscht werden"
+    },
+    "allCategories": "Alle Kategorien",
+    "pageDescription": "Journalisten, Radiosender, Blogs und alle anderen, mit denen Sie in Presse und Promotion zusammenarbeiten.",
+    "searchPlaceholder": "Name, E-Mail, Organisation suchen…",
+    "deleteDialog": {
+      "title": "Kontakt löschen",
+      "description": "„{{name}}“ wird dauerhaft entfernt."
+    },
+    "import": {
+      "importing": "Wird importiert…",
+      "button": "CSV importieren",
+      "created": "{{count}} importiert",
+      "skipped": "{{count}} übersprungen",
+      "error": "Die Datei konnte nicht importiert werden"
+    },
+    "export": {
+      "button": "CSV exportieren",
+      "error": "Kontakte konnten nicht exportiert werden"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, bevor Sie Kontakte hinzufügen.",
+      "noMatchTitle": "Keine passenden Kontakte",
+      "noneTitle": "Noch keine Kontakte",
+      "noMatchDescription": "Versuchen Sie eine andere Suche oder Kategorie.",
+      "canEditDescription": "Fügen Sie Ihren ersten Kontakt hinzu oder importieren Sie eine CSV-Datei mit mehreren auf einmal.",
+      "viewOnlyDescription": "Diesem Arbeitsbereich wurden noch keine Kontakte hinzugefügt."
+    }
+  },
+  "epks": {
+    "artistDialog": {
+      "title": "Neuer Künstler",
+      "description": "Sie können den Rest des Profils später ausfüllen.",
+      "submit": "Künstler erstellen",
+      "toastCreated": "Künstler erstellt",
+      "toastError": "Der Künstler konnte nicht erstellt werden"
+    },
+    "formDialog": {
+      "editTitle": "EPK bearbeiten",
+      "createTitle": "EPK erstellen",
+      "editDescription": "Aktualisieren Sie Titel, Künstler und SEO-Details.",
+      "createDescription": "Der visuelle Editor für Sektionen und Design folgt in einer späteren Phase — dies erstellt den EPK-Datensatz.",
+      "submitCreate": "EPK erstellen"
+    },
+    "fields": {
+      "name": "Name",
+      "namePlaceholder": "Künstler- oder Bandname",
+      "genre": "Genre",
+      "genrePlaceholder": "Elektronisch, Rock, Jazz…",
+      "country": "Land",
+      "selectCountry": "Wählen Sie ein Land",
+      "title": "Titel",
+      "titlePlaceholder": "EPK Sommertour 2026",
+      "artist": "Künstler",
+      "selectArtist": "Wählen Sie einen Künstler",
+      "seoTitle": "SEO-Titel (optional)",
+      "seoTitlePlaceholder": "Standardmäßig der EPK-Titel"
+    },
+    "toasts": {
+      "updated": "EPK aktualisiert",
+      "created": "EPK erstellt",
+      "updateError": "Der EPK konnte nicht aktualisiert werden",
+      "createError": "Der EPK konnte nicht erstellt werden",
+      "published": "EPK veröffentlicht",
+      "unpublished": "EPK nicht mehr veröffentlicht",
+      "statusError": "Der EPK-Status konnte nicht aktualisiert werden",
+      "duplicated": "EPK dupliziert",
+      "duplicateError": "Der EPK konnte nicht dupliziert werden",
+      "deleted": "EPK gelöscht",
+      "deleteError": "Der EPK konnte nicht gelöscht werden"
+    },
+    "status": {
+      "draft": "Entwurf",
+      "published": "Veröffentlicht",
+      "archived": "Archiviert"
+    },
+    "duplicate": "Duplizieren",
+    "noArtist": "Kein Künstler",
+    "builder": "Editor",
+    "pageDescription": "Verwalten Sie die Pressemappen von {{workspace}}.",
+    "deleteDialog": {
+      "title": "EPK löschen",
+      "description": "„{{title}}“ wird dauerhaft entfernt."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, bevor Sie EPKs hinzufügen.",
+      "noneTitle": "Noch keine EPKs",
+      "canEditDescription": "Erstellen Sie Ihre erste Pressemappe, um loszulegen. Der visuelle Editor für Sektionen und Design folgt in einer späteren Phase.",
+      "viewOnlyDescription": "In diesem Arbeitsbereich wurde noch keine Pressemappe erstellt."
+    }
+  },
+  "settings": {
+    "pageDescription": "Verwalten Sie Ihr Konto und die Details des Arbeitsbereichs.",
+    "tabs": {
+      "profile": "Profil",
+      "password": "Passwort",
+      "workspace": "Arbeitsbereich",
+      "notifications": "Benachrichtigungen",
+      "activity": "Aktivität",
+      "apiTokens": "API-Tokens",
+      "twoFactor": "Zwei-Faktor-Auth"
+    },
+    "profile": {
+      "title": "Profil",
+      "description": "Aktualisieren Sie Ihren Namen und Ihre E-Mail-Adresse.",
+      "name": "Name",
+      "email": "E-Mail",
+      "updated": "Profil aktualisiert",
+      "updateError": "Ihr Profil konnte nicht aktualisiert werden"
+    },
+    "password": {
+      "title": "Passwort",
+      "description": "Wählen Sie ein starkes, einzigartiges Passwort.",
+      "current": "Aktuelles Passwort",
+      "new": "Neues Passwort",
+      "confirmNew": "Neues Passwort bestätigen",
+      "submit": "Passwort aktualisieren",
+      "updated": "Passwort aktualisiert",
+      "incorrect": "Ihr aktuelles Passwort ist falsch."
+    },
+    "workspace": {
+      "title": "Details des Arbeitsbereichs",
+      "description": "Aktualisieren Sie Name und Beschreibung von {{workspace}}.",
+      "descriptionField": "Beschreibung",
+      "updated": "Arbeitsbereich aktualisiert",
+      "updateError": "Der Arbeitsbereich konnte nicht aktualisiert werden"
+    },
+    "dangerZone": {
+      "title": "Gefahrenzone",
+      "ownerDescription": "Das Verlassen oder Löschen dieses Arbeitsbereichs kann nicht rückgängig gemacht werden.",
+      "memberDescription": "Wenn Sie ihn verlassen, verlieren Sie den Zugriff auf die EPKs, Medien und Kontakte dieses Arbeitsbereichs.",
+      "leave": "Arbeitsbereich verlassen",
+      "delete": "Arbeitsbereich löschen",
+      "leaveConfirm": "Verlassen",
+      "leaveDialogDescription": "Sie verlieren den Zugriff auf „{{workspace}}“, bis Sie erneut eingeladen werden.",
+      "leftToast": "{{workspace}} verlassen",
+      "leaveError": "Dieser Arbeitsbereich konnte nicht verlassen werden — als einziger Inhaber müssen Sie ihn zuerst übertragen oder löschen.",
+      "deleteDialogDescription": "„{{workspace}}“ und alles darin — EPKs, Medien, Kontakte — werden dauerhaft gelöscht.",
+      "deletedToast": "{{workspace}} gelöscht",
+      "deleteError": "Dieser Arbeitsbereich konnte nicht gelöscht werden"
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "description": "Wählen Sie, wie Sie für jede Art von Ereignis benachrichtigt werden.",
+      "updateError": "Ihre Benachrichtigungseinstellungen konnten nicht aktualisiert werden",
+      "channel": {
+        "email": "E-Mail",
+        "inApp": "In der App"
+      },
+      "workspaceInvitation": {
+        "title": "Workspace-Einladungen",
+        "mailDescription": "Erhalten Sie eine E-Mail, wenn Sie zu einem Workspace eingeladen werden.",
+        "databaseDescription": "Eine Benachrichtigung anzeigen, wenn Sie zu einem Workspace eingeladen werden."
+      },
+      "epkPublished": {
+        "title": "EPK veröffentlicht",
+        "databaseDescription": "Eine Benachrichtigung anzeigen, wenn ein Teammitglied ein EPK veröffentlicht."
+      },
+      "teamMemberJoined": {
+        "title": "Neues Teammitglied",
+        "databaseDescription": "Eine Benachrichtigung anzeigen, wenn jemand Ihrem Workspace beitritt."
+      }
+    },
+    "activity": {
+      "title": "Aktivität",
+      "description": "Kürzliche Änderungen in diesem Arbeitsbereich.",
+      "emptyTitle": "Noch keine Aktivität",
+      "emptyDescription": "Aktionen in diesem Arbeitsbereich werden hier angezeigt.",
+      "system": "System",
+      "pageOf": "Seite {{page}} von {{lastPage}}",
+      "actions": {
+        "epkCreated": "Hat das EPK „{{title}}“ erstellt",
+        "epkPublished": "Hat das EPK „{{title}}“ veröffentlicht",
+        "epkUnpublished": "Hat das EPK „{{title}}“ zurückgezogen",
+        "epkDeleted": "Hat das EPK „{{title}}“ gelöscht",
+        "epkDuplicated": "Hat „{{from}}“ als „{{title}}“ dupliziert",
+        "memberInvited": "Hat {{email}} in den Arbeitsbereich eingeladen",
+        "memberRoleChanged": "Hat die Rolle von {{member}} in {{role}} geändert",
+        "memberRemoved": "Hat {{member}} aus dem Arbeitsbereich entfernt",
+        "workspaceUpdated": "Hat die Arbeitsbereichsdetails aktualisiert"
+      }
+    },
+    "apiTokens": {
+      "title": "API-Tokens",
+      "description": "Persönliche Zugriffstoken, um diese API per Skript als Sie selbst zu nutzen.",
+      "nameField": "Token-Name",
+      "namePlaceholder": "z. B. CI-Skript",
+      "createToken": "Token erstellen",
+      "createError": "Dieses Token konnte nicht erstellt werden",
+      "none": "Noch keine API-Tokens.",
+      "created": "Erstellt am {{date}}",
+      "lastUsed": "Zuletzt verwendet {{when}}",
+      "neverUsed": "Nie verwendet",
+      "revoke": "Widerrufen",
+      "revokeConfirm": "Dieses Token widerrufen? Alles, was es verwendet, funktioniert sofort nicht mehr.",
+      "revoked": "Token widerrufen",
+      "revokeError": "Dieses Token konnte nicht widerrufen werden",
+      "createdTitle": "Token erstellt",
+      "createdDescription": "Kopieren Sie dieses Token jetzt — Sie können es später nicht mehr sehen.",
+      "copy": "Kopieren",
+      "copied": "In die Zwischenablage kopiert"
+    },
+    "twoFactor": {
+      "title": "Zwei-Faktor-Authentifizierung",
+      "description": "Verlangen Sie beim Anmelden zusätzlich zum Passwort einen Code aus einer Authenticator-App.",
+      "enabled": "Aktiviert",
+      "disabled": "Deaktiviert",
+      "enable": "Zwei-Faktor-Authentifizierung aktivieren",
+      "disable": "Zwei-Faktor-Authentifizierung deaktivieren",
+      "enableError": "Die Zwei-Faktor-Einrichtung konnte nicht gestartet werden",
+      "confirmPasswordDescription": "Bestätigen Sie Ihr Passwort, um mit der Einrichtung zu beginnen.",
+      "scanDescription": "Scannen Sie diesen QR-Code mit Ihrer Authenticator-App (Google Authenticator, 1Password, Authy …) oder geben Sie den Code unten manuell ein.",
+      "qrAlt": "QR-Code für die Zwei-Faktor-Authentifizierung",
+      "secretLabel": "Einrichtungsschlüssel",
+      "confirmCodeLabel": "Geben Sie den 6-stelligen Code aus Ihrer App ein",
+      "confirmAndEnable": "Bestätigen und aktivieren",
+      "confirmError": "Dieser Code hat nicht funktioniert. Bitte versuchen Sie es erneut.",
+      "enabledSuccess": "Die Zwei-Faktor-Authentifizierung ist jetzt aktiviert",
+      "viewRecoveryCodes": "Wiederherstellungscodes anzeigen",
+      "regenerateCodes": "Neue Codes generieren",
+      "recoveryCodesTitle": "Wiederherstellungscodes",
+      "recoveryCodesDescription": "Bewahren Sie diese an einem sicheren Ort auf. Jeder Code kann einmal zur Anmeldung verwendet werden, falls Sie den Zugriff auf Ihre Authenticator-App verlieren.",
+      "recoveryCodesRegenerated": "Neue Wiederherstellungscodes generiert — die alten funktionieren nicht mehr",
+      "recoveryCodesRegenerateError": "Neue Wiederherstellungscodes konnten nicht generiert werden",
+      "disableConfirm": "Zwei-Faktor-Authentifizierung deaktivieren? Für die Anmeldung an Ihrem Konto genügt dann nur noch das Passwort.",
+      "disableError": "Die Zwei-Faktor-Authentifizierung konnte nicht deaktiviert werden"
+    }
+  },
+  "billing": {
+    "currentPlan": "Aktueller Tarif",
+    "unlimitedEpks": "Unbegrenzte EPKs",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPKs",
+    "unlimitedTeamMembers": "Unbegrenzte Teammitglieder",
+    "teamMemberCount_one": "{{count}} Teammitglied",
+    "teamMemberCount_other": "{{count}} Teammitglieder",
+    "storage": "Speicher",
+    "pageDescription": "{{workspace}} nutzt den Tarif {{plan}}.",
+    "plans": "Tarife",
+    "upgradeTo": "Auf {{plan}} upgraden",
+    "manageBilling": "Abrechnung verwalten",
+    "pastDueWarning": "Ihre letzte Zahlung ist fehlgeschlagen. Aktualisieren Sie Ihre Zahlungsmethode, um den Zugriff auf kostenpflichtige Funktionen nicht zu verlieren.",
+    "checkoutSuccess": "Abo aktualisiert — danke!",
+    "checkoutCanceled": "Bezahlvorgang abgebrochen — es wurden keine Änderungen vorgenommen.",
+    "checkoutError": "Der Bezahlvorgang konnte nicht gestartet werden",
+    "portalError": "Das Abrechnungsportal konnte nicht geöffnet werden",
+    "usage": {
+      "title": "Nutzung",
+      "description": "Was dieser Arbeitsbereich im Verhältnis zu den Grenzen seines Tarifs nutzt.",
+      "epks": "EPKs",
+      "teamMembers": "Teammitglieder",
+      "storage": "Speicher"
+    },
+    "features": {
+      "customThemes": "Anpassbare Designs",
+      "privateLinks": "Private Freigabelinks",
+      "whiteLabel": "White-Label-Branding",
+      "customDomains": "Eigene Domains"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, um Abrechnungsdetails zu sehen."
+    }
+  },
+  "team": {
+    "inviteButton": "Mitglied einladen",
+    "pending": "Ausstehend",
+    "remove": "Entfernen",
+    "pageDescription": "Verwalten Sie, wer Zugriff auf {{workspace}} hat.",
+    "fields": {
+      "email": "E-Mail",
+      "role": "Rolle"
+    },
+    "inviteDialog": {
+      "title": "Teammitglied einladen",
+      "description": "Es wird als ausstehendes Mitglied hinzugefügt, bis es die Einladung annimmt.",
+      "submit": "Einladung senden"
+    },
+    "removeDialog": {
+      "title": "Mitglied entfernen",
+      "description": "{{name}} verliert den Zugriff auf diesen Arbeitsbereich."
+    },
+    "toasts": {
+      "invited": "Einladung gesendet",
+      "inviteError": "Die Einladung konnte nicht gesendet werden",
+      "roleError": "Die Rolle konnte nicht aktualisiert werden",
+      "removeError": "Dieses Mitglied konnte nicht entfernt werden"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, um Teammitglieder einzuladen.",
+      "noneTitle": "Noch keine Mitglieder",
+      "noneDescription": "Laden Sie Ihr Team zur Zusammenarbeit ein."
+    }
+  },
+  "workspaces": {
+    "selectWorkspace": "Arbeitsbereich auswählen",
+    "label": "Arbeitsbereiche",
+    "newWorkspace": "Neuer Arbeitsbereich",
+    "create": {
+      "title": "Arbeitsbereich erstellen",
+      "description": "Arbeitsbereiche fassen Ihre EPKs, Medien und Teammitglieder zusammen.",
+      "name": "Name",
+      "nameRequired": "Der Name des Arbeitsbereichs ist erforderlich",
+      "submit": "Arbeitsbereich erstellen",
+      "created": "Arbeitsbereich erstellt",
+      "error": "Der Arbeitsbereich konnte nicht erstellt werden"
+    }
+  },
+  "invitation": {
+    "title": "Einladung",
+    "invalidOrUsed": "Diese Einladung ist ungültig oder wurde bereits verwendet.",
+    "goToDashboard": "Zum Dashboard",
+    "youveBeenInvited": "Sie wurden eingeladen",
+    "invitedByBlurb": "{{inviter}} hat Sie eingeladen, {{workspace}} als {{role}} beizutreten.",
+    "invitedBlurb": "Sie wurden eingeladen, {{workspace}} als {{role}} beizutreten.",
+    "accept": "Einladung annehmen",
+    "joinedToast": "Sie sind {{workspace}} beigetreten",
+    "acceptError": "Diese Einladung konnte nicht angenommen werden",
+    "wrongAccount": {
+      "description": "Diese Einladung ist für {{invitedEmail}} bestimmt, Sie sind jedoch als {{currentEmail}} angemeldet.",
+      "switchAccounts": "Abmelden und Konto wechseln"
+    },
+    "signingInAs": "Anmeldung als",
+    "signInAndAccept": "Anmelden & annehmen",
+    "welcomeAccepted": "Willkommen — Einladung angenommen",
+    "incorrectPassword": "Falsches Passwort",
+    "creatingAccountFor": "Konto wird erstellt für",
+    "yourName": "Ihr Name",
+    "choosePassword": "Wählen Sie ein Passwort",
+    "createAccountAndAccept": "Konto erstellen & annehmen",
+    "accountCreatedAccepted": "Konto erstellt — Einladung angenommen"
+  },
+  "media": {
+    "pageDescription": "Fotos, Titel, Videos und Dokumente für {{workspace}}.",
+    "searchPlaceholder": "Dateien suchen…",
+    "rename": "Umbenennen",
+    "download": "Herunterladen",
+    "types": {
+      "all": "Alle Typen",
+      "image": "Bilder",
+      "audio": "Audio",
+      "video": "Video",
+      "document": "Dokumente"
+    },
+    "sort": {
+      "newest": "Neueste zuerst",
+      "oldest": "Älteste zuerst",
+      "nameAsc": "Name (A–Z)",
+      "nameDesc": "Name (Z–A)",
+      "sizeDesc": "Größte zuerst",
+      "sizeAsc": "Kleinste zuerst"
+    },
+    "renameDialog": {
+      "title": "Datei umbenennen",
+      "submit": "Speichern"
+    },
+    "deleteDialog": {
+      "title": "Datei löschen",
+      "description": "„{{name}}“ wird dauerhaft entfernt."
+    },
+    "toasts": {
+      "renamed": "Umbenannt",
+      "renameError": "Die Datei konnte nicht umbenannt werden",
+      "deleted": "Datei gelöscht",
+      "deleteError": "Die Datei konnte nicht gelöscht werden",
+      "downloadError": "Die Datei konnte nicht heruntergeladen werden"
+    },
+    "upload": {
+      "oneFileUploaded": "Datei hochgeladen",
+      "filesUploaded": "{{count}} Dateien hochgeladen",
+      "error": "Eine oder mehrere Dateien konnten nicht hochgeladen werden",
+      "uploading": "Wird hochgeladen…",
+      "uploadingPercent": "Wird hochgeladen — {{percent}} %",
+      "clickToUpload": "Zum Hochladen klicken",
+      "orDragAndDrop": "oder per Drag & Drop",
+      "acceptedTypes": "Bilder, Audio, Video und Dokumente"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, bevor Sie Medien hochladen.",
+      "noMatchTitle": "Keine passenden Dateien",
+      "noneTitle": "Noch keine Dateien",
+      "noMatchDescription": "Versuchen Sie eine andere Suche oder einen anderen Filter.",
+      "canEditDescription": "Laden Sie Fotos, Titel, Videos oder Dokumente hoch, um loszulegen.",
+      "viewOnlyDescription": "Diesem Arbeitsbereich wurden noch keine Dateien hinzugefügt."
+    }
+  },
+  "epkBuilder": {
+    "sectionTypes": {
+      "hero": "Hero",
+      "biography": "Biografie",
+      "photos": "Fotos",
+      "music": "Musik",
+      "releases": "Veröffentlichungen",
+      "videos": "Videos",
+      "press": "Presse",
+      "events": "Termine",
+      "socialNetworks": "Soziale Netzwerke",
+      "contact": "Kontakt",
+      "downloads": "Downloads",
+      "credits": "Credits",
+      "custom": "Benutzerdefinierte Sektion"
+    },
+    "addSection": "Sektion hinzufügen",
+    "added": "Hinzugefügt",
+    "sectionAdded": "Sektion „{{section}}“ hinzugefügt",
+    "sectionAddError": "Diese Sektion konnte nicht hinzugefügt werden",
+    "device": {
+      "desktop": "Desktop-Vorschau",
+      "tablet": "Tablet-Vorschau",
+      "mobile": "Mobil-Vorschau"
+    },
+    "notFound": {
+      "title": "EPK nicht gefunden",
+      "description": "Diese Pressemappe wurde möglicherweise gelöscht."
+    },
+    "viewPublicPage": "Öffentliche Seite ansehen",
+    "viewPublicPageDisabledTitle": "Veröffentlichen Sie diesen EPK, um die öffentliche Seite zu aktivieren",
+    "downloadPdf": "PDF herunterladen",
+    "downloadPdfError": "Das PDF konnte nicht heruntergeladen werden",
+    "copyShareLink": "Freigabelink kopieren",
+    "shareLinkCopied": "Freigabelink kopiert — Linkvorschauen zeigen Titel, Beschreibung und Titelbild",
+    "shareLinkDisabledTitle": "Veröffentlichen Sie diesen EPK, um einen Freigabelink zu erhalten",
+    "customDomain": {
+      "trigger": "Eigene Domain",
+      "description": "Stellen Sie die öffentliche Seite dieses EPK über Ihre eigene Domain bereit, z. B. press.ihreband.de. Erfordert den Business-Plan.",
+      "setupDescription": "Geben Sie die gewünschte Domain ein. Sie fügen zwei DNS-Einträge hinzu, um Ihren Besitz nachzuweisen und hierher zu verweisen.",
+      "domainField": "Domain",
+      "setup": "Einrichten",
+      "setupError": "Diese Domain konnte nicht eingerichtet werden",
+      "recordHost": "Host",
+      "recordValue": "Wert",
+      "copied": "In die Zwischenablage kopiert",
+      "verified": "Verifiziert",
+      "pending": "Verifizierung ausstehend",
+      "verifyDescription": "Fügen Sie diese beiden DNS-Einträge bei Ihrem Domain-Anbieter hinzu und prüfen Sie dann die Verifizierung. DNS-Änderungen können eine Weile brauchen, bis sie wirksam werden.",
+      "checkVerification": "Verifizierung prüfen",
+      "verifySuccess": "Domain verifiziert — Ihre öffentliche Seite ist jetzt darüber erreichbar",
+      "verifyError": "Diese Domain konnte noch nicht verifiziert werden",
+      "removeConfirm": "Diese eigene Domain entfernen? Der EPK bleibt weiterhin über seinen normalen KORAX-Link erreichbar.",
+      "removed": "Eigene Domain entfernt",
+      "removeError": "Diese Domain konnte nicht entfernt werden"
+    },
+    "tabs": {
+      "section": "Sektion",
+      "comments": "Kommentare",
+      "theme": "Design"
+    },
+    "comments": {
+      "empty": "Noch keine Kommentare. Seien Sie der Erste.",
+      "placeholder": "Kommentieren Sie diese Sektion…",
+      "post": "Veröffentlichen",
+      "deletedUser": "Gelöschter Benutzer",
+      "addError": "Ihr Kommentar konnte nicht veröffentlicht werden",
+      "updateError": "Ihr Kommentar konnte nicht aktualisiert werden",
+      "deleteError": "Dieser Kommentar konnte nicht gelöscht werden"
+    },
+    "hidden": "Ausgeblendet",
+    "noSectionsCanEdit": "Noch keine Sektionen. Fügen Sie eine hinzu, um mit diesem EPK zu beginnen.",
+    "noSections": "Noch keine Sektionen.",
+    "deleteSectionDialog": {
+      "title": "Sektion löschen",
+      "description": "„{{title}}“ wird dauerhaft aus diesem EPK entfernt."
+    },
+    "toasts": {
+      "sectionDuplicated": "Sektion dupliziert",
+      "sectionDuplicateError": "Diese Sektion konnte nicht dupliziert werden",
+      "sectionDeleted": "Sektion gelöscht",
+      "sectionDeleteError": "Diese Sektion konnte nicht gelöscht werden"
+    },
+    "settingsPanel": {
+      "noSectionTitle": "Keine Sektion ausgewählt",
+      "noSectionDescription": "Wählen Sie links eine Sektion zum Bearbeiten aus.",
+      "titleOverride": "Eigener Sektionstitel (optional)",
+      "saveError": "Änderungen konnten nicht gespeichert werden"
+    },
+    "theme": {
+      "font": { "sans": "Serifenlos", "serif": "Serif", "display": "Display", "mono": "Monospace" },
+      "buttonStyle": { "rounded": "Abgerundet", "pill": "Pillenform", "square": "Eckig" },
+      "radius": { "none": "Keine", "small": "Klein", "medium": "Mittel", "large": "Groß" },
+      "spacing": { "compact": "Kompakt", "comfortable": "Komfortabel", "spacious": "Großzügig" },
+      "headerStyle": { "centered": "Zentriert", "left": "Linksbündig", "minimal": "Minimal" },
+      "defaultOption": "Standard ({{value}})",
+      "reset": "Zurücksetzen",
+      "baseTheme": "Basis-Design",
+      "customize": "Anpassen",
+      "backgroundColor": "Hintergrundfarbe",
+      "textColor": "Textfarbe",
+      "accentColor": "Akzentfarbe",
+      "fontLabel": "Schriftart",
+      "buttonStyleLabel": "Button-Stil",
+      "radiusLabel": "Eckenradius",
+      "spacingLabel": "Sektionsabstand",
+      "headerStyleLabel": "Kopfzeilen-Stil",
+      "currently": "Aktuell: {{preset}} · {{font}} · {{buttonStyle}}-Buttons",
+      "saveError": "Das Design konnte nicht gespeichert werden"
+    },
+    "privateLinks": {
+      "trigger": "Private Links",
+      "description": "Teilen Sie diesen EPK mit bestimmten Personen, ohne ihn zu veröffentlichen — funktioniert auch als Entwurf.",
+      "status": { "revoked": "Widerrufen", "expired": "Abgelaufen", "active": "Aktiv" },
+      "untitledLink": "Link ohne Titel",
+      "passwordProtected": "Passwortgeschützt",
+      "noPassword": "Kein Passwort",
+      "expires": "Läuft ab am {{date}}",
+      "viewCount_one": "{{count}} Aufruf",
+      "viewCount_other": "{{count}} Aufrufe",
+      "copyLink": "Link kopieren",
+      "reactivate": "Reaktivieren",
+      "revoke": "Widerrufen",
+      "deleteConfirm": "Diesen Link dauerhaft löschen?",
+      "deleting": "Wird gelöscht…",
+      "none": "Noch keine privaten Links.",
+      "labelField": "Beschriftung (optional)",
+      "passwordField": "Passwort (optional)",
+      "passwordPlaceholder": "Leer lassen für keines",
+      "expiresField": "Ablaufdatum (optional)",
+      "createLink": "Link erstellen",
+      "toasts": {
+        "copied": "Link kopiert",
+        "reactivated": "Link reaktiviert",
+        "reactivateError": "Der Link konnte nicht reaktiviert werden",
+        "revoked": "Link widerrufen",
+        "revokeError": "Der Link konnte nicht widerrufen werden",
+        "deleted": "Link gelöscht",
+        "deleteError": "Der Link konnte nicht gelöscht werden",
+        "created": "Privater Link erstellt",
+        "createError": "Der Link konnte nicht erstellt werden"
+      }
+    },
+    "preview": {
+      "noBiography": "Noch keine Biografie.",
+      "noSocialLinks": "Noch keine sozialen Links hinzugefügt.",
+      "booking": "Booking",
+      "press": "Presse",
+      "management": "Management",
+      "noContactDetails": "Noch keine Kontaktdaten.",
+      "noFilesSelected": "Noch keine herunterladbaren Dateien ausgewählt.",
+      "noCredits": "Noch keine Credits.",
+      "emptySection": "Leere Sektion.",
+      "noPhotos": "Noch keine Fotos.",
+      "noTracks": "Noch keine Titel.",
+      "noReleases": "Noch keine Veröffentlichungen.",
+      "untitledRelease": "Veröffentlichung ohne Titel",
+      "noVideos": "Noch keine Videos.",
+      "noFileSelected": "Noch keine Datei ausgewählt.",
+      "untitledVideo": "Video ohne Titel",
+      "untitledTrack": "Unbenannter Track",
+      "noPress": "Noch keine Presseberichte.",
+      "read": "Lesen",
+      "comingSoon": "Der Inhalt „{{label}}“ folgt in einer späteren Phase.",
+      "noSectionsEnabled": "Keine Sektionen aktiviert. Fügen Sie eine Sektion hinzu oder aktivieren Sie sie, um die Vorschau zu sehen."
+    },
+    "gallery": {
+      "moveUp": "Nach oben",
+      "moveDown": "Nach unten",
+      "remove": "Entfernen"
+    },
+    "mediaPicker": {
+      "selectImage": "Bild auswählen",
+      "change": "Ändern",
+      "selectFromLibrary": "Aus der Medienbibliothek auswählen",
+      "noFilesYet": "Noch keine Dateien — laden Sie zuerst welche in die Medienbibliothek hoch.",
+      "addFiles": "Dateien aus der Medienbibliothek hinzufügen",
+      "selectDownloadable": "Herunterladbare Dateien auswählen"
+    },
+    "hero": {
+      "headline": "Überschrift",
+      "headlinePlaceholder": "Standardmäßig der Künstlername",
+      "subtitle": "Untertitel",
+      "description": "Kurzbeschreibung",
+      "profileImage": "Profilbild",
+      "backgroundImage": "Hintergrundbild",
+      "alignment": "Ausrichtung",
+      "alignmentLeft": "Links",
+      "alignmentCenter": "Mitte",
+      "alignmentRight": "Rechts",
+      "height": "Höhe",
+      "heightSmall": "Klein",
+      "heightMedium": "Mittel",
+      "heightLarge": "Groß",
+      "darkOverlay": "Dunkle Überlagerung",
+      "ctaLabel": "Beschriftung des CTA-Buttons",
+      "ctaLabelPlaceholder": "Jetzt anhören",
+      "ctaUrl": "CTA-URL"
+    },
+    "biography": {
+      "placeholder": "Erzählen Sie die Geschichte des Künstlers…"
+    },
+    "comingSoon": {
+      "title": "Editor für „{{label}}“ bald verfügbar",
+      "description": "Die vollständige Inhaltsverwaltung für diese Sektion folgt in einer späteren Phase. Sie können sie bereits hinzufügen, neu anordnen und aktivieren."
+    },
+    "contact": {
+      "bookingEmail": "Booking-E-Mail",
+      "pressEmail": "Presse-E-Mail",
+      "managementEmail": "Management-E-Mail",
+      "website": "Website",
+      "phone": "Telefon",
+      "address": "Adresse",
+      "privacyNote": "Private Informationen werden nie auf der öffentlichen Seite angezeigt, es sei denn, Sie aktivieren dies unten ausdrücklich.",
+      "showPhonePublicly": "Telefon öffentlich anzeigen",
+      "showAddressPublicly": "Adresse öffentlich anzeigen"
+    },
+    "credits": {
+      "rolePlaceholder": "Rolle (z. B. Produzent)",
+      "namePlaceholder": "Name",
+      "addCredit": "Credit hinzufügen"
+    },
+    "custom": {
+      "heading": "Überschrift",
+      "content": "Inhalt",
+      "placeholder": "Schreiben Sie, was Sie möchten…"
+    },
+    "downloads": {
+      "files": "Herunterladbare Dateien"
+    },
+    "music": {
+      "trackTitlePlaceholder": "Titelname (standardmäßig der Dateiname)",
+      "directUpload": "Direkter Upload",
+      "selectAudioFile": "Audiodatei auswählen",
+      "addTrack": "Titel hinzufügen"
+    },
+    "photos": {
+      "captionPlaceholder": "Bildunterschrift (optional)",
+      "creditPlaceholder": "Credit (optional, z. B. Foto: Jane Doe)",
+      "addPhoto": "Foto hinzufügen"
+    },
+    "press": {
+      "label": "Presseberichte",
+      "outletPlaceholder": "Medium (z. B. Rolling Stone)",
+      "quotePlaceholder": "Zitat",
+      "articleUrlPlaceholder": "Artikel-URL (optional)",
+      "authorPlaceholder": "Autor (optional)",
+      "addMention": "Presseerwähnung hinzufügen"
+    },
+    "releases": {
+      "typeAlbum": "Album",
+      "typeEp": "EP",
+      "typeSingle": "Single",
+      "titlePlaceholder": "Titel der Veröffentlichung",
+      "selectCoverArt": "Cover auswählen",
+      "streamingLinks": "Streaming-Links (optional)",
+      "addRelease": "Veröffentlichung hinzufügen"
+    },
+    "videos": {
+      "directUpload": "Direkter Upload",
+      "titlePlaceholder": "Videotitel (optional)",
+      "selectVideoFile": "Videodatei auswählen",
+      "addVideo": "Video hinzufügen"
+    },
+    "richText": {
+      "heading2": "Überschrift 2",
+      "heading3": "Überschrift 3",
+      "bold": "Fett",
+      "italic": "Kursiv",
+      "bulletList": "Aufzählungsliste",
+      "numberedList": "Nummerierte Liste",
+      "quote": "Zitat",
+      "link": "Link",
+      "linkUrlPrompt": "Link-URL"
+    }
+  },
+  "analytics": {
+    "pageViews": "Seitenaufrufe",
+    "noPageViews": "Noch keine Seitenaufrufe in diesem Zeitraum.",
+    "range": {
+      "days7": "7 Tage",
+      "days30": "30 Tage",
+      "days90": "90 Tage"
+    },
+    "stats": {
+      "pageViews": "Seitenaufrufe",
+      "uniqueVisitors": "Eindeutige Besucher",
+      "downloads": "Downloads",
+      "audioPlays": "Audio-Wiedergaben",
+      "videoPlays": "Video-Wiedergaben"
+    },
+    "breakdowns": {
+      "topReferrers": "Top-Referrer",
+      "noReferrerData": "Noch keine Referrer-Daten.",
+      "topCountries": "Top-Länder",
+      "noCountryData": "Noch keine Länderdaten — dafür ist GEOIP_COUNTRY_CODE (Apache mod_geoip2) oder ein CF-IPCountry-Header von Ihrem Hoster/CDN erforderlich.",
+      "devices": "Geräte",
+      "noDeviceData": "Noch keine Gerätedaten.",
+      "topDownloads": "Top-Downloads",
+      "noDownloadData": "Noch keine Downloads.",
+      "topPrivateLinks": "Top private Links",
+      "noPrivateLinkData": "Noch kein Traffic über private Links."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, bevor Sie Statistiken ansehen.",
+      "noEpksDescription": "Erstellen und veröffentlichen Sie einen EPK, um hier Seitenaufrufe, Downloads und Wiedergaben zu sehen."
+    }
+  },
+  "dashboard": {
+    "welcome": "Willkommen bei KORAX",
+    "welcomeWithName": "Willkommen bei KORAX, {{name}}",
+    "welcomeBack": "Willkommen zurück",
+    "welcomeBackWithName": "Willkommen zurück, {{name}}",
+    "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich, um Ihre erste Pressemappe zu erstellen.",
+    "createFirstWorkspace": "Ersten Arbeitsbereich erstellen",
+    "createFirstEpk": "Ersten EPK erstellen",
+    "whatsHappening": "Das passiert gerade in {{workspace}}.",
+    "stats": {
+      "totalEpks": "EPKs insgesamt",
+      "publishedEpks": "Veröffentlichte EPKs",
+      "totalViews": "Aufrufe insgesamt",
+      "downloads": "Downloads"
+    }
+  },
+  "notFound": {
+    "description": "Diese Seite existiert nicht.",
+    "backToDashboard": "Zurück zum Dashboard"
+  },
+  "layout": {
+    "openNavigation": "Navigation öffnen",
+    "navigation": "Navigation"
+  },
+  "publicEpk": {
+    "notAvailable": {
+      "title": "Diese Pressemappe ist nicht verfügbar",
+      "description": "Sie wurde möglicherweise nicht mehr veröffentlicht oder der Link ist falsch."
+    },
+    "readThePiece": "Artikel lesen",
+    "downloadPdf": "PDF herunterladen"
+  },
+  "privateEpk": {
+    "passwordGate": {
+      "title": "Diese Pressemappe ist passwortgeschützt",
+      "description": "Geben Sie das Ihnen mitgeteilte Passwort ein, um sie anzusehen.",
+      "checking": "Wird geprüft…",
+      "submit": "Pressemappe ansehen"
+    },
+    "notAvailable": {
+      "title": "Dieser Link ist nicht verfügbar",
+      "description": "Der Link ist möglicherweise falsch."
+    },
+    "expired": {
+      "title": "Dieser Link ist nicht mehr verfügbar",
+      "description": "Er ist möglicherweise abgelaufen oder wurde vom Inhaber widerrufen. Bitten Sie ihn um einen neuen Link."
+    }
+  },
+  "notifications": {
+    "trigger": "Benachrichtigungen",
+    "title": "Benachrichtigungen",
+    "markAllRead": "Alle als gelesen markieren",
+    "empty": "Noch keine Benachrichtigungen.",
+    "invitedByBlurb": "{{inviter}} hat Sie eingeladen, {{workspace}} als {{role}} beizutreten",
+    "invitedBlurb": "Sie wurden eingeladen, {{workspace}} als {{role}} beizutreten",
+    "epkPublishedByBlurb": "{{publisher}} hat „{{epk}}“ veröffentlicht",
+    "epkPublishedBlurb": "„{{epk}}“ wurde veröffentlicht",
+    "teamMemberJoinedBlurb": "{{member}} ist {{workspace}} als {{role}} beigetreten",
+    "someone": "Jemand"
+  },
+  "common": {
+    "save": "Änderungen speichern",
+    "cancel": "Abbrechen",
+    "delete": "Löschen",
+    "edit": "Bearbeiten",
+    "create": "Erstellen",
+    "close": "Schließen",
+    "loading": "Wird geladen…",
+    "confirm": "Bestätigen",
+    "back": "Zurück",
+    "next": "Weiter",
+    "search": "Suchen",
+    "actions": "Aktionen",
+    "viewOnlyAccess": "Sie haben nur Lesezugriff auf diesen Arbeitsbereich.",
+    "noWorkspaceYet": "Noch kein Arbeitsbereich",
+    "roles": {
+      "owner": "Inhaber",
+      "admin": "Admin",
+      "editor": "Editor",
+      "viewer": "Betrachter"
+    }
+  }
+}

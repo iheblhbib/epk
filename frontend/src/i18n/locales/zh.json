@@ -1,0 +1,1030 @@
+{
+  "nav": {
+    "dashboard": "仪表盘",
+    "myEpks": "我的 EPK",
+    "mediaLibrary": "媒体库",
+    "analytics": "数据分析",
+    "contacts": "联系人",
+    "team": "团队",
+    "admin": "管理后台",
+    "settings": "设置",
+    "billing": "账单"
+  },
+  "topbar": {
+    "settings": "设置",
+    "logout": "退出登录",
+    "logoutError": "无法退出登录"
+  },
+  "search": {
+    "trigger": "搜索",
+    "placeholder": "搜索 EPK、艺人、联系人、媒体…",
+    "hint": "继续输入以在此工作区中搜索。",
+    "empty": "未找到结果。",
+    "groups": {
+      "epks": "EPK",
+      "artists": "艺人",
+      "contacts": "联系人",
+      "media": "媒体"
+    }
+  },
+  "theme": {
+    "toggle": "切换主题",
+    "light": "浅色",
+    "dark": "深色",
+    "system": "跟随系统"
+  },
+  "language": {
+    "toggle": "切换语言"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "仪表盘",
+      "users": "用户",
+      "workspaces": "工作区",
+      "epks": "EPK",
+      "auditLog": "审计日志",
+      "backToApp": "返回应用"
+    },
+    "dashboard": {
+      "title": "管理仪表盘",
+      "description": "平台使用情况概览。",
+      "totalUsers": "用户总数",
+      "newUsers30d": "新用户（30天）",
+      "workspaces": "工作区",
+      "totalEpks": "EPK 总数",
+      "publishedEpks": "已发布的 EPK",
+      "pageViews30d": "页面浏览量（30天）",
+      "contacts": "联系人",
+      "mediaFiles": "媒体文件",
+      "storageUsed": "已用存储空间"
+    },
+    "pagination": {
+      "total": "共 {{count}} 条",
+      "previous": "上一页",
+      "next": "下一页",
+      "pageOf": "第 {{page}} 页，共 {{lastPage}} 页"
+    },
+    "users": {
+      "title": "用户",
+      "description": "平台上的所有账户。",
+      "searchPlaceholder": "搜索姓名或邮箱…",
+      "you": "（您）",
+      "roleAdmin": "管理员",
+      "roleUser": "用户",
+      "suspended": "已暂停",
+      "active": "正常",
+      "revokeAdmin": "撤销管理员权限",
+      "makeAdmin": "设为管理员",
+      "unsuspend": "恢复账户",
+      "suspend": "暂停账户",
+      "roleUpdateError": "无法更新该用户的角色",
+      "updateError": "无法更新该用户",
+      "columns": {
+        "name": "姓名",
+        "email": "邮箱",
+        "role": "角色",
+        "status": "状态"
+      }
+    },
+    "workspaces": {
+      "title": "工作区",
+      "description": "平台上的所有工作区。",
+      "searchPlaceholder": "按名称搜索…",
+      "planFree": "免费版",
+      "planPro": "专业版",
+      "planBusiness": "商业版",
+      "planUpdated": "套餐已更新为 {{plan}}",
+      "planUpdateError": "无法更新套餐",
+      "deleted": "工作区已删除",
+      "deleteError": "无法删除该工作区",
+      "columns": {
+        "name": "名称",
+        "owner": "所有者",
+        "members": "成员",
+        "epks": "EPK",
+        "plan": "套餐",
+        "created": "创建时间"
+      }
+    },
+    "epks": {
+      "title": "EPK",
+      "description": "平台上的所有 EPK。",
+      "searchPlaceholder": "按标题搜索…",
+      "allStatuses": "所有状态",
+      "unpublish": "取消发布",
+      "unpublishedToast": "已取消发布《{{title}}》",
+      "unpublishError": "无法取消发布该 EPK",
+      "columns": {
+        "workspace": "工作区"
+      }
+    },
+    "auditLog": {
+      "description": "在此管理后台执行的操作。",
+      "noneTitle": "暂无活动",
+      "noneDescription": "管理操作将显示在此处。",
+      "system": "系统",
+      "columns": {
+        "action": "操作",
+        "admin": "管理员",
+        "subject": "对象",
+        "ipAddress": "IP 地址",
+        "when": "时间"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "欢迎回来",
+      "description": "登录以管理您的电子新闻资料袋",
+      "email": "邮箱",
+      "password": "密码",
+      "forgotPassword": "忘记密码？",
+      "signIn": "登录",
+      "noAccount": "还没有账户？",
+      "signUp": "注册",
+      "justVerified": "您的邮箱已通过验证，现在可以登录了。",
+      "credentialsMismatch": "该凭据与我们的记录不匹配。",
+      "failedToast": "登录失败",
+      "tooManyAttempts": "尝试次数过多,请等待一分钟后重试。",
+      "twoFactorDescription": "请输入身份验证应用中的 6 位数验证码。",
+      "twoFactorCodeLabel": "验证码",
+      "recoveryCodeLabel": "恢复代码",
+      "verifyCode": "验证",
+      "useRecoveryCodeInstead": "改用恢复代码",
+      "useAuthenticatorInstead": "改用身份验证应用",
+      "twoFactorInvalid": "该验证码无效，请重试。"
+    },
+    "register": {
+      "title": "创建您的账户",
+      "description": "几分钟即可开始创建您的 EPK",
+      "alreadyHaveAccount": "已有账户？",
+      "signIn": "登录",
+      "name": "姓名",
+      "email": "邮箱",
+      "password": "密码",
+      "confirmPassword": "确认密码",
+      "createAccount": "创建账户",
+      "createAccountError": "无法创建您的账户",
+      "tooManyAttempts": "尝试次数过多,请等待一分钟后重试。"
+    },
+    "forgotPassword": {
+      "title": "重置密码",
+      "description": "我们将向您发送重置密码的链接",
+      "backToSignIn": "返回登录",
+      "email": "邮箱",
+      "sendResetLink": "发送重置链接",
+      "checkInbox": "请查收邮箱中的密码重置链接。",
+      "notFound": "未找到使用该邮箱地址的账户。"
+    },
+    "resetPassword": {
+      "title": "设置新密码",
+      "backToSignIn": "返回登录",
+      "email": "邮箱",
+      "newPassword": "新密码",
+      "confirmNewPassword": "确认新密码",
+      "submit": "重置密码",
+      "success": "密码已重置，现在可以登录了。",
+      "invalidLink": "此重置链接无效或已过期。"
+    },
+    "verifyEmail": {
+      "title": "验证您的邮箱",
+      "description": "我们已向 {{email}} 发送了验证链接",
+      "logout": "退出登录",
+      "instructions": "点击邮件中的链接以激活您的账户。没有收到？",
+      "resend": "重新发送验证邮件",
+      "sent": "邮件已发送",
+      "sentToast": "验证邮件已发送",
+      "sendError": "目前无法发送邮件"
+    }
+  },
+  "validation": {
+    "nameRequired": "姓名为必填项",
+    "emailRequired": "邮箱为必填项",
+    "emailInvalid": "请输入有效的邮箱地址",
+    "emailInvalidShort": "请输入有效的邮箱",
+    "passwordRequired": "密码为必填项",
+    "passwordStrength": "密码必须至少包含 8 个字符，并包含大写字母、小写字母、数字和符号。",
+    "confirmPasswordRequired": "请确认您的密码",
+    "passwordsDoNotMatch": "两次输入的密码不一致",
+    "currentPasswordRequired": "当前密码为必填项",
+    "titleRequired": "标题为必填项",
+    "selectOrCreateArtist": "请选择或创建一位艺人",
+    "artistNameRequired": "艺人姓名为必填项"
+  },
+  "password": {
+    "show": "显示密码",
+    "hide": "隐藏密码",
+    "requirements": {
+      "length": "至少 8 个字符",
+      "lowercase": "一个小写字母",
+      "uppercase": "一个大写字母",
+      "number": "一个数字",
+      "symbol": "一个符号（例如 !@#$%）"
+    }
+  },
+  "contacts": {
+    "dialog": {
+      "editTitle": "编辑联系人",
+      "addTitle": "添加联系人",
+      "description": "记者、电台、博客、厂牌，以及任何与您在宣传推广方面合作的人。"
+    },
+    "fields": {
+      "name": "姓名",
+      "email": "邮箱",
+      "phone": "电话",
+      "category": "类别",
+      "organization": "机构",
+      "notes": "备注（可选）"
+    },
+    "categories": {
+      "journalist": "记者",
+      "radio": "电台",
+      "blog": "博客",
+      "label": "厂牌",
+      "booking": "演出经纪",
+      "management": "经纪管理",
+      "pr": "公关",
+      "other": "其他"
+    },
+    "toasts": {
+      "updated": "联系人已更新",
+      "added": "联系人已添加",
+      "updateError": "无法更新该联系人",
+      "addError": "无法添加该联系人",
+      "deleted": "联系人已删除",
+      "deleteError": "无法删除该联系人"
+    },
+    "allCategories": "所有类别",
+    "pageDescription": "记者、电台、博客，以及任何与您在宣传推广方面合作的人。",
+    "searchPlaceholder": "搜索姓名、邮箱、机构…",
+    "deleteDialog": {
+      "title": "删除联系人",
+      "description": "“{{name}}”将被永久删除。"
+    },
+    "import": {
+      "importing": "正在导入…",
+      "button": "导入 CSV",
+      "created": "已导入 {{count}} 条",
+      "skipped": "已跳过 {{count}} 条",
+      "error": "无法导入该文件"
+    },
+    "export": {
+      "button": "导出 CSV",
+      "error": "无法导出联系人"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，再添加联系人。",
+      "noMatchTitle": "没有匹配的联系人",
+      "noneTitle": "暂无联系人",
+      "noMatchDescription": "请尝试其他搜索词或类别。",
+      "canEditDescription": "添加您的第一个联系人，或导入 CSV 一次性批量添加。",
+      "viewOnlyDescription": "此工作区尚未添加任何联系人。"
+    }
+  },
+  "epks": {
+    "artistDialog": {
+      "title": "新建艺人",
+      "description": "您可以稍后完善其个人资料的其余部分。",
+      "submit": "创建艺人",
+      "toastCreated": "艺人已创建",
+      "toastError": "无法创建艺人"
+    },
+    "formDialog": {
+      "editTitle": "编辑 EPK",
+      "createTitle": "创建 EPK",
+      "editDescription": "更新标题、艺人和 SEO 详情。",
+      "createDescription": "版块与主题的可视化编辑器将在后续阶段推出 — 此操作仅创建 EPK 记录。",
+      "submitCreate": "创建 EPK"
+    },
+    "fields": {
+      "name": "姓名",
+      "namePlaceholder": "艺人或乐队名称",
+      "genre": "曲风",
+      "genrePlaceholder": "电子、摇滚、爵士……",
+      "country": "国家/地区",
+      "selectCountry": "选择国家/地区",
+      "title": "标题",
+      "titlePlaceholder": "2026 夏季巡演 EPK",
+      "artist": "艺人",
+      "selectArtist": "选择艺人",
+      "seoTitle": "SEO 标题（可选）",
+      "seoTitlePlaceholder": "默认使用 EPK 标题"
+    },
+    "toasts": {
+      "updated": "EPK 已更新",
+      "created": "EPK 已创建",
+      "updateError": "无法更新该 EPK",
+      "createError": "无法创建该 EPK",
+      "published": "EPK 已发布",
+      "unpublished": "EPK 已取消发布",
+      "statusError": "无法更新该 EPK 的状态",
+      "duplicated": "EPK 已复制",
+      "duplicateError": "无法复制该 EPK",
+      "deleted": "EPK 已删除",
+      "deleteError": "无法删除该 EPK"
+    },
+    "status": {
+      "draft": "草稿",
+      "published": "已发布",
+      "archived": "已归档"
+    },
+    "duplicate": "复制",
+    "noArtist": "暂无艺人",
+    "builder": "编辑器",
+    "pageDescription": "管理 {{workspace}} 的 EPK。",
+    "deleteDialog": {
+      "title": "删除 EPK",
+      "description": "“{{title}}”将被永久删除。"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，再添加 EPK。",
+      "noneTitle": "暂无 EPK",
+      "canEditDescription": "创建您的第一个 EPK 开始使用。版块与主题的可视化编辑器将在后续阶段推出。",
+      "viewOnlyDescription": "此工作区尚未创建任何 EPK。"
+    }
+  },
+  "settings": {
+    "pageDescription": "管理您的账户和工作区详情。",
+    "tabs": {
+      "profile": "个人资料",
+      "password": "密码",
+      "workspace": "工作区",
+      "notifications": "通知",
+      "activity": "活动",
+      "apiTokens": "API 令牌",
+      "twoFactor": "双重验证"
+    },
+    "profile": {
+      "title": "个人资料",
+      "description": "更新您的姓名和邮箱地址。",
+      "name": "姓名",
+      "email": "邮箱",
+      "updated": "个人资料已更新",
+      "updateError": "无法更新您的个人资料"
+    },
+    "password": {
+      "title": "密码",
+      "description": "选择一个强且唯一的密码。",
+      "current": "当前密码",
+      "new": "新密码",
+      "confirmNew": "确认新密码",
+      "submit": "更新密码",
+      "updated": "密码已更新",
+      "incorrect": "您的当前密码不正确。"
+    },
+    "workspace": {
+      "title": "工作区详情",
+      "description": "更新 {{workspace}} 的名称和描述。",
+      "descriptionField": "描述",
+      "updated": "工作区已更新",
+      "updateError": "无法更新工作区"
+    },
+    "dangerZone": {
+      "title": "危险操作区",
+      "ownerDescription": "退出或删除此工作区后将无法撤销。",
+      "memberDescription": "退出后，您将失去对此工作区 EPK、媒体和联系人的访问权限。",
+      "leave": "退出工作区",
+      "delete": "删除工作区",
+      "leaveConfirm": "退出",
+      "leaveDialogDescription": "在有人重新邀请您之前，您将失去对“{{workspace}}”的访问权限。",
+      "leftToast": "已退出 {{workspace}}",
+      "leaveError": "无法退出此工作区 — 作为唯一所有者，您需要先转让或删除该工作区。",
+      "deleteDialogDescription": "“{{workspace}}”及其中的所有内容 — EPK、媒体、联系人 — 都将被永久删除。",
+      "deletedToast": "已删除 {{workspace}}",
+      "deleteError": "无法删除此工作区"
+    },
+    "notifications": {
+      "title": "通知",
+      "description": "选择每种事件的通知方式。",
+      "updateError": "无法更新您的通知偏好设置",
+      "channel": {
+        "email": "电子邮件",
+        "inApp": "应用内"
+      },
+      "workspaceInvitation": {
+        "title": "工作区邀请",
+        "mailDescription": "当有人邀请您加入工作区时收到电子邮件。",
+        "databaseDescription": "当有人邀请您加入工作区时显示提醒通知。"
+      },
+      "epkPublished": {
+        "title": "EPK 已发布",
+        "databaseDescription": "当团队成员发布 EPK 时显示提醒通知。"
+      },
+      "teamMemberJoined": {
+        "title": "新成员加入",
+        "databaseDescription": "当有人加入您的工作区时显示提醒通知。"
+      }
+    },
+    "activity": {
+      "title": "活动",
+      "description": "此工作区中最近的更改。",
+      "emptyTitle": "暂无活动",
+      "emptyDescription": "在此工作区中执行的操作将显示在此处。",
+      "system": "系统",
+      "pageOf": "第 {{page}} 页，共 {{lastPage}} 页",
+      "actions": {
+        "epkCreated": "创建了 EPK“{{title}}”",
+        "epkPublished": "发布了 EPK“{{title}}”",
+        "epkUnpublished": "取消发布了 EPK“{{title}}”",
+        "epkDeleted": "删除了 EPK“{{title}}”",
+        "epkDuplicated": "将“{{from}}”复制为“{{title}}”",
+        "memberInvited": "邀请了 {{email}} 加入工作区",
+        "memberRoleChanged": "将 {{member}} 的角色更改为 {{role}}",
+        "memberRemoved": "将 {{member}} 从工作区移除",
+        "workspaceUpdated": "更新了工作区详情"
+      }
+    },
+    "apiTokens": {
+      "title": "API 令牌",
+      "description": "用于以您的身份通过脚本访问此 API 的个人访问令牌。",
+      "nameField": "令牌名称",
+      "namePlaceholder": "例如：CI 脚本",
+      "createToken": "创建令牌",
+      "createError": "无法创建此令牌",
+      "none": "暂无 API 令牌。",
+      "created": "创建于 {{date}}",
+      "lastUsed": "上次使用 {{when}}",
+      "neverUsed": "从未使用",
+      "revoke": "撤销",
+      "revokeConfirm": "撤销此令牌？使用它的任何内容都会立即停止工作。",
+      "revoked": "令牌已撤销",
+      "revokeError": "无法撤销此令牌",
+      "createdTitle": "令牌已创建",
+      "createdDescription": "请立即复制此令牌——之后将无法再次查看。",
+      "copy": "复制",
+      "copied": "已复制到剪贴板"
+    },
+    "twoFactor": {
+      "title": "双重验证",
+      "description": "登录时除密码外还需要身份验证应用提供的验证码。",
+      "enabled": "已启用",
+      "disabled": "已禁用",
+      "enable": "启用双重验证",
+      "disable": "禁用双重验证",
+      "enableError": "无法开始双重验证设置",
+      "confirmPasswordDescription": "确认您的密码以开始设置。",
+      "scanDescription": "使用您的身份验证应用（Google Authenticator、1Password、Authy 等）扫描此二维码，或在下方手动输入代码。",
+      "qrAlt": "双重验证二维码",
+      "secretLabel": "设置密钥",
+      "confirmCodeLabel": "输入应用中的 6 位数验证码",
+      "confirmAndEnable": "确认并启用",
+      "confirmError": "该验证码无效，请重试。",
+      "enabledSuccess": "双重验证现已启用",
+      "viewRecoveryCodes": "查看恢复代码",
+      "regenerateCodes": "生成新代码",
+      "recoveryCodesTitle": "恢复代码",
+      "recoveryCodesDescription": "请妥善保存。如果您无法访问身份验证应用，每个代码可用于登录一次。",
+      "recoveryCodesRegenerated": "已生成新的恢复代码——旧代码已失效",
+      "recoveryCodesRegenerateError": "无法生成新的恢复代码",
+      "disableConfirm": "要禁用双重验证吗？之后您的账户登录将只需要密码。",
+      "disableError": "无法禁用双重验证"
+    }
+  },
+  "billing": {
+    "currentPlan": "当前套餐",
+    "unlimitedEpks": "EPK 数量不限",
+    "epkCount_one": "{{count}} 个 EPK",
+    "epkCount_other": "{{count}} 个 EPK",
+    "unlimitedTeamMembers": "团队成员数量不限",
+    "teamMemberCount_one": "{{count}} 名团队成员",
+    "teamMemberCount_other": "{{count}} 名团队成员",
+    "storage": "存储空间",
+    "pageDescription": "{{workspace}} 当前使用 {{plan}} 套餐。",
+    "plans": "套餐方案",
+    "upgradeTo": "升级到{{plan}}",
+    "manageBilling": "管理账单",
+    "pastDueWarning": "您的上次付款失败。请更新付款方式，以免失去付费功能的使用权限。",
+    "checkoutSuccess": "订阅已更新 — 感谢您！",
+    "checkoutCanceled": "结账已取消 — 未进行任何更改。",
+    "checkoutError": "无法开始结账",
+    "portalError": "无法打开账单管理门户",
+    "usage": {
+      "title": "使用情况",
+      "description": "此工作区相对于其套餐限额的使用情况。",
+      "epks": "EPK",
+      "teamMembers": "团队成员",
+      "storage": "存储空间"
+    },
+    "features": {
+      "customThemes": "自定义主题",
+      "privateLinks": "私密分享链接",
+      "whiteLabel": "白标品牌",
+      "customDomains": "自定义域名"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，以查看账单详情。"
+    }
+  },
+  "team": {
+    "inviteButton": "邀请成员",
+    "pending": "待处理",
+    "remove": "移除",
+    "pageDescription": "管理谁可以访问 {{workspace}}。",
+    "fields": {
+      "email": "邮箱",
+      "role": "角色"
+    },
+    "inviteDialog": {
+      "title": "邀请团队成员",
+      "description": "对方将以待处理成员身份加入，直到接受邀请为止。",
+      "submit": "发送邀请"
+    },
+    "removeDialog": {
+      "title": "移除成员",
+      "description": "{{name}} 将失去对此工作区的访问权限。"
+    },
+    "toasts": {
+      "invited": "邀请已发送",
+      "inviteError": "无法发送邀请",
+      "roleError": "无法更新角色",
+      "removeError": "无法移除该成员"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，才能开始邀请团队成员。",
+      "noneTitle": "暂无成员",
+      "noneDescription": "邀请您的团队一起协作。"
+    }
+  },
+  "workspaces": {
+    "selectWorkspace": "选择工作区",
+    "label": "工作区",
+    "newWorkspace": "新建工作区",
+    "create": {
+      "title": "创建工作区",
+      "description": "工作区将您的 EPK、媒体和团队成员集中管理。",
+      "name": "名称",
+      "nameRequired": "工作区名称为必填项",
+      "submit": "创建工作区",
+      "created": "工作区已创建",
+      "error": "无法创建工作区"
+    }
+  },
+  "invitation": {
+    "title": "邀请",
+    "invalidOrUsed": "此邀请无效或已被使用。",
+    "goToDashboard": "前往仪表盘",
+    "youveBeenInvited": "您已收到邀请",
+    "invitedByBlurb": "{{inviter}} 邀请您以 {{role}} 身份加入 {{workspace}}。",
+    "invitedBlurb": "您已被邀请以 {{role}} 身份加入 {{workspace}}。",
+    "accept": "接受邀请",
+    "joinedToast": "您已加入 {{workspace}}",
+    "acceptError": "无法接受此邀请",
+    "wrongAccount": {
+      "description": "此邀请是发给 {{invitedEmail}} 的，但您当前登录的是 {{currentEmail}}。",
+      "switchAccounts": "退出登录并切换账户"
+    },
+    "signingInAs": "正在以以下身份登录：",
+    "signInAndAccept": "登录并接受",
+    "welcomeAccepted": "欢迎 — 邀请已接受",
+    "incorrectPassword": "密码不正确",
+    "creatingAccountFor": "正在为以下邮箱创建账户：",
+    "yourName": "您的姓名",
+    "choosePassword": "设置密码",
+    "createAccountAndAccept": "创建账户并接受",
+    "accountCreatedAccepted": "账户已创建 — 邀请已接受"
+  },
+  "media": {
+    "pageDescription": "{{workspace}} 的照片、音轨、视频和文档。",
+    "searchPlaceholder": "搜索文件…",
+    "rename": "重命名",
+    "download": "下载",
+    "types": {
+      "all": "所有类型",
+      "image": "图片",
+      "audio": "音频",
+      "video": "视频",
+      "document": "文档"
+    },
+    "sort": {
+      "newest": "最新优先",
+      "oldest": "最早优先",
+      "nameAsc": "名称（A–Z）",
+      "nameDesc": "名称（Z–A）",
+      "sizeDesc": "文件从大到小",
+      "sizeAsc": "文件从小到大"
+    },
+    "renameDialog": {
+      "title": "重命名文件",
+      "submit": "保存"
+    },
+    "deleteDialog": {
+      "title": "删除文件",
+      "description": "“{{name}}”将被永久删除。"
+    },
+    "toasts": {
+      "renamed": "已重命名",
+      "renameError": "无法重命名该文件",
+      "deleted": "文件已删除",
+      "deleteError": "无法删除该文件",
+      "downloadError": "无法下载该文件"
+    },
+    "upload": {
+      "oneFileUploaded": "文件已上传",
+      "filesUploaded": "已上传 {{count}} 个文件",
+      "error": "一个或多个文件上传失败",
+      "uploading": "正在上传…",
+      "uploadingPercent": "正在上传 — {{percent}}%",
+      "clickToUpload": "点击上传",
+      "orDragAndDrop": "或拖放文件",
+      "acceptedTypes": "图片、音频、视频和文档"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，再上传媒体文件。",
+      "noMatchTitle": "没有匹配的文件",
+      "noneTitle": "暂无文件",
+      "noMatchDescription": "请尝试其他搜索词或筛选条件。",
+      "canEditDescription": "上传照片、音轨、视频或文档以开始使用。",
+      "viewOnlyDescription": "此工作区尚未上传任何文件。"
+    }
+  },
+  "epkBuilder": {
+    "sectionTypes": {
+      "hero": "主视觉",
+      "biography": "个人简介",
+      "photos": "照片",
+      "music": "音乐",
+      "releases": "发行作品",
+      "videos": "视频",
+      "press": "媒体报道",
+      "events": "活动",
+      "socialNetworks": "社交媒体",
+      "contact": "联系方式",
+      "downloads": "下载",
+      "credits": "制作名单",
+      "custom": "自定义版块"
+    },
+    "addSection": "添加版块",
+    "added": "已添加",
+    "sectionAdded": "已添加“{{section}}”版块",
+    "sectionAddError": "无法添加该版块",
+    "device": {
+      "desktop": "桌面预览",
+      "tablet": "平板预览",
+      "mobile": "移动端预览"
+    },
+    "notFound": {
+      "title": "未找到该 EPK",
+      "description": "此 EPK 可能已被删除。"
+    },
+    "viewPublicPage": "查看公开页面",
+    "viewPublicPageDisabledTitle": "请发布此 EPK 以启用其公开页面",
+    "downloadPdf": "下载 PDF",
+    "downloadPdfError": "无法下载 PDF",
+    "copyShareLink": "复制分享链接",
+    "shareLinkCopied": "分享链接已复制——链接预览将显示标题、描述和封面图片",
+    "shareLinkDisabledTitle": "请发布此 EPK 以获取分享链接",
+    "customDomain": {
+      "trigger": "自定义域名",
+      "description": "通过您自己的域名（例如 press.yourband.com）提供此 EPK 的公开页面。需要 Business 套餐。",
+      "setupDescription": "输入您想使用的域名。您需要添加两条 DNS 记录以证明域名归属并指向此处。",
+      "domainField": "域名",
+      "setup": "设置",
+      "setupError": "无法设置此域名",
+      "recordHost": "主机",
+      "recordValue": "值",
+      "copied": "已复制到剪贴板",
+      "verified": "已验证",
+      "pending": "待验证",
+      "verifyDescription": "请在您的域名提供商处添加这两条 DNS 记录，然后检查验证。DNS 更改可能需要一些时间才能生效。",
+      "checkVerification": "检查验证",
+      "verifySuccess": "域名已验证——您的公开页面现已在该域名上线",
+      "verifyError": "暂时无法验证此域名",
+      "removeConfirm": "移除此自定义域名？该 EPK 仍可通过其常规 KORAX 链接访问。",
+      "removed": "自定义域名已移除",
+      "removeError": "无法移除此域名"
+    },
+    "tabs": {
+      "section": "版块",
+      "comments": "评论",
+      "theme": "主题"
+    },
+    "comments": {
+      "empty": "暂无评论。抢先留言吧。",
+      "placeholder": "对此版块发表评论…",
+      "post": "发布",
+      "deletedUser": "已删除的用户",
+      "addError": "无法发布您的评论",
+      "updateError": "无法更新您的评论",
+      "deleteError": "无法删除此评论"
+    },
+    "hidden": "已隐藏",
+    "noSectionsCanEdit": "暂无版块。添加一个以开始构建此 EPK。",
+    "noSections": "暂无版块。",
+    "deleteSectionDialog": {
+      "title": "删除版块",
+      "description": "“{{title}}”将从此 EPK 中永久删除。"
+    },
+    "toasts": {
+      "sectionDuplicated": "版块已复制",
+      "sectionDuplicateError": "无法复制该版块",
+      "sectionDeleted": "版块已删除",
+      "sectionDeleteError": "无法删除该版块"
+    },
+    "settingsPanel": {
+      "noSectionTitle": "未选择任何版块",
+      "noSectionDescription": "在左侧选择一个版块进行编辑。",
+      "titleOverride": "自定义版块标题（可选）",
+      "saveError": "无法保存更改"
+    },
+    "theme": {
+      "font": { "sans": "无衬线", "serif": "衬线", "display": "展示字体", "mono": "等宽" },
+      "buttonStyle": { "rounded": "圆角", "pill": "胶囊形", "square": "直角" },
+      "radius": { "none": "无", "small": "小", "medium": "中", "large": "大" },
+      "spacing": { "compact": "紧凑", "comfortable": "舒适", "spacious": "宽松" },
+      "headerStyle": { "centered": "居中", "left": "左对齐", "minimal": "简约" },
+      "defaultOption": "默认（{{value}}）",
+      "reset": "重置",
+      "baseTheme": "基础主题",
+      "customize": "自定义",
+      "backgroundColor": "背景颜色",
+      "textColor": "文字颜色",
+      "accentColor": "强调色",
+      "fontLabel": "字体",
+      "buttonStyleLabel": "按钮样式",
+      "radiusLabel": "圆角大小",
+      "spacingLabel": "版块间距",
+      "headerStyleLabel": "标题样式",
+      "currently": "当前：{{preset}} · {{font}} · {{buttonStyle}} 按钮",
+      "saveError": "无法保存主题"
+    },
+    "privateLinks": {
+      "trigger": "私密链接",
+      "description": "在不发布的情况下与特定人员分享此 EPK — 即使仍是草稿也可使用。",
+      "status": { "revoked": "已撤销", "expired": "已过期", "active": "有效" },
+      "untitledLink": "未命名链接",
+      "passwordProtected": "已设密码保护",
+      "noPassword": "无密码",
+      "expires": "有效期至 {{date}}",
+      "viewCount_one": "{{count}} 次查看",
+      "viewCount_other": "{{count}} 次查看",
+      "copyLink": "复制链接",
+      "reactivate": "重新启用",
+      "revoke": "撤销",
+      "deleteConfirm": "确定要永久删除此链接吗？",
+      "deleting": "正在删除…",
+      "none": "暂无私密链接。",
+      "labelField": "标签（可选）",
+      "passwordField": "密码（可选）",
+      "passwordPlaceholder": "留空表示不设密码",
+      "expiresField": "有效期（可选）",
+      "createLink": "创建链接",
+      "toasts": {
+        "copied": "链接已复制",
+        "reactivated": "链接已重新启用",
+        "reactivateError": "无法重新启用该链接",
+        "revoked": "链接已撤销",
+        "revokeError": "无法撤销该链接",
+        "deleted": "链接已删除",
+        "deleteError": "无法删除该链接",
+        "created": "私密链接已创建",
+        "createError": "无法创建该链接"
+      }
+    },
+    "preview": {
+      "noBiography": "暂无个人简介。",
+      "noSocialLinks": "尚未添加社交媒体链接。",
+      "booking": "演出经纪",
+      "press": "媒体报道",
+      "management": "经纪管理",
+      "noContactDetails": "暂无联系方式。",
+      "noFilesSelected": "尚未选择可下载的文件。",
+      "noCredits": "暂无制作名单。",
+      "emptySection": "空版块。",
+      "noPhotos": "暂无照片。",
+      "noTracks": "暂无音轨。",
+      "noReleases": "暂无发行作品。",
+      "untitledRelease": "未命名发行作品",
+      "noVideos": "暂无视频。",
+      "noFileSelected": "尚未选择文件。",
+      "untitledVideo": "未命名视频",
+      "untitledTrack": "未命名曲目",
+      "noPress": "暂无媒体报道。",
+      "read": "阅读全文",
+      "comingSoon": "{{label}}内容将在后续阶段推出。",
+      "noSectionsEnabled": "未启用任何版块。请添加或启用一个版块以查看预览。"
+    },
+    "gallery": {
+      "moveUp": "上移",
+      "moveDown": "下移",
+      "remove": "移除"
+    },
+    "mediaPicker": {
+      "selectImage": "选择图片",
+      "change": "更换",
+      "selectFromLibrary": "从媒体库中选择",
+      "noFilesYet": "暂无文件 — 请先在媒体库中上传一些文件。",
+      "addFiles": "从媒体库添加文件",
+      "selectDownloadable": "选择可下载的文件"
+    },
+    "hero": {
+      "headline": "主标题",
+      "headlinePlaceholder": "默认使用艺人姓名",
+      "subtitle": "副标题",
+      "description": "简短描述",
+      "profileImage": "头像图片",
+      "backgroundImage": "背景图片",
+      "alignment": "对齐方式",
+      "alignmentLeft": "左对齐",
+      "alignmentCenter": "居中",
+      "alignmentRight": "右对齐",
+      "height": "高度",
+      "heightSmall": "小",
+      "heightMedium": "中",
+      "heightLarge": "大",
+      "darkOverlay": "深色遮罩",
+      "ctaLabel": "行动号召按钮文字",
+      "ctaLabelPlaceholder": "立即收听",
+      "ctaUrl": "行动号召按钮链接"
+    },
+    "biography": {
+      "placeholder": "讲述艺人的故事…"
+    },
+    "comingSoon": {
+      "title": "{{label}}编辑器即将推出",
+      "description": "此版块的完整内容管理功能将在后续阶段推出。您目前已可以添加、重新排序和启用它。"
+    },
+    "contact": {
+      "bookingEmail": "演出经纪邮箱",
+      "pressEmail": "媒体联络邮箱",
+      "managementEmail": "经纪管理邮箱",
+      "website": "网站",
+      "phone": "电话",
+      "address": "地址",
+      "privacyNote": "除非您在下方明确启用，否则私密信息永远不会显示在公开页面上。",
+      "showPhonePublicly": "公开显示电话",
+      "showAddressPublicly": "公开显示地址"
+    },
+    "credits": {
+      "rolePlaceholder": "职位（如：制作人）",
+      "namePlaceholder": "姓名",
+      "addCredit": "添加制作人员"
+    },
+    "custom": {
+      "heading": "标题",
+      "content": "内容",
+      "placeholder": "随意撰写内容…"
+    },
+    "downloads": {
+      "files": "可下载文件"
+    },
+    "music": {
+      "trackTitlePlaceholder": "音轨标题（默认使用文件名）",
+      "directUpload": "直接上传",
+      "selectAudioFile": "选择音频文件",
+      "addTrack": "添加音轨"
+    },
+    "photos": {
+      "captionPlaceholder": "说明文字（可选）",
+      "creditPlaceholder": "摄影credit（可选，如：摄影：Jane Doe）",
+      "addPhoto": "添加照片"
+    },
+    "press": {
+      "label": "媒体报道",
+      "outletPlaceholder": "媒体名称（如：滚石杂志）",
+      "quotePlaceholder": "引用语",
+      "articleUrlPlaceholder": "文章链接（可选）",
+      "authorPlaceholder": "作者（可选）",
+      "addMention": "添加媒体报道"
+    },
+    "releases": {
+      "typeAlbum": "专辑",
+      "typeEp": "EP",
+      "typeSingle": "单曲",
+      "titlePlaceholder": "发行作品标题",
+      "selectCoverArt": "选择封面图",
+      "streamingLinks": "流媒体链接（可选）",
+      "addRelease": "添加发行作品"
+    },
+    "videos": {
+      "directUpload": "直接上传",
+      "titlePlaceholder": "视频标题（可选）",
+      "selectVideoFile": "选择视频文件",
+      "addVideo": "添加视频"
+    },
+    "richText": {
+      "heading2": "标题 2",
+      "heading3": "标题 3",
+      "bold": "加粗",
+      "italic": "斜体",
+      "bulletList": "项目符号列表",
+      "numberedList": "编号列表",
+      "quote": "引用",
+      "link": "链接",
+      "linkUrlPrompt": "链接地址"
+    }
+  },
+  "analytics": {
+    "pageViews": "页面浏览量",
+    "noPageViews": "此时间段内暂无页面浏览量。",
+    "range": {
+      "days7": "7 天",
+      "days30": "30 天",
+      "days90": "90 天"
+    },
+    "stats": {
+      "pageViews": "页面浏览量",
+      "uniqueVisitors": "独立访客数",
+      "downloads": "下载量",
+      "audioPlays": "音频播放量",
+      "videoPlays": "视频播放量"
+    },
+    "breakdowns": {
+      "topReferrers": "主要来源网站",
+      "noReferrerData": "暂无来源数据。",
+      "topCountries": "主要国家/地区",
+      "noCountryData": "暂无国家/地区数据 — 这需要 GEOIP_COUNTRY_CODE（Apache mod_geoip2）或来自您的主机/CDN 的 CF-IPCountry 请求头。",
+      "devices": "设备",
+      "noDeviceData": "暂无设备数据。",
+      "topDownloads": "热门下载",
+      "noDownloadData": "暂无下载记录。",
+      "topPrivateLinks": "热门私密链接",
+      "noPrivateLinkData": "暂无私密链接流量。"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表盘中创建工作区，再查看数据分析。",
+      "noEpksDescription": "创建并发布一个 EPK，即可在此查看浏览量、下载量和播放量。"
+    }
+  },
+  "dashboard": {
+    "welcome": "欢迎使用 KORAX",
+    "welcomeWithName": "欢迎使用 KORAX，{{name}}",
+    "welcomeBack": "欢迎回来",
+    "welcomeBackWithName": "欢迎回来，{{name}}",
+    "noWorkspaceDescription": "创建一个工作区，开始制作您的第一份 EPK。",
+    "createFirstWorkspace": "创建您的第一个工作区",
+    "createFirstEpk": "创建您的第一个 EPK",
+    "whatsHappening": "以下是 {{workspace}} 的最新动态。",
+    "stats": {
+      "totalEpks": "EPK 总数",
+      "publishedEpks": "已发布的 EPK",
+      "totalViews": "总浏览量",
+      "downloads": "下载量"
+    }
+  },
+  "notFound": {
+    "description": "此页面不存在。",
+    "backToDashboard": "返回仪表盘"
+  },
+  "layout": {
+    "openNavigation": "打开导航菜单",
+    "navigation": "导航菜单"
+  },
+  "publicEpk": {
+    "notAvailable": {
+      "title": "此 EPK 当前不可用",
+      "description": "它可能已取消发布，或链接不正确。"
+    },
+    "readThePiece": "阅读全文",
+    "downloadPdf": "下载 PDF"
+  },
+  "privateEpk": {
+    "passwordGate": {
+      "title": "此 EPK 已设密码保护",
+      "description": "请输入您获得的密码以查看。",
+      "checking": "正在验证…",
+      "submit": "查看 EPK"
+    },
+    "notAvailable": {
+      "title": "此链接当前不可用",
+      "description": "链接可能不正确。"
+    },
+    "expired": {
+      "title": "此链接已不可用",
+      "description": "该链接可能已过期或被所有者撤销。请向对方索取新链接。"
+    }
+  },
+  "notifications": {
+    "trigger": "通知",
+    "title": "通知",
+    "markAllRead": "全部标记为已读",
+    "empty": "暂无通知。",
+    "invitedByBlurb": "{{inviter}} 邀请您以 {{role}} 身份加入 {{workspace}}",
+    "invitedBlurb": "您已被邀请以 {{role}} 身份加入 {{workspace}}",
+    "epkPublishedByBlurb": "{{publisher}} 发布了《{{epk}}》",
+    "epkPublishedBlurb": "《{{epk}}》已发布",
+    "teamMemberJoinedBlurb": "{{member}} 以 {{role}} 身份加入了 {{workspace}}",
+    "someone": "有人"
+  },
+  "common": {
+    "save": "保存更改",
+    "cancel": "取消",
+    "delete": "删除",
+    "edit": "编辑",
+    "create": "创建",
+    "close": "关闭",
+    "loading": "加载中…",
+    "confirm": "确认",
+    "back": "返回",
+    "next": "下一步",
+    "search": "搜索",
+    "actions": "操作",
+    "viewOnlyAccess": "您在此工作区中拥有只读权限。",
+    "noWorkspaceYet": "暂无工作区",
+    "roles": {
+      "owner": "所有者",
+      "admin": "管理员",
+      "editor": "编辑者",
+      "viewer": "查看者"
+    }
+  }
+}

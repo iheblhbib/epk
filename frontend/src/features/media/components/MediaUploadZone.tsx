@@ -1,5 +1,6 @@
 import { Loader2, UploadCloud } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { useUploadMedia } from '@/features/media/hooks/useMedia'
 import { cn } from '@/lib/utils'
@@ -7,6 +8,7 @@ import { cn } from '@/lib/utils'
 const ACCEPTED_EXTENSIONS = '.jpg,.jpeg,.png,.webp,.mp3,.wav,.flac,.mp4,.mov,.pdf,.docx'
 
 export function MediaUploadZone({ workspaceId }: { workspaceId: number }) {
+  const { t } = useTranslation()
   const [isDragging, setIsDragging] = useState(false)
   const [progress, setProgress] = useState<number | null>(null)
   const inputRef = useRef<HTMLInputElement>(null)
@@ -21,13 +23,15 @@ export function MediaUploadZone({ workspaceId }: { workspaceId: number }) {
       { files: fileArray, onProgress: setProgress },
       {
         onSuccess: (uploaded) => {
-          toast.success(uploaded.length === 1 ? 'File uploaded' : `${uploaded.length} files uploaded`)
+          toast.success(
+            uploaded.length === 1 ? t('media.upload.oneFileUploaded') : t('media.upload.filesUploaded', { count: uploaded.length })
+          )
           setProgress(null)
         },
         onError: (error) => {
           const message =
             (error as { response?: { data?: { message?: string } } }).response?.data?.message ??
-            'Could not upload one or more files'
+            t('media.upload.error')
           toast.error(message)
           setProgress(null)
         },
@@ -69,17 +73,17 @@ export function MediaUploadZone({ workspaceId }: { workspaceId: number }) {
       {upload.isPending ? (
         <>
           <Loader2 className="size-6 animate-spin text-muted-foreground" />
-          <p className="text-sm text-muted-foreground">Uploading{progress !== null ? ` — ${progress}%` : '…'}</p>
+          <p className="text-sm text-muted-foreground">
+            {progress !== null ? t('media.upload.uploadingPercent', { percent: progress }) : t('media.upload.uploading')}
+          </p>
         </>
       ) : (
         <>
           <UploadCloud className="size-6 text-muted-foreground" />
           <p className="text-sm text-foreground">
-            <span className="font-medium">Click to upload</span> or drag and drop
+            <span className="font-medium">{t('media.upload.clickToUpload')}</span> {t('media.upload.orDragAndDrop')}
           </p>
-          <p className="text-xs text-muted-foreground">
-            Images, audio, video, and documents
-          </p>
+          <p className="text-xs text-muted-foreground">{t('media.upload.acceptedTypes')}</p>
         </>
       )}
     </div>

@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation } from '@tanstack/react-query'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { Link, useNavigate, useParams, useSearchParams } from 'react-router-dom'
 import { toast } from 'sonner'
 import { resetPassword } from '@/api/auth'
@@ -11,13 +12,15 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { PasswordRequirements } from '@/components/ui/password-requirements'
 import { AuthCard } from '@/features/auth/components/AuthCard'
-import { resetPasswordSchema, type ResetPasswordFormValues } from '@/features/auth/schemas/authSchemas'
+import { createAuthSchemas, type ResetPasswordFormValues } from '@/features/auth/schemas/authSchemas'
 
 export function ResetPasswordPage() {
+  const { t } = useTranslation()
   const { token } = useParams<{ token: string }>()
   const [searchParams] = useSearchParams()
   const navigate = useNavigate()
   const mutation = useMutation({ mutationFn: resetPassword })
+  const { resetPasswordSchema } = createAuthSchemas(t)
 
   const form = useForm<ResetPasswordFormValues>({
     resolver: zodResolver(resetPasswordSchema),
@@ -35,11 +38,11 @@ export function ResetPasswordPage() {
       { ...values, token },
       {
         onSuccess: () => {
-          toast.success('Password reset. You can sign in now.')
+          toast.success(t('auth.resetPassword.success'))
           navigate('/login', { replace: true })
         },
         onError: () => {
-          form.setError('email', { message: 'This reset link is invalid or has expired.' })
+          form.setError('email', { message: t('auth.resetPassword.invalidLink') })
         },
       }
     )
@@ -47,10 +50,10 @@ export function ResetPasswordPage() {
 
   return (
     <AuthCard
-      title="Set a new password"
+      title={t('auth.resetPassword.title')}
       footer={
         <Link to="/login" className="font-medium text-foreground hover:underline">
-          Back to sign in
+          {t('auth.resetPassword.backToSignIn')}
         </Link>
       }
     >
@@ -61,7 +64,7 @@ export function ResetPasswordPage() {
             name="email"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Email</FormLabel>
+                <FormLabel>{t('auth.resetPassword.email')}</FormLabel>
                 <FormControl>
                   <Input type="email" autoComplete="email" {...field} />
                 </FormControl>
@@ -74,7 +77,7 @@ export function ResetPasswordPage() {
             name="password"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>New password</FormLabel>
+                <FormLabel>{t('auth.resetPassword.newPassword')}</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
@@ -88,7 +91,7 @@ export function ResetPasswordPage() {
             name="password_confirmation"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Confirm new password</FormLabel>
+                <FormLabel>{t('auth.resetPassword.confirmNewPassword')}</FormLabel>
                 <FormControl>
                   <PasswordInput autoComplete="new-password" {...field} />
                 </FormControl>
@@ -98,7 +101,7 @@ export function ResetPasswordPage() {
           />
           <Button type="submit" className="w-full" disabled={mutation.isPending}>
             {mutation.isPending && <Loader2 className="size-4 animate-spin" />}
-            Reset password
+            {t('auth.resetPassword.submit')}
           </Button>
         </form>
       </Form>

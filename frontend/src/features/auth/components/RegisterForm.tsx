@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod'
+import { isAxiosError } from 'axios'
 import { Loader2 } from 'lucide-react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
@@ -9,11 +11,13 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { PasswordRequirements } from '@/components/ui/password-requirements'
 import { useRegister } from '@/features/auth/hooks/useRegister'
-import { registerSchema, type RegisterFormValues } from '@/features/auth/schemas/authSchemas'
+import { createAuthSchemas, type RegisterFormValues } from '@/features/auth/schemas/authSchemas'
 
 export function RegisterForm() {
+  const { t } = useTranslation()
   const register = useRegister()
   const navigate = useNavigate()
+  const { registerSchema } = createAuthSchemas(t)
 
   const form = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
@@ -24,12 +28,21 @@ export function RegisterForm() {
     register.mutate(values, {
       onSuccess: () => navigate('/', { replace: true }),
       onError: (error) => {
+        // Same "register" rate limiter as login's (5/min per IP — see
+        // AppServiceProvider), surfaced with its own message rather than
+        // the generic create-account failure for consistency with the
+        // login form's 429 handling.
+        if (isAxiosError(error) && error.response?.status === 429) {
+          toast.error(t('auth.register.tooManyAttempts'))
+          return
+        }
+
         const errors = (error as { response?: { data?: { errors?: Record<string, string[]> } } }).response
           ?.data?.errors
         if (errors?.email) {
           form.setError('email', { message: errors.email[0] })
         }
-        toast.error('Could not create your account')
+        toast.error(t('auth.register.createAccountError'))
       },
     })
   })
@@ -42,7 +55,7 @@ export function RegisterForm() {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Name</FormLabel>
+              <FormLabel>{t('auth.register.name')}</FormLabel>
               <FormControl>
                 <Input placeholder="Ada Lovelace" autoComplete="name" {...field} />
               </FormControl>
@@ -55,7 +68,7 @@ export function RegisterForm() {
           name="email"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Email</FormLabel>
+              <FormLabel>{t('auth.register.email')}</FormLabel>
               <FormControl>
                 <Input type="email" placeholder="you@example.com" autoComplete="email" {...field} />
               </FormControl>
@@ -68,7 +81,7 @@ export function RegisterForm() {
           name="password"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Password</FormLabel>
+              <FormLabel>{t('auth.register.password')}</FormLabel>
               <FormControl>
                 <PasswordInput autoComplete="new-password" {...field} />
               </FormControl>
@@ -82,7 +95,7 @@ export function RegisterForm() {
           name="password_confirmation"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Confirm password</FormLabel>
+              <FormLabel>{t('auth.register.confirmPassword')}</FormLabel>
               <FormControl>
                 <PasswordInput autoComplete="new-password" {...field} />
               </FormControl>
@@ -92,7 +105,7 @@ export function RegisterForm() {
         />
         <Button type="submit" className="w-full" disabled={register.isPending}>
           {register.isPending && <Loader2 className="size-4 animate-spin" />}
-          Create account
+          {t('auth.register.createAccount')}
         </Button>
       </form>
     </Form>

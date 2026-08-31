@@ -7,7 +7,7 @@ use App\Models\Workspace;
 it('gives every seeded workspace a real subscription row, not just the default fallback', function () {
     $this->seed();
 
-    $workspace = Workspace::where('slug', 'kitfolio-demo')->firstOrFail();
+    $workspace = Workspace::where('slug', 'korax-demo')->firstOrFail();
 
     // Regression: DatabaseSeeder used to run under WithoutModelEvents, which
     // silently skipped Workspace::booted()'s auto-provisioned Subscription
@@ -20,7 +20,7 @@ it('gives every seeded workspace a real subscription row, not just the default f
 it('seeds the demo workspace on a paid plan so its 3 seeded members don\'t already exceed a limit', function () {
     $this->seed();
 
-    $workspace = Workspace::where('slug', 'kitfolio-demo')->firstOrFail();
+    $workspace = Workspace::where('slug', 'korax-demo')->firstOrFail();
 
     expect($workspace->subscription->plan)->not->toBe(SubscriptionPlan::Free);
     expect($workspace->members()->count())->toBeGreaterThanOrEqual(3);

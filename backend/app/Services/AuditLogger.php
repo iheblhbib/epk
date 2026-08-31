@@ -11,10 +11,11 @@ class AuditLogger
     /**
      * @param  array<string, mixed>  $metadata
      */
-    public function log(Request $request, string $action, ?Model $subject = null, array $metadata = []): void
+    public function log(Request $request, string $action, ?Model $subject = null, array $metadata = [], ?int $workspaceId = null): void
     {
         AuditLog::create([
             'user_id' => $request->user()?->id,
+            'workspace_id' => $workspaceId,
             'action' => $action,
             'subject_type' => $subject ? $subject::class : null,
             'subject_id' => $subject?->getKey(),

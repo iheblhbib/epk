@@ -2,15 +2,40 @@ export type UserRole = 'user' | 'admin'
 export type WorkspaceRole = 'owner' | 'admin' | 'editor' | 'viewer'
 export type WorkspaceMemberStatus = 'pending' | 'active'
 export type SubscriptionPlan = 'free' | 'pro' | 'business'
+// Mirrors backend/app/Enums/Locale.php exactly.
+export type UserLocale = 'en' | 'fr' | 'ar' | 'es' | 'pt' | 'de' | 'zh'
 
 export interface User {
   id: number
   name: string
   email: string
   role: UserRole
+  locale: UserLocale
   avatar_url: string | null
   email_verified_at: string | null
+  suspended_at: string | null
+  two_factor_enabled: boolean
   created_at: string
+}
+
+// POST /api/login returns this instead of a User when the account has a
+// confirmed two-factor secret — no session exists yet at that point, only
+// after POST /api/two-factor-challenge succeeds (see LoginForm.tsx).
+export interface TwoFactorRequired {
+  two_factor_required: true
+}
+
+export type LoginResult = User | TwoFactorRequired
+
+export function isTwoFactorRequired(result: LoginResult): result is TwoFactorRequired {
+  return 'two_factor_required' in result
+}
+
+// Returned once, right after POST /api/user/two-factor-authentication — the
+// backend never re-exposes an already-generated secret.
+export interface TwoFactorSetup {
+  secret: string
+  otpauth_url: string
 }
 
 export interface Workspace {
@@ -34,6 +59,69 @@ export interface WorkspaceMember {
   invited_by: User | null
   joined_at: string | null
   created_at: string
+}
+
+// 'payload' rather than 'data' to avoid clashing with JsonResource's own
+// top-level 'data' wrap key — see NotificationResource on the backend.
+export interface WorkspaceInvitationNotificationPayload {
+  kind: 'workspace_invitation'
+  member_id: number
+  workspace_id: number
+  workspace_name: string
+  role: WorkspaceRole
+  inviter_name: string | null
+  invite_token: string
+}
+
+export interface EpkPublishedNotificationPayload {
+  kind: 'epk_published'
+  epk_id: number
+  epk_title: string
+  workspace_id: number
+  publisher_name: string | null
+  public_url: string
+}
+
+export interface TeamMemberJoinedNotificationPayload {
+  kind: 'team_member_joined'
+  workspace_id: number
+  workspace_name: string
+  member_name: string | null
+  member_role: WorkspaceRole
+}
+
+// `kind` is a discriminant — a new backend notification type becomes a new
+// tagged member of this union (plus its own *NotificationPayload interface
+// above), and every switch on `kind` in the frontend gets a compile error
+// pointing at every place that needs a case added for it.
+export type AppNotification =
+  | { id: string; kind: 'workspace_invitation'; payload: WorkspaceInvitationNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'epk_published'; payload: EpkPublishedNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'team_member_joined'; payload: TeamMemberJoinedNotificationPayload; read_at: string | null; created_at: string }
+
+// Mirrors backend/config/notification_preferences.php — only the channels
+// listed there are toggleable per kind, so this shape (not a generic
+// Record<string, Record<string, boolean>>) is what keeps a typo like
+// `epk_published.mail` (a channel that kind never sends on) a compile error
+// instead of a silently-ignored PUT.
+export interface ApiToken {
+  id: number
+  name: string
+  last_used_at: string | null
+  created_at: string
+}
+
+// Only ApiTokenController::store() ever returns this — Sanctum stores just
+// a hash, so plain_text_token exists nowhere else and can't be fetched
+// again later.
+export interface CreatedApiToken extends ApiToken {
+  plain_text_token: string
+}
+
+export interface NotificationPreferences {
+  workspace_invitation: { mail: boolean; database: boolean }
+  epk_published: { database: boolean }
+  team_member_joined: { database: boolean }
 }
 
 export type EpkStatus = 'draft' | 'published' | 'archived'
@@ -70,7 +158,16 @@ export interface Epk {
   custom_settings: Record<string, unknown> | null
   seo_title: string | null
   seo_description: string | null
+  custom_domain: string | null
+  custom_domain_verified: boolean
   public_url: string
+  // Absolute URL to the backend's server-rendered Open Graph/Twitter Card
+  // "unfurl" page (see backend/app/Http/Controllers/PublicEpkShareController.php)
+  // — this is the link to paste into Slack/Twitter/etc, not `public_url`,
+  // since a social crawler never runs the SPA's own client-side JS. Null
+  // until the EPK is published (the share page 404s the same as the public
+  // API does before then).
+  share_url: string | null
   published_at: string | null
   created_at: string
   updated_at: string
@@ -118,6 +215,17 @@ export interface EpkSection {
   is_enabled: boolean
   position: number
   config: Record<string, unknown>
+  created_at: string
+  updated_at: string
+}
+
+export interface EpkSectionComment {
+  id: number
+  epk_section_id: number
+  body: string
+  // Null once the author's account has been deleted — the comment survives,
+  // just anonymized (see backend/app/Http/Resources/EpkSectionCommentResource.php).
+  user: User | null
   created_at: string
   updated_at: string
 }
@@ -187,9 +295,13 @@ export interface PhotosConfig {
   items?: PhotoItem[]
 }
 
+export type MusicProvider = 'upload' | 'spotify' | 'soundcloud'
+
 export interface TrackItem {
   title?: string
-  audio_media_id: number | null
+  provider?: MusicProvider
+  audio_media_id?: number | null
+  url?: string
 }
 
 export interface MusicConfig {
@@ -313,8 +425,10 @@ export interface PublicPhotosConfig {
 
 export interface PublicTrackItem {
   title: string
-  audio_url: string
-  mime_type: string
+  provider: MusicProvider
+  audio_url?: string
+  mime_type?: string
+  embed_url?: string
 }
 
 export interface PublicMusicConfig {
@@ -383,8 +497,22 @@ export interface PublicArtist {
   updated_at: string
 }
 
+export interface DnsRecordInstruction {
+  type: 'TXT' | 'CNAME'
+  host: string
+  value: string
+}
+
+export interface CustomDomainSetup {
+  domain: string
+  verified: boolean
+  verification_record: DnsRecordInstruction
+  routing_record: DnsRecordInstruction
+}
+
 export interface PublicEpk {
   title: string
+  slug: string
   theme: string
   custom_settings: Record<string, unknown> | null
   seo_title: string | null
@@ -541,6 +669,49 @@ export interface AdminEpk {
   created_at: string
 }
 
+// The member-facing counterpart to AuditLogEntry — scoped to one workspace,
+// and without the admin-only subject_type/subject_id/ip_address fields (see
+// backend/app/Http/Controllers/Api/WorkspaceActivityLogController.php).
+export interface WorkspaceActivityLogEntry {
+  id: number
+  action: string
+  metadata: Record<string, unknown> | null
+  user: { id: number; name: string } | null
+  created_at: string
+}
+
+export interface SearchEpkResult {
+  id: number
+  title: string
+  slug: string
+  status: EpkStatus
+}
+
+export interface SearchArtistResult {
+  id: number
+  name: string
+}
+
+export interface SearchContactResult {
+  id: number
+  name: string
+  email: string | null
+}
+
+export interface SearchMediaResult {
+  id: number
+  filename: string
+  type: MediaType
+  thumbnail_url: string | null
+}
+
+export interface GlobalSearchResults {
+  epks: SearchEpkResult[]
+  artists: SearchArtistResult[]
+  contacts: SearchContactResult[]
+  media: SearchMediaResult[]
+}
+
 export interface AuditLogEntry {
   id: number
   action: string
@@ -580,8 +751,13 @@ export interface BillingUsageMetric {
   limit: number | null
 }
 
+export type SubscriptionStatus = 'active' | 'canceled' | 'past_due'
+
 export interface BillingData {
   plan: SubscriptionPlan
+  subscription_status: SubscriptionStatus | null
+  current_period_ends_at: string | null
+  has_stripe_customer: boolean
   usage: {
     epks: BillingUsageMetric
     team_members: BillingUsageMetric

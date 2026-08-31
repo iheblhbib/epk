@@ -33,8 +33,21 @@
         <env name="MAIL_MAILER" value="array"/>
         <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
+        <!-- Fake but well-formed: StripeBillingService's HMAC-signed webhook
+             verification is genuinely exercised in tests (no network call
+             needed for that part), it just needs *a* secret, not Stripe's
+             real one. Checkout/portal session creation does call the real
+             Stripe API and is mocked in those specific tests instead. -->
+        <env name="STRIPE_SECRET" value="sk_test_fake"/>
+        <env name="STRIPE_WEBHOOK_SECRET" value="whsec_test_fake_secret"/>
+        <env name="STRIPE_PRICE_PRO" value="price_test_pro"/>
+        <env name="STRIPE_PRICE_BUSINESS" value="price_test_business"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
+        <!-- Independent of whatever .env has it set to locally (see the note
+             there) — the suite should always exercise default/enabled
+             behavior except in the tests that explicitly flip it off. -->
+        <env name="FEATURE_API_TOKENS_ENABLED" value="true"/>
     </php>
 </phpunit>

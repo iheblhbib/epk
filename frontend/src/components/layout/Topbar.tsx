@@ -1,4 +1,5 @@
 import { LogOut, Settings } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -11,6 +12,10 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import { GlobalSearchDialog } from '@/components/common/GlobalSearchDialog'
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
+import { NotificationBell } from '@/components/common/NotificationBell'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { MobileSidebar } from '@/components/layout/MobileSidebar'
 import { WorkspaceSwitcher } from '@/components/layout/WorkspaceSwitcher'
 import { useLogout } from '@/features/auth/hooks/useLogout'
@@ -26,6 +31,7 @@ function initials(name: string) {
 }
 
 export function Topbar() {
+  const { t } = useTranslation()
   const { user } = useAuth()
   const logout = useLogout()
   const navigate = useNavigate()
@@ -35,7 +41,7 @@ export function Topbar() {
       onSuccess: () => {
         navigate('/login', { replace: true })
       },
-      onError: () => toast.error('Could not log out'),
+      onError: () => toast.error(t('topbar.logoutError')),
     })
   }
 
@@ -46,7 +52,12 @@ export function Topbar() {
         <WorkspaceSwitcher />
       </div>
 
-      <DropdownMenu>
+      <div className="flex items-center gap-2">
+        <GlobalSearchDialog />
+        <NotificationBell />
+        <LanguageSwitcher />
+        <ThemeToggle />
+        <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
           <Avatar className="size-8">
             <AvatarFallback className="bg-primary/10 text-xs font-medium text-primary">
@@ -64,14 +75,15 @@ export function Topbar() {
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => navigate('/settings')}>
             <Settings className="size-4" />
-            Settings
+            {t('topbar.settings')}
           </DropdownMenuItem>
           <DropdownMenuItem onClick={handleLogout}>
             <LogOut className="size-4" />
-            Log out
+            {t('topbar.logout')}
           </DropdownMenuItem>
         </DropdownMenuContent>
-      </DropdownMenu>
+        </DropdownMenu>
+      </div>
     </header>
   )
 }

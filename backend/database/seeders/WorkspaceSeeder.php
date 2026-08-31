@@ -18,8 +18,8 @@ class WorkspaceSeeder extends Seeder
     public function run(User $owner): void
     {
         $workspace = Workspace::factory()->create([
-            'name' => 'Kitfolio Demo',
-            'slug' => 'kitfolio-demo',
+            'name' => 'KORAX Demo',
+            'slug' => 'korax-demo',
             'description' => 'A sandbox workspace pre-loaded for exploring the dashboard.',
             'created_by' => $owner->id,
         ]);
@@ -42,7 +42,7 @@ class WorkspaceSeeder extends Seeder
 
         $editor = User::factory()->create([
             'name' => 'Jamie Rivers',
-            'email' => 'jamie@kitfolio.test',
+            'email' => 'jamie@korax.test',
             'email_verified_at' => now(),
         ]);
 
@@ -54,7 +54,7 @@ class WorkspaceSeeder extends Seeder
         ]);
 
         $workspace->members()->create([
-            'invited_email' => 'pending-invite@kitfolio.test',
+            'invited_email' => 'pending-invite@korax.test',
             'invited_by' => $owner->id,
             'invite_token' => str()->random(64),
             'role' => WorkspaceRole::Viewer,

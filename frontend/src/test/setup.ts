@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest'
 import { afterAll, afterEach, beforeAll } from 'vitest'
+import '@/i18n'
 import { server } from '@/test/server'
 
 beforeAll(() => server.listen({ onUnhandledRequest: 'error' }))
