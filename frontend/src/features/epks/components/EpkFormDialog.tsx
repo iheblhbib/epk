@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2, Plus } from 'lucide-react'
 import { type ReactElement, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -19,7 +20,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { ArtistQuickCreateDialog } from '@/features/epks/components/ArtistQuickCreateDialog'
 import { useArtists } from '@/features/epks/hooks/useArtists'
 import { useCreateEpk, useUpdateEpk } from '@/features/epks/hooks/useEpks'
-import { epkFormSchema, type EpkFormValues } from '@/features/epks/schemas/epkSchemas'
+import { createEpkFormSchema, type EpkFormValues } from '@/features/epks/schemas/epkSchemas'
 import type { Epk } from '@/types'
 
 type EpkFormDialogProps = {
@@ -46,6 +47,7 @@ export function EpkFormDialog({
   open: controlledOpen,
   onOpenChange: setControlledOpen,
 }: EpkFormDialogProps) {
+  const { t } = useTranslation()
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
   const setOpen = setControlledOpen ?? setInternalOpen
@@ -59,7 +61,7 @@ export function EpkFormDialog({
   const isEditing = !!epk
 
   const form = useForm<EpkFormValues>({
-    resolver: zodResolver(epkFormSchema),
+    resolver: zodResolver(createEpkFormSchema(t)),
     defaultValues: {
       title: epk?.title ?? '',
       artist_id: epk?.artist?.id ?? 0,
@@ -99,11 +101,11 @@ export function EpkFormDialog({
 
     mutation
       .then(() => {
-        toast.success(isEditing ? 'EPK updated' : 'EPK created')
+        toast.success(isEditing ? t('epks.toasts.updated') : t('epks.toasts.created'))
         setOpen(false)
         if (!isEditing) form.reset()
       })
-      .catch(() => toast.error(isEditing ? 'Could not update the EPK' : 'Could not create the EPK'))
+      .catch(() => toast.error(isEditing ? t('epks.toasts.updateError') : t('epks.toasts.createError')))
   })
 
   const isPending = createEpk.isPending || updateEpk.isPending
@@ -113,11 +115,9 @@ export function EpkFormDialog({
       {trigger && <DialogTrigger render={trigger} />}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit EPK' : 'Create an EPK'}</DialogTitle>
+          <DialogTitle>{isEditing ? t('epks.formDialog.editTitle') : t('epks.formDialog.createTitle')}</DialogTitle>
           <DialogDescription>
-            {isEditing
-              ? 'Update the title, artist, and SEO details.'
-              : 'The visual builder for sections and theming arrives in a later phase — this creates the EPK record.'}
+            {isEditing ? t('epks.formDialog.editDescription') : t('epks.formDialog.createDescription')}
           </DialogDescription>
         </DialogHeader>
         <Form {...form}>
@@ -127,9 +127,9 @@ export function EpkFormDialog({
               name="title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Title</FormLabel>
+                  <FormLabel>{t('epks.fields.title')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Summer Tour 2026 EPK" autoFocus {...field} />
+                    <Input placeholder={t('epks.fields.titlePlaceholder')} autoFocus {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -140,7 +140,7 @@ export function EpkFormDialog({
               name="artist_id"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Artist</FormLabel>
+                  <FormLabel>{t('epks.fields.artist')}</FormLabel>
                   <div className="flex gap-2">
                     {/* value is always a defined string (never undefined) so the
                         Select doesn't flip between uncontrolled and controlled
@@ -152,7 +152,7 @@ export function EpkFormDialog({
                     >
                       <FormControl>
                         <SelectTrigger className="w-full">
-                          <SelectValue placeholder="Select an artist" />
+                          <SelectValue placeholder={t('epks.fields.selectArtist')} />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
@@ -182,9 +182,9 @@ export function EpkFormDialog({
               name="seo_title"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>SEO title (optional)</FormLabel>
+                  <FormLabel>{t('epks.fields.seoTitle')}</FormLabel>
                   <FormControl>
-                    <Input placeholder="Defaults to the EPK title" {...field} />
+                    <Input placeholder={t('epks.fields.seoTitlePlaceholder')} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -193,7 +193,7 @@ export function EpkFormDialog({
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="size-4 animate-spin" />}
-                {isEditing ? 'Save changes' : 'Create EPK'}
+                {isEditing ? t('common.save') : t('epks.formDialog.submitCreate')}
               </Button>
             </DialogFooter>
           </form>

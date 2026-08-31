@@ -2,6 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { Loader2 } from 'lucide-react'
 import { type ReactElement, useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import {
@@ -18,18 +19,18 @@ import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Textarea } from '@/components/ui/textarea'
 import { useCreateContact, useUpdateContact } from '@/features/contacts/hooks/useContacts'
-import { contactFormSchema, type ContactFormValues } from '@/features/contacts/schemas/contactSchemas'
+import { createContactFormSchema, type ContactFormValues } from '@/features/contacts/schemas/contactSchemas'
 import type { Contact } from '@/types'
 
-export const CATEGORY_ITEMS: Record<ContactFormValues['category'], string> = {
-  journalist: 'Journalist',
-  radio: 'Radio',
-  blog: 'Blog',
-  label: 'Label',
-  booking: 'Booking',
-  management: 'Management',
-  pr: 'PR',
-  other: 'Other',
+export const CATEGORY_LABEL_KEYS: Record<ContactFormValues['category'], string> = {
+  journalist: 'contacts.categories.journalist',
+  radio: 'contacts.categories.radio',
+  blog: 'contacts.categories.blog',
+  label: 'contacts.categories.label',
+  booking: 'contacts.categories.booking',
+  management: 'contacts.categories.management',
+  pr: 'contacts.categories.pr',
+  other: 'contacts.categories.other',
 }
 
 type ContactFormDialogProps = {
@@ -47,15 +48,19 @@ export function ContactFormDialog({
   open: controlledOpen,
   onOpenChange: setControlledOpen,
 }: ContactFormDialogProps) {
+  const { t } = useTranslation()
   const [internalOpen, setInternalOpen] = useState(false)
   const open = controlledOpen ?? internalOpen
   const setOpen = setControlledOpen ?? setInternalOpen
   const createContact = useCreateContact(workspaceId)
   const updateContact = useUpdateContact(workspaceId)
   const isEditing = !!contact
+  const categoryItems = Object.fromEntries(
+    Object.entries(CATEGORY_LABEL_KEYS).map(([value, key]) => [value, t(key)])
+  )
 
   const form = useForm<ContactFormValues>({
-    resolver: zodResolver(contactFormSchema),
+    resolver: zodResolver(createContactFormSchema(t)),
     defaultValues: {
       name: contact?.name ?? '',
       email: contact?.email ?? '',
@@ -96,11 +101,11 @@ export function ContactFormDialog({
 
     mutation
       .then(() => {
-        toast.success(isEditing ? 'Contact updated' : 'Contact added')
+        toast.success(isEditing ? t('contacts.toasts.updated') : t('contacts.toasts.added'))
         setOpen(false)
         if (!isEditing) form.reset()
       })
-      .catch(() => toast.error(isEditing ? 'Could not update the contact' : 'Could not add the contact'))
+      .catch(() => toast.error(isEditing ? t('contacts.toasts.updateError') : t('contacts.toasts.addError')))
   })
 
   const isPending = createContact.isPending || updateContact.isPending
@@ -110,10 +115,8 @@ export function ContactFormDialog({
       {trigger && <DialogTrigger render={trigger} />}
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>{isEditing ? 'Edit contact' : 'Add contact'}</DialogTitle>
-          <DialogDescription>
-            Journalists, radio, blogs, labels, and anyone else you work with on press and promo.
-          </DialogDescription>
+          <DialogTitle>{isEditing ? t('contacts.dialog.editTitle') : t('contacts.dialog.addTitle')}</DialogTitle>
+          <DialogDescription>{t('contacts.dialog.description')}</DialogDescription>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={onSubmit} className="space-y-4">
@@ -122,7 +125,7 @@ export function ContactFormDialog({
               name="name"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Name</FormLabel>
+                  <FormLabel>{t('contacts.fields.name')}</FormLabel>
                   <FormControl>
                     <Input placeholder="Jane Critic" autoFocus {...field} />
                   </FormControl>
@@ -136,7 +139,7 @@ export function ContactFormDialog({
                 name="email"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Email</FormLabel>
+                    <FormLabel>{t('contacts.fields.email')}</FormLabel>
                     <FormControl>
                       <Input type="email" placeholder="jane@example.com" {...field} />
                     </FormControl>
@@ -149,7 +152,7 @@ export function ContactFormDialog({
                 name="phone"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Phone</FormLabel>
+                    <FormLabel>{t('contacts.fields.phone')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
                     </FormControl>
@@ -164,15 +167,15 @@ export function ContactFormDialog({
                 name="category"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Category</FormLabel>
-                    <Select items={CATEGORY_ITEMS} value={field.value} onValueChange={field.onChange}>
+                    <FormLabel>{t('contacts.fields.category')}</FormLabel>
+                    <Select items={categoryItems} value={field.value} onValueChange={field.onChange}>
                       <FormControl>
                         <SelectTrigger className="w-full">
                           <SelectValue />
                         </SelectTrigger>
                       </FormControl>
                       <SelectContent>
-                        {Object.entries(CATEGORY_ITEMS).map(([value, label]) => (
+                        {Object.entries(categoryItems).map(([value, label]) => (
                           <SelectItem key={value} value={value}>
                             {label}
                           </SelectItem>
@@ -188,7 +191,7 @@ export function ContactFormDialog({
                 name="organization"
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Organization</FormLabel>
+                    <FormLabel>{t('contacts.fields.organization')}</FormLabel>
                     <FormControl>
                       <Input placeholder="Music Weekly" {...field} />
                     </FormControl>
@@ -202,7 +205,7 @@ export function ContactFormDialog({
               name="notes"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Notes (optional)</FormLabel>
+                  <FormLabel>{t('contacts.fields.notes')}</FormLabel>
                   <FormControl>
                     <Textarea rows={3} {...field} />
                   </FormControl>
@@ -213,7 +216,7 @@ export function ContactFormDialog({
             <DialogFooter>
               <Button type="submit" disabled={isPending}>
                 {isPending && <Loader2 className="size-4 animate-spin" />}
-                {isEditing ? 'Save changes' : 'Add contact'}
+                {isEditing ? t('common.save') : t('contacts.dialog.addTitle')}
               </Button>
             </DialogFooter>
           </form>

@@ -50,6 +50,28 @@ it('allows a second epk once the workspace is on a paid plan', function () {
     ])->assertCreated();
 });
 
+it('blocks duplicating an epk on the free plan, same as creating one directly', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner();
+    $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+
+    // The bug this guards: duplicate() used to skip the plan-limit check
+    // that store() enforces, so "create your one free EPK, then duplicate
+    // it" was a free way past the free plan's 1-EPK limit.
+    $this->actingAs($owner)->postJson("/api/epks/{$epk->id}/duplicate")->assertUnprocessable();
+    expect($workspace->epks()->count())->toBe(1);
+});
+
+it('allows duplicating an epk once the workspace is on a paid plan', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner();
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Pro]);
+    $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+
+    $this->actingAs($owner)->postJson("/api/epks/{$epk->id}/duplicate")->assertCreated();
+    expect($workspace->epks()->count())->toBe(2);
+});
+
 it('blocks custom theme overrides on the free plan but still allows picking a preset', function () {
     [$workspace, $owner] = billingWorkspaceWithOwner();
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);

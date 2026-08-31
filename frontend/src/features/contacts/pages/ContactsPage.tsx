@@ -1,5 +1,6 @@
-import { Download, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react'
+import { Download, Loader2, MoreHorizontal, Pencil, Plus, Search, Trash2, Upload, Users } from 'lucide-react'
 import { useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -15,14 +16,22 @@ import {
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table'
-import { contactsExportUrl } from '@/api/contacts'
-import { CATEGORY_ITEMS, ContactFormDialog } from '@/features/contacts/components/ContactFormDialog'
+import { CATEGORY_LABEL_KEYS, ContactFormDialog } from '@/features/contacts/components/ContactFormDialog'
 import { useContacts, useDeleteContact, useImportContacts } from '@/features/contacts/hooks/useContacts'
 import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorkspace'
+import { downloadAuthenticatedFile } from '@/lib/downloadFile'
 import { isEditorLevel } from '@/lib/permissions'
 import type { Contact, ContactCategory, WorkspaceRole } from '@/types'
+import type { TFunction } from 'i18next'
 
-const CATEGORY_FILTER_ITEMS: Record<'all' | ContactCategory, string> = { all: 'All categories', ...CATEGORY_ITEMS }
+function categoryFilterItems(t: TFunction): Record<'all' | ContactCategory, string> {
+  return {
+    all: t('contacts.allCategories'),
+    ...(Object.fromEntries(
+      Object.entries(CATEGORY_LABEL_KEYS).map(([value, key]) => [value, t(key)])
+    ) as Record<ContactCategory, string>),
+  }
+}
 
 function ContactRow({
   workspaceId,
@@ -33,6 +42,7 @@ function ContactRow({
   contact: Contact
   myRole: WorkspaceRole | null
 }) {
+  const { t } = useTranslation()
   const deleteContact = useDeleteContact(workspaceId)
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
@@ -56,11 +66,11 @@ function ContactRow({
             <DropdownMenuContent align="end">
               <DropdownMenuItem onSelect={(event) => event.preventDefault()} onClick={() => setEditOpen(true)}>
                 <Pencil className="size-4" />
-                Edit
+                {t('common.edit')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={() => setConfirmDeleteOpen(true)} className="text-destructive">
                 <Trash2 className="size-4" />
-                Delete
+                {t('common.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
@@ -72,18 +82,18 @@ function ContactRow({
       <ConfirmDialog
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        title="Delete contact"
-        description={`"${contact.name}" will be permanently removed.`}
-        confirmLabel="Delete"
+        title={t('contacts.deleteDialog.title')}
+        description={t('contacts.deleteDialog.description', { name: contact.name })}
+        confirmLabel={t('common.delete')}
         destructive
         isLoading={deleteContact.isPending}
         onConfirm={() =>
           deleteContact.mutate(contact.id, {
             onSuccess: () => {
-              toast.success('Contact deleted')
+              toast.success(t('contacts.toasts.deleted'))
               setConfirmDeleteOpen(false)
             },
-            onError: () => toast.error('Could not delete the contact'),
+            onError: () => toast.error(t('contacts.toasts.deleteError')),
           })
         }
       />
@@ -92,6 +102,7 @@ function ContactRow({
 }
 
 export function ContactsPage() {
+  const { t } = useTranslation()
   const { currentWorkspace, isLoading: workspaceLoading } = useCurrentWorkspace()
   const [search, setSearch] = useState('')
   const [category, setCategory] = useState<'all' | ContactCategory>('all')
@@ -102,6 +113,8 @@ export function ContactsPage() {
   const importContacts = useImportContacts(currentWorkspace?.id ?? 0)
   const fileInputRef = useRef<HTMLInputElement>(null)
   const canEdit = isEditorLevel(currentWorkspace?.my_role)
+  const filterItems = categoryFilterItems(t)
+  const [isExporting, setIsExporting] = useState(false)
 
   if (workspaceLoading) {
     return <CardGridSkeleton />
@@ -111,8 +124,8 @@ export function ContactsPage() {
     return (
       <EmptyState
         icon={Users}
-        title="No workspace yet"
-        description="Create a workspace from the dashboard before adding contacts."
+        title={t('common.noWorkspaceYet')}
+        description={t('contacts.emptyState.noWorkspaceDescription')}
       />
     )
   }
@@ -121,10 +134,8 @@ export function ContactsPage() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-heading text-2xl font-semibold text-foreground">Contacts</h1>
-          <p className="text-sm text-muted-foreground">
-            Journalists, radio, blogs, and everyone else you work with on press and promo.
-          </p>
+          <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.contacts')}</h1>
+          <p className="text-sm text-muted-foreground">{t('contacts.pageDescription')}</p>
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
@@ -140,11 +151,11 @@ export function ContactsPage() {
                 if (!file) return
                 importContacts.mutate(file, {
                   onSuccess: (summary) => {
-                    const parts = [`${summary.created} imported`]
-                    if (summary.skipped > 0) parts.push(`${summary.skipped} skipped`)
+                    const parts = [t('contacts.import.created', { count: summary.created })]
+                    if (summary.skipped > 0) parts.push(t('contacts.import.skipped', { count: summary.skipped }))
                     toast.success(parts.join(', '))
                   },
-                  onError: () => toast.error('Could not import the file'),
+                  onError: () => toast.error(t('contacts.import.error')),
                 })
               }}
             />
@@ -152,12 +163,22 @@ export function ContactsPage() {
           {canEdit && (
             <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()} disabled={importContacts.isPending}>
               <Upload className="size-4" />
-              {importContacts.isPending ? 'Importing…' : 'Import CSV'}
+              {importContacts.isPending ? t('contacts.import.importing') : t('contacts.import.button')}
             </Button>
           )}
-          <Button variant="outline" size="sm" nativeButton={false} render={<a href={contactsExportUrl(currentWorkspace.id)} />}>
-            <Download className="size-4" />
-            Export CSV
+          <Button
+            variant="outline"
+            size="sm"
+            disabled={isExporting}
+            onClick={() => {
+              setIsExporting(true)
+              downloadAuthenticatedFile(`/api/workspaces/${currentWorkspace.id}/contacts/export`, 'contacts.csv')
+                .catch(() => toast.error(t('contacts.export.error')))
+                .finally(() => setIsExporting(false))
+            }}
+          >
+            {isExporting ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            {t('contacts.export.button')}
           </Button>
           {canEdit && (
             <ContactFormDialog
@@ -165,7 +186,7 @@ export function ContactsPage() {
               trigger={
                 <Button size="sm">
                   <Plus className="size-4" />
-                  Add contact
+                  {t('contacts.dialog.addTitle')}
                 </Button>
               }
             />
@@ -177,14 +198,14 @@ export function ContactsPage() {
         <div className="relative w-full max-w-xs">
           <Search className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
           <Input
-            placeholder="Search name, email, organization…"
+            placeholder={t('contacts.searchPlaceholder')}
             className="ps-8"
             value={search}
             onChange={(event) => setSearch(event.target.value)}
           />
         </div>
         <Select
-          items={CATEGORY_FILTER_ITEMS}
+          items={filterItems}
           value={category}
           onValueChange={(value) => setCategory(value as 'all' | ContactCategory)}
         >
@@ -192,7 +213,7 @@ export function ContactsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(CATEGORY_FILTER_ITEMS).map(([value, label]) => (
+            {Object.entries(filterItems).map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}
               </SelectItem>
@@ -206,13 +227,13 @@ export function ContactsPage() {
       ) : !contacts || contacts.length === 0 ? (
         <EmptyState
           icon={Users}
-          title={search || category !== 'all' ? 'No matching contacts' : 'No contacts yet'}
+          title={search || category !== 'all' ? t('contacts.emptyState.noMatchTitle') : t('contacts.emptyState.noneTitle')}
           description={
             search || category !== 'all'
-              ? 'Try a different search or category.'
+              ? t('contacts.emptyState.noMatchDescription')
               : canEdit
-                ? 'Add your first contact, or import a CSV to bring in a whole list at once.'
-                : 'No contacts have been added to this workspace yet.'
+                ? t('contacts.emptyState.canEditDescription')
+                : t('contacts.emptyState.viewOnlyDescription')
           }
         />
       ) : (
@@ -220,12 +241,12 @@ export function ContactsPage() {
           <Table>
             <TableHeader>
               <TableRow>
-                <TableHead>Name</TableHead>
-                <TableHead>Email</TableHead>
-                <TableHead>Phone</TableHead>
-                <TableHead>Category</TableHead>
-                <TableHead>Organization</TableHead>
-                <TableHead className="text-end">Actions</TableHead>
+                <TableHead>{t('contacts.fields.name')}</TableHead>
+                <TableHead>{t('contacts.fields.email')}</TableHead>
+                <TableHead>{t('contacts.fields.phone')}</TableHead>
+                <TableHead>{t('contacts.fields.category')}</TableHead>
+                <TableHead>{t('contacts.fields.organization')}</TableHead>
+                <TableHead className="text-end">{t('common.actions')}</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>

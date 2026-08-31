@@ -1,6 +1,8 @@
 import { Search, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import type { TFunction } from 'i18next'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { Button } from '@/components/ui/button'
@@ -11,12 +13,16 @@ import { AdminPagination } from '@/features/admin/components/AdminPagination'
 import { useAdminWorkspaces, useDeleteAdminWorkspace, useUpdateAdminWorkspacePlan } from '@/features/admin/hooks/useAdmin'
 import type { AdminWorkspace, SubscriptionPlan } from '@/types'
 
-const PLAN_ITEMS: Record<SubscriptionPlan, string> = { free: 'Free', pro: 'Pro', business: 'Business' }
+function planItems(t: TFunction): Record<SubscriptionPlan, string> {
+  return { free: t('admin.workspaces.planFree'), pro: t('admin.workspaces.planPro'), business: t('admin.workspaces.planBusiness') }
+}
 
 function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
+  const { t } = useTranslation()
   const deleteWorkspace = useDeleteAdminWorkspace()
   const updatePlan = useUpdateAdminWorkspacePlan()
   const [confirmOpen, setConfirmOpen] = useState(false)
+  const items = planItems(t)
 
   return (
     <TableRow>
@@ -26,14 +32,14 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
       <TableCell className="text-muted-foreground">{workspace.epks_count}</TableCell>
       <TableCell>
         <Select
-          items={PLAN_ITEMS}
+          items={items}
           value={workspace.plan ?? 'free'}
           onValueChange={(value) =>
             updatePlan.mutate(
               { workspaceId: workspace.id, plan: value as SubscriptionPlan },
               {
-                onSuccess: () => toast.success(`Plan updated to ${PLAN_ITEMS[value as SubscriptionPlan]}`),
-                onError: () => toast.error('Could not update the plan'),
+                onSuccess: () => toast.success(t('admin.workspaces.planUpdated', { plan: items[value as SubscriptionPlan] })),
+                onError: () => toast.error(t('admin.workspaces.planUpdateError')),
               }
             )
           }
@@ -42,7 +48,7 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            {Object.entries(PLAN_ITEMS).map(([value, label]) => (
+            {Object.entries(items).map(([value, label]) => (
               <SelectItem key={value} value={value}>
                 {label}
               </SelectItem>
@@ -62,18 +68,18 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
       <ConfirmDialog
         open={confirmOpen}
         onOpenChange={setConfirmOpen}
-        title="Delete workspace"
-        description={`"${workspace.name}" and everything in it — EPKs, media, contacts — will be permanently deleted.`}
-        confirmLabel="Delete"
+        title={t('settings.dangerZone.delete')}
+        description={t('settings.dangerZone.deleteDialogDescription', { workspace: workspace.name })}
+        confirmLabel={t('common.delete')}
         destructive
         isLoading={deleteWorkspace.isPending}
         onConfirm={() =>
           deleteWorkspace.mutate(workspace.id, {
             onSuccess: () => {
               setConfirmOpen(false)
-              toast.success('Workspace deleted')
+              toast.success(t('admin.workspaces.deleted'))
             },
-            onError: () => toast.error('Could not delete this workspace'),
+            onError: () => toast.error(t('admin.workspaces.deleteError')),
           })
         }
       />
@@ -82,6 +88,7 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
 }
 
 export function AdminWorkspacesPage() {
+  const { t } = useTranslation()
   const [search, setSearch] = useState('')
   const [page, setPage] = useState(1)
   const { data, isLoading } = useAdminWorkspaces({ search: search || undefined, page })
@@ -89,14 +96,14 @@ export function AdminWorkspacesPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-heading text-2xl font-semibold text-foreground">Workspaces</h1>
-        <p className="text-sm text-muted-foreground">Every workspace on the platform.</p>
+        <h1 className="font-heading text-2xl font-semibold text-foreground">{t('admin.workspaces.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('admin.workspaces.description')}</p>
       </div>
 
       <div className="relative w-full max-w-xs">
         <Search className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" />
         <Input
-          placeholder="Search by name…"
+          placeholder={t('admin.workspaces.searchPlaceholder')}
           className="ps-8"
           value={search}
           onChange={(event) => {
@@ -114,13 +121,13 @@ export function AdminWorkspacesPage() {
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Name</TableHead>
-                  <TableHead>Owner</TableHead>
-                  <TableHead>Members</TableHead>
-                  <TableHead>EPKs</TableHead>
-                  <TableHead>Plan</TableHead>
-                  <TableHead>Created</TableHead>
-                  <TableHead className="text-end">Actions</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.name')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.owner')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.members')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.epks')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.plan')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.created')}</TableHead>
+                  <TableHead className="text-end">{t('common.actions')}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>

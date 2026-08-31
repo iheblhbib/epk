@@ -1,5 +1,6 @@
 import { FileText, Film, ImageIcon, Music, X } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { useMediaList } from '@/features/media/hooks/useMedia'
@@ -29,7 +30,7 @@ export function MediaPickerSingle({
   value,
   onChange,
   type,
-  label = 'Select image',
+  label,
 }: {
   workspaceId: number
   value: number | null | undefined
@@ -37,9 +38,11 @@ export function MediaPickerSingle({
   type?: MediaType
   label?: string
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { data: media } = useMediaList(workspaceId, { type })
   const selected = media?.find((item) => item.id === value)
+  const triggerLabel = label ?? t('epkBuilder.mediaPicker.selectImage')
 
   return (
     <div className="flex items-center gap-2">
@@ -57,16 +60,14 @@ export function MediaPickerSingle({
       ) : null}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger render={<Button type="button" variant="outline" size="sm" />}>
-          {selected ? 'Change' : label}
+          {selected ? t('epkBuilder.mediaPicker.change') : triggerLabel}
         </DialogTrigger>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Select from Media Library</DialogTitle>
+            <DialogTitle>{t('epkBuilder.mediaPicker.selectFromLibrary')}</DialogTitle>
           </DialogHeader>
           {!media || media.length === 0 ? (
-            <p className="py-6 text-center text-sm text-muted-foreground">
-              No files yet — upload some in the Media Library first.
-            </p>
+            <p className="py-6 text-center text-sm text-muted-foreground">{t('epkBuilder.mediaPicker.noFilesYet')}</p>
           ) : (
             <div className="grid max-h-96 grid-cols-4 gap-2 overflow-y-auto">
               {media.map((item) => (
@@ -104,6 +105,7 @@ export function MediaPickerMultiple({
   value: number[]
   onChange: (mediaIds: number[]) => void
 }) {
+  const { t } = useTranslation()
   const [open, setOpen] = useState(false)
   const { data: media } = useMediaList(workspaceId)
   const selectedItems = media?.filter((item) => value.includes(item.id)) ?? []
@@ -131,16 +133,14 @@ export function MediaPickerMultiple({
       )}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger render={<Button type="button" variant="outline" size="sm" className="w-full" />}>
-          Add files from Media Library
+          {t('epkBuilder.mediaPicker.addFiles')}
         </DialogTrigger>
         <DialogContent className="max-w-lg">
           <DialogHeader>
-            <DialogTitle>Select downloadable files</DialogTitle>
+            <DialogTitle>{t('epkBuilder.mediaPicker.selectDownloadable')}</DialogTitle>
           </DialogHeader>
           {!media || media.length === 0 ? (
-            <p className="py-6 text-center text-sm text-muted-foreground">
-              No files yet — upload some in the Media Library first.
-            </p>
+            <p className="py-6 text-center text-sm text-muted-foreground">{t('epkBuilder.mediaPicker.noFilesYet')}</p>
           ) : (
             <div className="max-h-96 space-y-1 overflow-y-auto">
               {media.map((item) => (

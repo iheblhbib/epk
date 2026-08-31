@@ -4,16 +4,21 @@ import {
   deleteEpk,
   duplicateEpk,
   getEpk,
+  getEpkCustomDomain,
   listEpks,
   publishEpk,
+  removeEpkCustomDomain,
+  setEpkCustomDomain,
   unpublishEpk,
   updateEpk,
+  verifyEpkCustomDomain,
   type CreateEpkPayload,
   type UpdateEpkPayload,
 } from '@/api/epks'
 
 export const epksKey = (workspaceId: number) => ['workspaces', workspaceId, 'epks'] as const
 export const epkKey = (epkId: number) => ['epks', epkId] as const
+export const epkCustomDomainKey = (epkId: number) => ['epks', epkId, 'custom-domain'] as const
 
 export function useEpks(workspaceId: number | undefined) {
   return useQuery({
@@ -83,5 +88,49 @@ export function useUnpublishEpk(workspaceId: number) {
   return useMutation({
     mutationFn: unpublishEpk,
     onSuccess: () => queryClient.invalidateQueries({ queryKey: epksKey(workspaceId) }),
+  })
+}
+
+export function useEpkCustomDomain(epkId: number, enabled: boolean) {
+  return useQuery({
+    queryKey: epkCustomDomainKey(epkId),
+    queryFn: () => getEpkCustomDomain(epkId),
+    enabled,
+  })
+}
+
+export function useSetEpkCustomDomain(epkId: number) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (domain: string) => setEpkCustomDomain(epkId, domain),
+    onSuccess: (setup) => {
+      queryClient.invalidateQueries({ queryKey: epkKey(epkId) })
+      queryClient.setQueryData(epkCustomDomainKey(epkId), setup)
+    },
+  })
+}
+
+export function useVerifyEpkCustomDomain(epkId: number) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => verifyEpkCustomDomain(epkId),
+    onSuccess: (setup) => {
+      queryClient.invalidateQueries({ queryKey: epkKey(epkId) })
+      queryClient.setQueryData(epkCustomDomainKey(epkId), setup)
+    },
+  })
+}
+
+export function useRemoveEpkCustomDomain(epkId: number) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: () => removeEpkCustomDomain(epkId),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: epkKey(epkId) })
+      queryClient.setQueryData(epkCustomDomainKey(epkId), null)
+    },
   })
 }

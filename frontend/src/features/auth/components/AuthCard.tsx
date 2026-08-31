@@ -20,7 +20,7 @@ export function AuthCard({
             <div className="flex size-8 items-center justify-center rounded-md bg-primary font-heading text-base font-semibold text-primary-foreground">
               K
             </div>
-            <span className="font-heading text-lg font-semibold text-foreground">Kitfolio</span>
+            <span className="font-heading text-lg font-semibold text-foreground">KORAX</span>
           </Link>
           <div className="space-y-1">
             <h1 className="font-heading text-xl font-semibold text-foreground">{title}</h1>

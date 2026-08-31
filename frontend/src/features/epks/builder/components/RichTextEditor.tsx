@@ -1,6 +1,7 @@
 import { EditorContent, useEditor } from '@tiptap/react'
 import StarterKit from '@tiptap/starter-kit'
 import { Bold, Heading2, Heading3, Italic, Link as LinkIcon, List, ListOrdered, Quote } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Toggle } from '@/components/ui/toggle'
 import { cn } from '@/lib/utils'
 
@@ -20,6 +21,7 @@ export function RichTextEditor({
   onChange: (html: string) => void
   placeholder?: string
 }) {
+  const { t } = useTranslation()
   const editor = useEditor({
     extensions: [
       // Tiptap v3's StarterKit bundles Link itself — configuring it here
@@ -54,7 +56,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('heading', { level: 2 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
-          aria-label="Heading 2"
+          aria-label={t('epkBuilder.richText.heading2')}
         >
           <Heading2 className="size-4" />
         </Toggle>
@@ -62,7 +64,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('heading', { level: 3 })}
           onPressedChange={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
-          aria-label="Heading 3"
+          aria-label={t('epkBuilder.richText.heading3')}
         >
           <Heading3 className="size-4" />
         </Toggle>
@@ -70,7 +72,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('bold')}
           onPressedChange={() => editor.chain().focus().toggleBold().run()}
-          aria-label="Bold"
+          aria-label={t('epkBuilder.richText.bold')}
         >
           <Bold className="size-4" />
         </Toggle>
@@ -78,7 +80,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('italic')}
           onPressedChange={() => editor.chain().focus().toggleItalic().run()}
-          aria-label="Italic"
+          aria-label={t('epkBuilder.richText.italic')}
         >
           <Italic className="size-4" />
         </Toggle>
@@ -86,7 +88,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('bulletList')}
           onPressedChange={() => editor.chain().focus().toggleBulletList().run()}
-          aria-label="Bullet list"
+          aria-label={t('epkBuilder.richText.bulletList')}
         >
           <List className="size-4" />
         </Toggle>
@@ -94,7 +96,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('orderedList')}
           onPressedChange={() => editor.chain().focus().toggleOrderedList().run()}
-          aria-label="Numbered list"
+          aria-label={t('epkBuilder.richText.numberedList')}
         >
           <ListOrdered className="size-4" />
         </Toggle>
@@ -102,7 +104,7 @@ export function RichTextEditor({
           size="sm"
           pressed={editor.isActive('blockquote')}
           onPressedChange={() => editor.chain().focus().toggleBlockquote().run()}
-          aria-label="Quote"
+          aria-label={t('epkBuilder.richText.quote')}
         >
           <Quote className="size-4" />
         </Toggle>
@@ -114,10 +116,10 @@ export function RichTextEditor({
               editor.chain().focus().unsetLink().run()
               return
             }
-            const url = window.prompt('Link URL')
+            const url = window.prompt(t('epkBuilder.richText.linkUrlPrompt'))
             if (url) editor.chain().focus().setLink({ href: url }).run()
           }}
-          aria-label="Link"
+          aria-label={t('epkBuilder.richText.link')}
         >
           <LinkIcon className="size-4" />
         </Toggle>

@@ -53,6 +53,11 @@ class PlanLimits
         return (bool) $this->limits($workspace)['private_links'];
     }
 
+    public function canUseCustomDomains(Workspace $workspace): bool
+    {
+        return (bool) $this->limits($workspace)['custom_domains'];
+    }
+
     public function canCreateEpk(Workspace $workspace): bool
     {
         $max = $this->maxEpks($workspace);

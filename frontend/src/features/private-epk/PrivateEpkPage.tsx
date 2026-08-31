@@ -1,6 +1,7 @@
 import type { AxiosError } from 'axios'
 import { Lock, ShieldOff, Sparkles } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { useParams } from 'react-router-dom'
 import { trackPrivateEvent } from '@/api/privatePage'
 import { Button } from '@/components/ui/button'
@@ -22,6 +23,7 @@ function CenteredMessage({ icon: Icon, title, description }: { icon: typeof Lock
 }
 
 function PasswordGate({ token }: { token: string }) {
+  const { t } = useTranslation()
   const [password, setPassword] = useState('')
   const verify = useVerifyPrivatePage(token)
 
@@ -31,8 +33,8 @@ function PasswordGate({ token }: { token: string }) {
     <div className="flex min-h-screen flex-col items-center justify-center gap-6 bg-background px-6 text-center">
       <Lock className="size-8 text-muted-foreground" />
       <div className="space-y-1">
-        <h1 className="text-xl font-semibold text-foreground">This press kit is password-protected</h1>
-        <p className="text-sm text-muted-foreground">Enter the password you were given to view it.</p>
+        <h1 className="text-xl font-semibold text-foreground">{t('privateEpk.passwordGate.title')}</h1>
+        <p className="text-sm text-muted-foreground">{t('privateEpk.passwordGate.description')}</p>
       </div>
       <form
         className="w-full max-w-xs space-y-3 text-start"
@@ -42,7 +44,7 @@ function PasswordGate({ token }: { token: string }) {
         }}
       >
         <div className="space-y-1.5">
-          <Label htmlFor="private-link-password">Password</Label>
+          <Label htmlFor="private-link-password">{t('auth.login.password')}</Label>
           <Input
             id="private-link-password"
             type="password"
@@ -54,7 +56,7 @@ function PasswordGate({ token }: { token: string }) {
           {errorMessage && <p className="text-xs text-destructive">{errorMessage}</p>}
         </div>
         <Button type="submit" className="w-full" disabled={verify.isPending || !password}>
-          {verify.isPending ? 'Checking…' : 'View press kit'}
+          {verify.isPending ? t('privateEpk.passwordGate.checking') : t('privateEpk.passwordGate.submit')}
         </Button>
       </form>
     </div>
@@ -62,6 +64,7 @@ function PasswordGate({ token }: { token: string }) {
 }
 
 export function PrivateEpkPage() {
+  const { t } = useTranslation()
   const { token } = useParams<{ token: string }>()
   const { data: epk, isLoading, error } = usePrivatePage(token)
   const hasTrackedView = useRef(false)
@@ -78,7 +81,7 @@ export function PrivateEpkPage() {
     if (!epk) return
     document.title = epk.seo_title || epk.title
     return () => {
-      document.title = 'Kitfolio'
+      document.title = 'KORAX'
     }
   }, [epk])
 
@@ -90,8 +93,8 @@ export function PrivateEpkPage() {
     return (
       <CenteredMessage
         icon={Sparkles}
-        title="This link isn't available"
-        description="The link may be incorrect."
+        title={t('privateEpk.notAvailable.title')}
+        description={t('privateEpk.notAvailable.description')}
       />
     )
   }
@@ -104,8 +107,8 @@ export function PrivateEpkPage() {
     return (
       <CenteredMessage
         icon={ShieldOff}
-        title="This link is no longer available"
-        description="It may have expired or been revoked by its owner. Ask them for a new one."
+        title={t('privateEpk.expired.title')}
+        description={t('privateEpk.expired.description')}
       />
     )
   }
@@ -114,8 +117,8 @@ export function PrivateEpkPage() {
     return (
       <CenteredMessage
         icon={Sparkles}
-        title="This link isn't available"
-        description="The link may be incorrect."
+        title={t('privateEpk.notAvailable.title')}
+        description={t('privateEpk.notAvailable.description')}
       />
     )
   }

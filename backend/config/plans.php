@@ -8,16 +8,23 @@
 | The static feature/limit table for each plan tier. This is deliberately a
 | config file rather than a database table — these three tiers are product
 | decisions, not admin-editable data, much like Stripe Price/Product objects
-| aren't edited from inside the app that sells them. Stripe integration
-| itself is out of scope for this phase (see App\Services\PlanLimits and
-| the Subscription model's stripe_* columns, which exist now so wiring
-| Stripe in later doesn't need a schema change) — for now a workspace's
-| plan is set by an admin via /admin/workspaces/{workspace}/subscription.
+| aren't edited from inside the app that sells them.
 |
-| 'white_label' and 'custom_domains' are recorded here as plan flags but
-| have no enforcement point yet — neither feature exists in the app at all,
-| so there's nothing to gate. They're included so the comparison table is
-| honest about what each tier is eventually meant to unlock.
+| 'stripe_price_id' is the Stripe Price object id for that tier's recurring
+| subscription (see docs/stripe.md for how to create these in the Stripe
+| Dashboard and where to put the id) — null for Free since there's nothing
+| to check out for it. An admin can still set a workspace's plan directly
+| via /admin/workspaces/{workspace}/subscription regardless of Stripe (e.g.
+| comps, manual grants); that path doesn't touch Stripe at all.
+|
+| 'white_label' is recorded here as a plan flag but has no enforcement
+| point yet — that feature doesn't exist in the app at all, so there's
+| nothing to gate. It's included so the comparison table is honest about
+| what each tier is eventually meant to unlock.
+|
+| 'custom_domains' gates EpkCustomDomainController (see PlanLimits::
+| canUseCustomDomains()) — DNS/SSL for the domain itself is still a manual
+| step on the host, this only controls who's allowed to attach one.
 |
 */
 
@@ -32,6 +39,7 @@ return [
         'private_links' => false,
         'white_label' => false,
         'custom_domains' => false,
+        'stripe_price_id' => null,
     ],
 
     'pro' => [
@@ -43,6 +51,7 @@ return [
         'private_links' => true,
         'white_label' => false,
         'custom_domains' => false,
+        'stripe_price_id' => env('STRIPE_PRICE_PRO'),
     ],
 
     'business' => [
@@ -54,6 +63,7 @@ return [
         'private_links' => true,
         'white_label' => true,
         'custom_domains' => true,
+        'stripe_price_id' => env('STRIPE_PRICE_BUSINESS'),
     ],
 
 ];

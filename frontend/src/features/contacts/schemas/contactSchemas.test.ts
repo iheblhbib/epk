@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { contactFormSchema } from '@/features/contacts/schemas/contactSchemas'
+import i18n from '@/i18n'
+import { createContactFormSchema } from '@/features/contacts/schemas/contactSchemas'
+
+const contactFormSchema = createContactFormSchema(i18n.t)
 
 describe('contactFormSchema', () => {
   it('accepts a minimal contact with just a name and category', () => {

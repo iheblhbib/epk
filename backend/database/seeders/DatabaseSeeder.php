@@ -24,7 +24,7 @@ class DatabaseSeeder extends Seeder
     {
         $demoUser = User::factory()->create([
             'name' => 'Demo User',
-            'email' => 'demo@kitfolio.test',
+            'email' => 'demo@korax.test',
             'password' => bcrypt('password'),
             'email_verified_at' => now(),
         ]);

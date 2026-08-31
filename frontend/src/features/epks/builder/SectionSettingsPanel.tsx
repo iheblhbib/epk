@@ -1,5 +1,6 @@
 import { Layers } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -58,10 +59,16 @@ export function SectionSettingsPanel({
   section: EpkSection | null
   canEdit: boolean
 }) {
+  const { t } = useTranslation()
+
   if (!section) {
     return (
       <div className="p-4">
-        <EmptyState icon={Layers} title="No section selected" description="Pick a section on the left to edit it." />
+        <EmptyState
+          icon={Layers}
+          title={t('epkBuilder.settingsPanel.noSectionTitle')}
+          description={t('epkBuilder.settingsPanel.noSectionDescription')}
+        />
       </div>
     )
   }
@@ -73,9 +80,7 @@ export function SectionSettingsPanel({
       </div>
 
       {!canEdit && (
-        <p className="rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">
-          You have view-only access to this workspace.
-        </p>
+        <p className="rounded-lg bg-muted px-3 py-2 text-xs text-muted-foreground">{t('common.viewOnlyAccess')}</p>
       )}
 
       {/* pointer-events-none rather than gating every individual field
@@ -85,7 +90,7 @@ export function SectionSettingsPanel({
       <div className={canEdit ? undefined : 'pointer-events-none opacity-60'} inert={!canEdit}>
         <div className="space-y-5">
           <div className="space-y-1.5">
-            <Label>Section title override (optional)</Label>
+            <Label>{t('epkBuilder.settingsPanel.titleOverride')}</Label>
             <SectionTitleInput key={section.id} epkId={epkId} section={section} />
           </div>
 

@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\EpkStatus;
 use App\Models\Epk;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
@@ -24,7 +25,13 @@ class EpkResource extends JsonResource
             'custom_settings' => $this->custom_settings,
             'seo_title' => $this->seo_title,
             'seo_description' => $this->seo_description,
+            'custom_domain' => $this->custom_domain,
+            'custom_domain_verified' => $this->hasVerifiedCustomDomain(),
             'public_url' => "/epk/{$this->slug}",
+            // Only meaningful once published — the share page 404s the same
+            // way the public API does for a draft/archived EPK, so there's
+            // nothing useful to link to before then. See PublicEpkShareController.
+            'share_url' => $this->status === EpkStatus::Published ? route('epk.share', $this->slug) : null,
             'published_at' => $this->published_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

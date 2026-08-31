@@ -1,0 +1,1030 @@
+{
+  "nav": {
+    "dashboard": "لوحة التحكم",
+    "myEpks": "ملفاتي الصحفية",
+    "mediaLibrary": "مكتبة الوسائط",
+    "analytics": "الإحصائيات",
+    "contacts": "جهات الاتصال",
+    "team": "الفريق",
+    "admin": "الإدارة",
+    "settings": "الإعدادات",
+    "billing": "الفوترة"
+  },
+  "topbar": {
+    "settings": "الإعدادات",
+    "logout": "تسجيل الخروج",
+    "logoutError": "تعذّر تسجيل الخروج"
+  },
+  "search": {
+    "trigger": "بحث",
+    "placeholder": "ابحث في ملفات EPK والفنانين وجهات الاتصال والوسائط…",
+    "hint": "استمر في الكتابة للبحث في مساحة العمل هذه.",
+    "empty": "لم يتم العثور على نتائج.",
+    "groups": {
+      "epks": "ملفات EPK",
+      "artists": "الفنانون",
+      "contacts": "جهات الاتصال",
+      "media": "الوسائط"
+    }
+  },
+  "theme": {
+    "toggle": "تبديل المظهر",
+    "light": "فاتح",
+    "dark": "داكن",
+    "system": "النظام"
+  },
+  "language": {
+    "toggle": "تغيير اللغة"
+  },
+  "admin": {
+    "nav": {
+      "dashboard": "لوحة التحكم",
+      "users": "المستخدمون",
+      "workspaces": "مساحات العمل",
+      "epks": "الملفات الصحفية",
+      "auditLog": "سجل التدقيق",
+      "backToApp": "العودة إلى التطبيق"
+    },
+    "dashboard": {
+      "title": "لوحة تحكم الإدارة",
+      "description": "نظرة عامة على استخدام المنصة.",
+      "totalUsers": "إجمالي المستخدمين",
+      "newUsers30d": "مستخدمون جدد (30 يومًا)",
+      "workspaces": "مساحات العمل",
+      "totalEpks": "إجمالي الملفات الصحفية",
+      "publishedEpks": "الملفات الصحفية المنشورة",
+      "pageViews30d": "مشاهدات الصفحة (30 يومًا)",
+      "contacts": "جهات الاتصال",
+      "mediaFiles": "ملفات الوسائط",
+      "storageUsed": "التخزين المستخدم"
+    },
+    "pagination": {
+      "total": "{{count}} إجمالًا",
+      "previous": "السابق",
+      "next": "التالي",
+      "pageOf": "صفحة {{page}} من {{lastPage}}"
+    },
+    "users": {
+      "title": "المستخدمون",
+      "description": "جميع الحسابات على المنصة.",
+      "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني…",
+      "you": "(أنت)",
+      "roleAdmin": "مسؤول",
+      "roleUser": "مستخدم",
+      "suspended": "موقوف",
+      "active": "نشط",
+      "revokeAdmin": "إلغاء صلاحية الإدارة",
+      "makeAdmin": "تعيين كمسؤول",
+      "unsuspend": "إلغاء الإيقاف",
+      "suspend": "إيقاف",
+      "roleUpdateError": "تعذّر تحديث دور هذا المستخدم",
+      "updateError": "تعذّر تحديث هذا المستخدم",
+      "columns": {
+        "name": "الاسم",
+        "email": "البريد الإلكتروني",
+        "role": "الدور",
+        "status": "الحالة"
+      }
+    },
+    "workspaces": {
+      "title": "مساحات العمل",
+      "description": "جميع مساحات العمل على المنصة.",
+      "searchPlaceholder": "ابحث بالاسم…",
+      "planFree": "مجاني",
+      "planPro": "احترافي",
+      "planBusiness": "أعمال",
+      "planUpdated": "تم تحديث الخطة إلى {{plan}}",
+      "planUpdateError": "تعذّر تحديث الخطة",
+      "deleted": "تم حذف مساحة العمل",
+      "deleteError": "تعذّر حذف مساحة العمل هذه",
+      "columns": {
+        "name": "الاسم",
+        "owner": "المالك",
+        "members": "الأعضاء",
+        "epks": "الملفات الصحفية",
+        "plan": "الخطة",
+        "created": "تاريخ الإنشاء"
+      }
+    },
+    "epks": {
+      "title": "الملفات الصحفية",
+      "description": "جميع الملفات الصحفية على المنصة.",
+      "searchPlaceholder": "ابحث بالعنوان…",
+      "allStatuses": "جميع الحالات",
+      "unpublish": "إلغاء النشر",
+      "unpublishedToast": "تم إلغاء نشر \"{{title}}\"",
+      "unpublishError": "تعذّر إلغاء نشر هذا الملف الصحفي",
+      "columns": {
+        "workspace": "مساحة العمل"
+      }
+    },
+    "auditLog": {
+      "description": "الإجراءات المُنفَّذة من لوحة الإدارة هذه.",
+      "noneTitle": "لا يوجد نشاط بعد",
+      "noneDescription": "ستظهر إجراءات الإدارة هنا.",
+      "system": "النظام",
+      "columns": {
+        "action": "الإجراء",
+        "admin": "المسؤول",
+        "subject": "الموضوع",
+        "ipAddress": "عنوان IP",
+        "when": "الوقت"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "مرحبًا بعودتك",
+      "description": "سجّل الدخول لإدارة ملفاتك الصحفية",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "forgotPassword": "نسيت كلمة المرور؟",
+      "signIn": "تسجيل الدخول",
+      "noAccount": "ليس لديك حساب؟",
+      "signUp": "إنشاء حساب",
+      "justVerified": "تم التحقق من بريدك الإلكتروني. يمكنك الآن تسجيل الدخول.",
+      "credentialsMismatch": "بيانات الاعتماد هذه لا تطابق سجلاتنا.",
+      "failedToast": "فشل تسجيل الدخول",
+      "tooManyAttempts": "محاولات كثيرة جدًا. يرجى الانتظار دقيقة والمحاولة مرة أخرى.",
+      "twoFactorDescription": "أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة الخاص بك.",
+      "twoFactorCodeLabel": "رمز المصادقة",
+      "recoveryCodeLabel": "رمز الاسترداد",
+      "verifyCode": "تحقّق",
+      "useRecoveryCodeInstead": "استخدم رمز استرداد بدلاً من ذلك",
+      "useAuthenticatorInstead": "استخدم تطبيق المصادقة بدلاً من ذلك",
+      "twoFactorInvalid": "لم ينجح هذا الرمز. حاول مرة أخرى."
+    },
+    "register": {
+      "title": "أنشئ حسابك",
+      "description": "ابدأ بإنشاء ملفك الصحفي في دقائق",
+      "alreadyHaveAccount": "لديك حساب بالفعل؟",
+      "signIn": "تسجيل الدخول",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "createAccount": "إنشاء حساب",
+      "createAccountError": "تعذّر إنشاء حسابك",
+      "tooManyAttempts": "محاولات كثيرة جدًا. يرجى الانتظار دقيقة والمحاولة مرة أخرى."
+    },
+    "forgotPassword": {
+      "title": "إعادة تعيين كلمة المرور",
+      "description": "سنرسل لك رابطًا لإعادة تعيينها",
+      "backToSignIn": "العودة إلى تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "sendResetLink": "إرسال رابط إعادة التعيين",
+      "checkInbox": "تحقق من بريدك الوارد للحصول على رابط إعادة تعيين كلمة المرور.",
+      "notFound": "لم نتمكن من العثور على حساب بهذا البريد الإلكتروني."
+    },
+    "resetPassword": {
+      "title": "عيّن كلمة مرور جديدة",
+      "backToSignIn": "العودة إلى تسجيل الدخول",
+      "email": "البريد الإلكتروني",
+      "newPassword": "كلمة المرور الجديدة",
+      "confirmNewPassword": "تأكيد كلمة المرور الجديدة",
+      "submit": "إعادة تعيين كلمة المرور",
+      "success": "تمت إعادة تعيين كلمة المرور. يمكنك الآن تسجيل الدخول.",
+      "invalidLink": "رابط إعادة التعيين هذا غير صالح أو منتهي الصلاحية."
+    },
+    "verifyEmail": {
+      "title": "تحقّق من بريدك الإلكتروني",
+      "description": "أرسلنا رابط تحقق إلى {{email}}",
+      "logout": "تسجيل الخروج",
+      "instructions": "انقر على الرابط في ذلك البريد لتفعيل حسابك. لم تستلمه؟",
+      "resend": "إعادة إرسال بريد التحقق",
+      "sent": "تم إرسال البريد",
+      "sentToast": "تم إرسال بريد التحقق",
+      "sendError": "تعذّر إرسال البريد الإلكتروني الآن"
+    }
+  },
+  "validation": {
+    "nameRequired": "الاسم مطلوب",
+    "emailRequired": "البريد الإلكتروني مطلوب",
+    "emailInvalid": "أدخل عنوان بريد إلكتروني صالحًا",
+    "emailInvalidShort": "أدخل بريدًا إلكترونيًا صالحًا",
+    "passwordRequired": "كلمة المرور مطلوبة",
+    "passwordStrength": "يجب أن تتكوّن كلمة المرور من 8 أحرف على الأقل وتتضمن حرفًا كبيرًا وحرفًا صغيرًا ورقمًا ورمزًا.",
+    "confirmPasswordRequired": "يرجى تأكيد كلمة المرور",
+    "passwordsDoNotMatch": "كلمتا المرور غير متطابقتين",
+    "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
+    "titleRequired": "العنوان مطلوب",
+    "selectOrCreateArtist": "اختر فنانًا أو أنشئ واحدًا",
+    "artistNameRequired": "اسم الفنان مطلوب"
+  },
+  "password": {
+    "show": "إظهار كلمة المرور",
+    "hide": "إخفاء كلمة المرور",
+    "requirements": {
+      "length": "8 أحرف على الأقل",
+      "lowercase": "حرف صغير",
+      "uppercase": "حرف كبير",
+      "number": "رقم",
+      "symbol": "رمز (مثل !@#$%)"
+    }
+  },
+  "contacts": {
+    "dialog": {
+      "editTitle": "تعديل جهة الاتصال",
+      "addTitle": "إضافة جهة اتصال",
+      "description": "الصحفيون والإذاعات والمدونات والملصقات وأي شخص آخر تتعامل معه في الصحافة والترويج."
+    },
+    "fields": {
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "phone": "الهاتف",
+      "category": "الفئة",
+      "organization": "المؤسسة",
+      "notes": "ملاحظات (اختياري)"
+    },
+    "categories": {
+      "journalist": "صحفي",
+      "radio": "إذاعة",
+      "blog": "مدونة",
+      "label": "شركة إنتاج",
+      "booking": "حجوزات",
+      "management": "إدارة أعمال",
+      "pr": "علاقات عامة",
+      "other": "أخرى"
+    },
+    "toasts": {
+      "updated": "تم تحديث جهة الاتصال",
+      "added": "تمت إضافة جهة الاتصال",
+      "updateError": "تعذّر تحديث جهة الاتصال",
+      "addError": "تعذّر إضافة جهة الاتصال",
+      "deleted": "تم حذف جهة الاتصال",
+      "deleteError": "تعذّر حذف جهة الاتصال"
+    },
+    "allCategories": "كل الفئات",
+    "pageDescription": "الصحفيون والإذاعات والمدونات وأي شخص آخر تتعامل معه في الصحافة والترويج.",
+    "searchPlaceholder": "ابحث بالاسم أو البريد الإلكتروني أو المؤسسة…",
+    "deleteDialog": {
+      "title": "حذف جهة الاتصال",
+      "description": "سيتم حذف \"{{name}}\" نهائيًا."
+    },
+    "import": {
+      "importing": "جارٍ الاستيراد…",
+      "button": "استيراد CSV",
+      "created": "تم استيراد {{count}}",
+      "skipped": "تم تخطي {{count}}",
+      "error": "تعذّر استيراد الملف"
+    },
+    "export": {
+      "button": "تصدير CSV",
+      "error": "تعذّر تصدير جهات الاتصال"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل إضافة جهات اتصال.",
+      "noMatchTitle": "لا توجد جهات اتصال مطابقة",
+      "noneTitle": "لا توجد جهات اتصال بعد",
+      "noMatchDescription": "جرّب بحثًا أو فئة مختلفة.",
+      "canEditDescription": "أضف جهة اتصالك الأولى، أو استورد ملف CSV لإضافة قائمة كاملة دفعة واحدة.",
+      "viewOnlyDescription": "لم تتم إضافة أي جهات اتصال إلى مساحة العمل هذه بعد."
+    }
+  },
+  "epks": {
+    "artistDialog": {
+      "title": "فنان جديد",
+      "description": "يمكنك إكمال باقي ملفه الشخصي لاحقًا.",
+      "submit": "إنشاء الفنان",
+      "toastCreated": "تم إنشاء الفنان",
+      "toastError": "تعذّر إنشاء الفنان"
+    },
+    "formDialog": {
+      "editTitle": "تعديل الملف الصحفي",
+      "createTitle": "إنشاء ملف صحفي",
+      "editDescription": "حدّث العنوان والفنان وتفاصيل تحسين محركات البحث.",
+      "createDescription": "المحرر المرئي للأقسام والتصميم قادم في مرحلة لاحقة — هذا ينشئ سجل الملف الصحفي فقط.",
+      "submitCreate": "إنشاء الملف الصحفي"
+    },
+    "fields": {
+      "name": "الاسم",
+      "namePlaceholder": "اسم الفنان أو الفرقة",
+      "genre": "النوع الموسيقي",
+      "genrePlaceholder": "إلكترونية، روك، جاز…",
+      "country": "البلد",
+      "selectCountry": "اختر بلدًا",
+      "title": "العنوان",
+      "titlePlaceholder": "ملف جولة الصيف 2026 الصحفي",
+      "artist": "الفنان",
+      "selectArtist": "اختر فنانًا",
+      "seoTitle": "عنوان تحسين محركات البحث (اختياري)",
+      "seoTitlePlaceholder": "يُستخدم عنوان الملف الصحفي افتراضيًا"
+    },
+    "toasts": {
+      "updated": "تم تحديث الملف الصحفي",
+      "created": "تم إنشاء الملف الصحفي",
+      "updateError": "تعذّر تحديث الملف الصحفي",
+      "createError": "تعذّر إنشاء الملف الصحفي",
+      "published": "تم نشر الملف الصحفي",
+      "unpublished": "تم إلغاء نشر الملف الصحفي",
+      "statusError": "تعذّر تحديث حالة الملف الصحفي",
+      "duplicated": "تم تكرار الملف الصحفي",
+      "duplicateError": "تعذّر تكرار الملف الصحفي",
+      "deleted": "تم حذف الملف الصحفي",
+      "deleteError": "تعذّر حذف الملف الصحفي"
+    },
+    "status": {
+      "draft": "مسودة",
+      "published": "منشور",
+      "archived": "مؤرشف"
+    },
+    "duplicate": "تكرار",
+    "noArtist": "لا يوجد فنان",
+    "builder": "المحرر",
+    "pageDescription": "أدر الملفات الصحفية الخاصة بـ {{workspace}}.",
+    "deleteDialog": {
+      "title": "حذف الملف الصحفي",
+      "description": "سيتم حذف \"{{title}}\" نهائيًا."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل إضافة ملفات صحفية.",
+      "noneTitle": "لا توجد ملفات صحفية بعد",
+      "canEditDescription": "أنشئ ملفك الصحفي الأول للبدء. المحرر المرئي للأقسام والتصميم قادم في مرحلة لاحقة.",
+      "viewOnlyDescription": "لم يتم إنشاء أي ملف صحفي في مساحة العمل هذه بعد."
+    }
+  },
+  "settings": {
+    "pageDescription": "أدر حسابك وتفاصيل مساحة العمل.",
+    "tabs": {
+      "profile": "الملف الشخصي",
+      "password": "كلمة المرور",
+      "workspace": "مساحة العمل",
+      "notifications": "الإشعارات",
+      "activity": "النشاط",
+      "apiTokens": "رموز API",
+      "twoFactor": "المصادقة الثنائية"
+    },
+    "profile": {
+      "title": "الملف الشخصي",
+      "description": "حدّث اسمك وبريدك الإلكتروني.",
+      "name": "الاسم",
+      "email": "البريد الإلكتروني",
+      "updated": "تم تحديث الملف الشخصي",
+      "updateError": "تعذّر تحديث ملفك الشخصي"
+    },
+    "password": {
+      "title": "كلمة المرور",
+      "description": "اختر كلمة مرور قوية وفريدة.",
+      "current": "كلمة المرور الحالية",
+      "new": "كلمة المرور الجديدة",
+      "confirmNew": "تأكيد كلمة المرور الجديدة",
+      "submit": "تحديث كلمة المرور",
+      "updated": "تم تحديث كلمة المرور",
+      "incorrect": "كلمة المرور الحالية غير صحيحة."
+    },
+    "workspace": {
+      "title": "تفاصيل مساحة العمل",
+      "description": "حدّث اسم ووصف {{workspace}}.",
+      "descriptionField": "الوصف",
+      "updated": "تم تحديث مساحة العمل",
+      "updateError": "تعذّر تحديث مساحة العمل"
+    },
+    "dangerZone": {
+      "title": "منطقة الخطر",
+      "ownerDescription": "لا يمكن التراجع عن مغادرة أو حذف مساحة العمل هذه.",
+      "memberDescription": "ستفقد الوصول إلى ملفات وموارد وجهات اتصال مساحة العمل هذه عند مغادرتها.",
+      "leave": "مغادرة مساحة العمل",
+      "delete": "حذف مساحة العمل",
+      "leaveConfirm": "مغادرة",
+      "leaveDialogDescription": "ستفقد الوصول إلى \"{{workspace}}\" حتى تتم دعوتك مرة أخرى.",
+      "leftToast": "غادرت {{workspace}}",
+      "leaveError": "تعذّر مغادرة مساحة العمل هذه — بصفتك المالك الوحيد، عليك نقل ملكيتها أو حذفها أولًا.",
+      "deleteDialogDescription": "سيتم حذف \"{{workspace}}\" وكل ما يحتويه — الملفات الصحفية والوسائط وجهات الاتصال — نهائيًا.",
+      "deletedToast": "تم حذف {{workspace}}",
+      "deleteError": "تعذّر حذف مساحة العمل هذه"
+    },
+    "notifications": {
+      "title": "الإشعارات",
+      "description": "اختر كيفية إشعارك لكل نوع من الأحداث.",
+      "updateError": "تعذّر تحديث تفضيلات الإشعارات الخاصة بك",
+      "channel": {
+        "email": "البريد الإلكتروني",
+        "inApp": "داخل التطبيق"
+      },
+      "workspaceInvitation": {
+        "title": "دعوات مساحة العمل",
+        "mailDescription": "تلقَّ رسالة بريد إلكتروني عندما يدعوك أحدهم للانضمام إلى مساحة عمل.",
+        "databaseDescription": "عرض إشعار عندما يدعوك أحدهم للانضمام إلى مساحة عمل."
+      },
+      "epkPublished": {
+        "title": "تم نشر EPK",
+        "databaseDescription": "عرض إشعار عندما ينشر أحد أعضاء الفريق EPK."
+      },
+      "teamMemberJoined": {
+        "title": "انضمام عضو جديد للفريق",
+        "databaseDescription": "عرض إشعار عندما ينضم أحدهم إلى مساحة عملك."
+      }
+    },
+    "activity": {
+      "title": "النشاط",
+      "description": "التغييرات الأخيرة التي تمت في مساحة العمل هذه.",
+      "emptyTitle": "لا يوجد نشاط بعد",
+      "emptyDescription": "ستظهر هنا الإجراءات المتخذة في مساحة العمل هذه.",
+      "system": "النظام",
+      "pageOf": "صفحة {{page}} من {{lastPage}}",
+      "actions": {
+        "epkCreated": "أنشأ ملف EPK \"{{title}}\"",
+        "epkPublished": "نشر ملف EPK \"{{title}}\"",
+        "epkUnpublished": "ألغى نشر ملف EPK \"{{title}}\"",
+        "epkDeleted": "حذف ملف EPK \"{{title}}\"",
+        "epkDuplicated": "كرّر \"{{from}}\" باسم \"{{title}}\"",
+        "memberInvited": "دعا {{email}} إلى مساحة العمل",
+        "memberRoleChanged": "غيّر دور {{member}} إلى {{role}}",
+        "memberRemoved": "أزال {{member}} من مساحة العمل",
+        "workspaceUpdated": "حدّث تفاصيل مساحة العمل"
+      }
+    },
+    "apiTokens": {
+      "title": "رموز API",
+      "description": "رموز وصول شخصية لاستخدام هذه الواجهة البرمجية عبر سكريبت نيابة عنك.",
+      "nameField": "اسم الرمز",
+      "namePlaceholder": "مثال: سكريبت CI",
+      "createToken": "إنشاء رمز",
+      "createError": "تعذّر إنشاء هذا الرمز",
+      "none": "لا توجد رموز API بعد.",
+      "created": "أُنشئ في {{date}}",
+      "lastUsed": "آخر استخدام {{when}}",
+      "neverUsed": "لم يُستخدم قط",
+      "revoke": "إلغاء",
+      "revokeConfirm": "هل تريد إلغاء هذا الرمز؟ سيتوقف كل ما يستخدمه فورًا عن العمل.",
+      "revoked": "تم إلغاء الرمز",
+      "revokeError": "تعذّر إلغاء هذا الرمز",
+      "createdTitle": "تم إنشاء الرمز",
+      "createdDescription": "انسخ هذا الرمز الآن — لن تتمكن من رؤيته مرة أخرى.",
+      "copy": "نسخ",
+      "copied": "تم النسخ إلى الحافظة"
+    },
+    "twoFactor": {
+      "title": "المصادقة الثنائية",
+      "description": "اطلب رمزًا من تطبيق مصادقة بالإضافة إلى كلمة المرور عند تسجيل الدخول.",
+      "enabled": "مفعّلة",
+      "disabled": "معطّلة",
+      "enable": "تفعيل المصادقة الثنائية",
+      "disable": "تعطيل المصادقة الثنائية",
+      "enableError": "تعذّر بدء إعداد المصادقة الثنائية",
+      "confirmPasswordDescription": "أكّد كلمة المرور الخاصة بك لبدء الإعداد.",
+      "scanDescription": "امسح رمز QR هذا باستخدام تطبيق المصادقة الخاص بك (Google Authenticator، 1Password، Authy…)، أو أدخل الرمز أدناه يدويًا.",
+      "qrAlt": "رمز QR للمصادقة الثنائية",
+      "secretLabel": "مفتاح الإعداد",
+      "confirmCodeLabel": "أدخل الرمز المكوّن من 6 أرقام من تطبيقك",
+      "confirmAndEnable": "تأكيد وتفعيل",
+      "confirmError": "لم ينجح هذا الرمز. حاول مرة أخرى.",
+      "enabledSuccess": "تم الآن تفعيل المصادقة الثنائية",
+      "viewRecoveryCodes": "عرض رموز الاسترداد",
+      "regenerateCodes": "إنشاء رموز جديدة",
+      "recoveryCodesTitle": "رموز الاسترداد",
+      "recoveryCodesDescription": "احتفظ بها في مكان آمن. يمكن استخدام كل رمز مرة واحدة فقط لتسجيل الدخول إذا فقدت الوصول إلى تطبيق المصادقة الخاص بك.",
+      "recoveryCodesRegenerated": "تم إنشاء رموز استرداد جديدة — لم تعد الرموز القديمة صالحة",
+      "recoveryCodesRegenerateError": "تعذّر إنشاء رموز استرداد جديدة",
+      "disableConfirm": "هل تريد تعطيل المصادقة الثنائية؟ سيحتاج حسابك بعد ذلك إلى كلمة المرور فقط لتسجيل الدخول.",
+      "disableError": "تعذّر تعطيل المصادقة الثنائية"
+    }
+  },
+  "billing": {
+    "currentPlan": "الخطة الحالية",
+    "unlimitedEpks": "ملفات صحفية غير محدودة",
+    "epkCount_one": "ملف صحفي واحد",
+    "epkCount_other": "{{count}} ملف صحفي",
+    "unlimitedTeamMembers": "أعضاء فريق غير محدودين",
+    "teamMemberCount_one": "عضو فريق واحد",
+    "teamMemberCount_other": "{{count}} أعضاء فريق",
+    "storage": "تخزين",
+    "pageDescription": "{{workspace}} على خطة {{plan}}.",
+    "plans": "الخطط",
+    "upgradeTo": "الترقية إلى {{plan}}",
+    "manageBilling": "إدارة الفوترة",
+    "pastDueWarning": "فشلت آخر عملية دفع. يرجى تحديث وسيلة الدفع لتجنّب فقدان الوصول إلى الميزات المدفوعة.",
+    "checkoutSuccess": "تم تحديث الاشتراك — شكرًا لك!",
+    "checkoutCanceled": "تم إلغاء الدفع — لم يتم إجراء أي تغييرات.",
+    "checkoutError": "تعذّر بدء عملية الدفع",
+    "portalError": "تعذّر فتح بوابة الفوترة",
+    "usage": {
+      "title": "الاستخدام",
+      "description": "ما تستخدمه مساحة العمل هذه مقارنةً بحدود خطتها.",
+      "epks": "الملفات الصحفية",
+      "teamMembers": "أعضاء الفريق",
+      "storage": "التخزين"
+    },
+    "features": {
+      "customThemes": "تخصيص التصميم",
+      "privateLinks": "روابط مشاركة خاصة",
+      "whiteLabel": "علامة تجارية بيضاء",
+      "customDomains": "نطاقات مخصصة"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم لعرض تفاصيل الفوترة."
+    }
+  },
+  "team": {
+    "inviteButton": "دعوة عضو",
+    "pending": "معلّق",
+    "remove": "إزالة",
+    "pageDescription": "أدر من لديه إمكانية الوصول إلى {{workspace}}.",
+    "fields": {
+      "email": "البريد الإلكتروني",
+      "role": "الدور"
+    },
+    "inviteDialog": {
+      "title": "دعوة زميل فريق",
+      "description": "سيُضاف كعضو معلّق حتى يقبل الدعوة.",
+      "submit": "إرسال الدعوة"
+    },
+    "removeDialog": {
+      "title": "إزالة العضو",
+      "description": "سيفقد {{name}} الوصول إلى مساحة العمل هذه."
+    },
+    "toasts": {
+      "invited": "تم إرسال الدعوة",
+      "inviteError": "تعذّر إرسال الدعوة",
+      "roleError": "تعذّر تحديث الدور",
+      "removeError": "تعذّر إزالة هذا العضو"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم لبدء دعوة زملاء الفريق.",
+      "noneTitle": "لا يوجد أعضاء بعد",
+      "noneDescription": "ادعُ فريقك للتعاون."
+    }
+  },
+  "workspaces": {
+    "selectWorkspace": "اختر مساحة عمل",
+    "label": "مساحات العمل",
+    "newWorkspace": "مساحة عمل جديدة",
+    "create": {
+      "title": "إنشاء مساحة عمل",
+      "description": "تجمع مساحات العمل ملفاتك الصحفية ووسائطك وأعضاء فريقك.",
+      "name": "الاسم",
+      "nameRequired": "اسم مساحة العمل مطلوب",
+      "submit": "إنشاء مساحة العمل",
+      "created": "تم إنشاء مساحة العمل",
+      "error": "تعذّر إنشاء مساحة العمل"
+    }
+  },
+  "invitation": {
+    "title": "دعوة",
+    "invalidOrUsed": "هذه الدعوة غير صالحة أو استُخدمت بالفعل.",
+    "goToDashboard": "الانتقال إلى لوحة التحكم",
+    "youveBeenInvited": "تمت دعوتك",
+    "invitedByBlurb": "دعاك {{inviter}} للانضمام إلى {{workspace}} بصفة {{role}}.",
+    "invitedBlurb": "تمت دعوتك للانضمام إلى {{workspace}} بصفة {{role}}.",
+    "accept": "قبول الدعوة",
+    "joinedToast": "لقد انضممت إلى {{workspace}}",
+    "acceptError": "تعذّر قبول هذه الدعوة",
+    "wrongAccount": {
+      "description": "هذه الدعوة موجهة إلى {{invitedEmail}}، لكنك مسجّل الدخول بصفة {{currentEmail}}.",
+      "switchAccounts": "تسجيل الخروج وتبديل الحساب"
+    },
+    "signingInAs": "تسجيل الدخول باسم",
+    "signInAndAccept": "تسجيل الدخول والقبول",
+    "welcomeAccepted": "مرحبًا — تم قبول الدعوة",
+    "incorrectPassword": "كلمة مرور غير صحيحة",
+    "creatingAccountFor": "جارٍ إنشاء حساب لـ",
+    "yourName": "اسمك",
+    "choosePassword": "اختر كلمة مرور",
+    "createAccountAndAccept": "إنشاء الحساب والقبول",
+    "accountCreatedAccepted": "تم إنشاء الحساب — تم قبول الدعوة"
+  },
+  "media": {
+    "pageDescription": "صور ومقاطع وفيديوهات ومستندات لـ {{workspace}}.",
+    "searchPlaceholder": "ابحث عن ملفات…",
+    "rename": "إعادة تسمية",
+    "download": "تنزيل",
+    "types": {
+      "all": "كل الأنواع",
+      "image": "صور",
+      "audio": "صوت",
+      "video": "فيديو",
+      "document": "مستندات"
+    },
+    "sort": {
+      "newest": "الأحدث أولًا",
+      "oldest": "الأقدم أولًا",
+      "nameAsc": "الاسم (أ–ي)",
+      "nameDesc": "الاسم (ي–أ)",
+      "sizeDesc": "الأكبر أولًا",
+      "sizeAsc": "الأصغر أولًا"
+    },
+    "renameDialog": {
+      "title": "إعادة تسمية الملف",
+      "submit": "حفظ"
+    },
+    "deleteDialog": {
+      "title": "حذف الملف",
+      "description": "سيتم حذف \"{{name}}\" نهائيًا."
+    },
+    "toasts": {
+      "renamed": "تمت إعادة التسمية",
+      "renameError": "تعذّر إعادة تسمية الملف",
+      "deleted": "تم حذف الملف",
+      "deleteError": "تعذّر حذف الملف",
+      "downloadError": "تعذّر تنزيل الملف"
+    },
+    "upload": {
+      "oneFileUploaded": "تم رفع الملف",
+      "filesUploaded": "تم رفع {{count}} ملفات",
+      "error": "تعذّر رفع ملف واحد أو أكثر",
+      "uploading": "جارٍ الرفع…",
+      "uploadingPercent": "جارٍ الرفع — {{percent}}٪",
+      "clickToUpload": "انقر للرفع",
+      "orDragAndDrop": "أو اسحب وأفلت",
+      "acceptedTypes": "صور وصوت وفيديو ومستندات"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل رفع الوسائط.",
+      "noMatchTitle": "لا توجد ملفات مطابقة",
+      "noneTitle": "لا توجد ملفات بعد",
+      "noMatchDescription": "جرّب بحثًا أو تصفية مختلفة.",
+      "canEditDescription": "ارفع صورًا أو مقاطع أو فيديوهات أو مستندات للبدء.",
+      "viewOnlyDescription": "لم يتم رفع أي ملفات إلى مساحة العمل هذه بعد."
+    }
+  },
+  "epkBuilder": {
+    "sectionTypes": {
+      "hero": "الترويسة",
+      "biography": "السيرة الذاتية",
+      "photos": "الصور",
+      "music": "الموسيقى",
+      "releases": "الإصدارات",
+      "videos": "الفيديوهات",
+      "press": "الصحافة",
+      "events": "الفعاليات",
+      "socialNetworks": "شبكات التواصل الاجتماعي",
+      "contact": "التواصل",
+      "downloads": "التنزيلات",
+      "credits": "الاعتمادات",
+      "custom": "قسم مخصص"
+    },
+    "addSection": "إضافة قسم",
+    "added": "أُضيف",
+    "sectionAdded": "تمت إضافة قسم {{section}}",
+    "sectionAddError": "تعذّر إضافة هذا القسم",
+    "device": {
+      "desktop": "معاينة سطح المكتب",
+      "tablet": "معاينة الجهاز اللوحي",
+      "mobile": "معاينة الجوال"
+    },
+    "notFound": {
+      "title": "الملف الصحفي غير موجود",
+      "description": "ربما تم حذف هذا الملف الصحفي."
+    },
+    "viewPublicPage": "عرض الصفحة العامة",
+    "viewPublicPageDisabledTitle": "انشر هذا الملف الصحفي لتفعيل صفحته العامة",
+    "downloadPdf": "تنزيل PDF",
+    "downloadPdfError": "تعذّر تنزيل ملف PDF",
+    "copyShareLink": "نسخ رابط المشاركة",
+    "shareLinkCopied": "تم نسخ رابط المشاركة — ستعرض معاينات الرابط عنوانه ووصفه وصورة الغلاف",
+    "shareLinkDisabledTitle": "انشر هذا الملف الصحفي للحصول على رابط مشاركة",
+    "customDomain": {
+      "trigger": "نطاق مخصص",
+      "description": "اعرض الصفحة العامة لهذا الملف الصحفي من نطاقك الخاص، مثل press.yourband.com. يتطلب خطة Business.",
+      "setupDescription": "أدخل النطاق الذي تريد استخدامه. ستضيف سجلّين DNS لإثبات ملكيتك له وتوجيهه إلى هنا.",
+      "domainField": "النطاق",
+      "setup": "إعداد",
+      "setupError": "تعذّر إعداد هذا النطاق",
+      "recordHost": "المضيف",
+      "recordValue": "القيمة",
+      "copied": "تم النسخ إلى الحافظة",
+      "verified": "تم التحقق",
+      "pending": "بانتظار التحقق",
+      "verifyDescription": "أضف هذين السجلّين لدى مزوّد النطاق الخاص بك، ثم تحقّق. قد تستغرق تغييرات DNS بعض الوقت لتنتشر.",
+      "checkVerification": "تحقّق",
+      "verifySuccess": "تم التحقق من النطاق — أصبحت صفحتك العامة متاحة عليه الآن",
+      "verifyError": "تعذّر التحقق من هذا النطاق حتى الآن",
+      "removeConfirm": "هل تريد إزالة هذا النطاق المخصص؟ سيظل الملف الصحفي متاحًا عبر رابط KORAX المعتاد.",
+      "removed": "تمت إزالة النطاق المخصص",
+      "removeError": "تعذّر إزالة هذا النطاق"
+    },
+    "tabs": {
+      "section": "القسم",
+      "comments": "التعليقات",
+      "theme": "التصميم"
+    },
+    "comments": {
+      "empty": "لا توجد تعليقات بعد. أضف أول تعليق.",
+      "placeholder": "اترك تعليقًا على هذا القسم…",
+      "post": "نشر",
+      "deletedUser": "مستخدم محذوف",
+      "addError": "تعذّر نشر تعليقك",
+      "updateError": "تعذّر تحديث تعليقك",
+      "deleteError": "تعذّر حذف هذا التعليق"
+    },
+    "hidden": "مخفي",
+    "noSectionsCanEdit": "لا توجد أقسام بعد. أضف قسمًا للبدء في إنشاء هذا الملف الصحفي.",
+    "noSections": "لا توجد أقسام بعد.",
+    "deleteSectionDialog": {
+      "title": "حذف القسم",
+      "description": "سيتم حذف \"{{title}}\" نهائيًا من هذا الملف الصحفي."
+    },
+    "toasts": {
+      "sectionDuplicated": "تم تكرار القسم",
+      "sectionDuplicateError": "تعذّر تكرار هذا القسم",
+      "sectionDeleted": "تم حذف القسم",
+      "sectionDeleteError": "تعذّر حذف هذا القسم"
+    },
+    "settingsPanel": {
+      "noSectionTitle": "لم يتم اختيار قسم",
+      "noSectionDescription": "اختر قسمًا من اليسار لتعديله.",
+      "titleOverride": "عنوان مخصص للقسم (اختياري)",
+      "saveError": "تعذّر حفظ التغييرات"
+    },
+    "theme": {
+      "font": { "sans": "بلا زوائد", "serif": "ذات زوائد", "display": "عرض", "mono": "أحادية المسافة" },
+      "buttonStyle": { "rounded": "مستدير", "pill": "بيضاوي", "square": "مربع" },
+      "radius": { "none": "بدون", "small": "صغير", "medium": "متوسط", "large": "كبير" },
+      "spacing": { "compact": "مضغوط", "comfortable": "مريح", "spacious": "واسع" },
+      "headerStyle": { "centered": "في المنتصف", "left": "محاذاة لليسار", "minimal": "بسيط" },
+      "defaultOption": "افتراضي ({{value}})",
+      "reset": "إعادة التعيين",
+      "baseTheme": "التصميم الأساسي",
+      "customize": "تخصيص",
+      "backgroundColor": "لون الخلفية",
+      "textColor": "لون النص",
+      "accentColor": "لون التمييز",
+      "fontLabel": "الخط",
+      "buttonStyleLabel": "نمط الأزرار",
+      "radiusLabel": "استدارة الزوايا",
+      "spacingLabel": "تباعد الأقسام",
+      "headerStyleLabel": "نمط الترويسة",
+      "currently": "حاليًا: {{preset}} · {{font}} · أزرار {{buttonStyle}}",
+      "saveError": "تعذّر حفظ التصميم"
+    },
+    "privateLinks": {
+      "trigger": "الروابط الخاصة",
+      "description": "شارك هذا الملف الصحفي مع أشخاص محددين دون نشره — يعمل حتى وهو مسودة.",
+      "status": { "revoked": "مُلغى", "expired": "منتهي الصلاحية", "active": "نشط" },
+      "untitledLink": "رابط بلا عنوان",
+      "passwordProtected": "محمي بكلمة مرور",
+      "noPassword": "بدون كلمة مرور",
+      "expires": "ينتهي في {{date}}",
+      "viewCount_one": "مشاهدة واحدة",
+      "viewCount_other": "{{count}} مشاهدات",
+      "copyLink": "نسخ الرابط",
+      "reactivate": "إعادة التفعيل",
+      "revoke": "إلغاء",
+      "deleteConfirm": "هل تريد حذف هذا الرابط نهائيًا؟",
+      "deleting": "جارٍ الحذف…",
+      "none": "لا توجد روابط خاصة بعد.",
+      "labelField": "التسمية (اختياري)",
+      "passwordField": "كلمة المرور (اختياري)",
+      "passwordPlaceholder": "اتركه فارغًا لعدم وجود كلمة مرور",
+      "expiresField": "تاريخ الانتهاء (اختياري)",
+      "createLink": "إنشاء رابط",
+      "toasts": {
+        "copied": "تم نسخ الرابط",
+        "reactivated": "تمت إعادة تفعيل الرابط",
+        "reactivateError": "تعذّرت إعادة تفعيل الرابط",
+        "revoked": "تم إلغاء الرابط",
+        "revokeError": "تعذّر إلغاء الرابط",
+        "deleted": "تم حذف الرابط",
+        "deleteError": "تعذّر حذف الرابط",
+        "created": "تم إنشاء الرابط الخاص",
+        "createError": "تعذّر إنشاء الرابط"
+      }
+    },
+    "preview": {
+      "noBiography": "لا توجد سيرة ذاتية بعد.",
+      "noSocialLinks": "لم تُضَف روابط اجتماعية بعد.",
+      "booking": "الحجوزات",
+      "press": "الصحافة",
+      "management": "إدارة الأعمال",
+      "noContactDetails": "لا توجد بيانات تواصل بعد.",
+      "noFilesSelected": "لم يتم اختيار ملفات قابلة للتنزيل بعد.",
+      "noCredits": "لا توجد اعتمادات بعد.",
+      "emptySection": "قسم فارغ.",
+      "noPhotos": "لا توجد صور بعد.",
+      "noTracks": "لا توجد مقاطع بعد.",
+      "noReleases": "لا توجد إصدارات بعد.",
+      "untitledRelease": "إصدار بلا عنوان",
+      "noVideos": "لا توجد فيديوهات بعد.",
+      "noFileSelected": "لم يتم اختيار ملف بعد.",
+      "untitledVideo": "فيديو بلا عنوان",
+      "untitledTrack": "مقطع بلا عنوان",
+      "noPress": "لا توجد تغطية صحفية بعد.",
+      "read": "قراءة",
+      "comingSoon": "محتوى {{label}} قادم في مرحلة لاحقة.",
+      "noSectionsEnabled": "لا توجد أقسام مفعّلة. أضف قسمًا أو فعّله لرؤية المعاينة."
+    },
+    "gallery": {
+      "moveUp": "تحريك لأعلى",
+      "moveDown": "تحريك لأسفل",
+      "remove": "إزالة"
+    },
+    "mediaPicker": {
+      "selectImage": "اختر صورة",
+      "change": "تغيير",
+      "selectFromLibrary": "اختر من مكتبة الوسائط",
+      "noFilesYet": "لا توجد ملفات بعد — ارفع بعضها في مكتبة الوسائط أولًا.",
+      "addFiles": "إضافة ملفات من مكتبة الوسائط",
+      "selectDownloadable": "اختر الملفات القابلة للتنزيل"
+    },
+    "hero": {
+      "headline": "العنوان الرئيسي",
+      "headlinePlaceholder": "يُستخدم اسم الفنان افتراضيًا",
+      "subtitle": "العنوان الفرعي",
+      "description": "وصف موجز",
+      "profileImage": "صورة الملف الشخصي",
+      "backgroundImage": "صورة الخلفية",
+      "alignment": "المحاذاة",
+      "alignmentLeft": "اليسار",
+      "alignmentCenter": "الوسط",
+      "alignmentRight": "اليمين",
+      "height": "الارتفاع",
+      "heightSmall": "صغير",
+      "heightMedium": "متوسط",
+      "heightLarge": "كبير",
+      "darkOverlay": "طبقة تعتيم داكنة",
+      "ctaLabel": "نص زر الدعوة لاتخاذ إجراء",
+      "ctaLabelPlaceholder": "استمع الآن",
+      "ctaUrl": "رابط زر الدعوة لاتخاذ إجراء"
+    },
+    "biography": {
+      "placeholder": "احكِ قصة الفنان…"
+    },
+    "comingSoon": {
+      "title": "محرر {{label}} قادم قريبًا",
+      "description": "الإدارة الكاملة لمحتوى هذا القسم قادمة في مرحلة لاحقة. يمكنك بالفعل إضافته وإعادة ترتيبه وتفعيله."
+    },
+    "contact": {
+      "bookingEmail": "بريد الحجوزات",
+      "pressEmail": "بريد الصحافة",
+      "managementEmail": "بريد إدارة الأعمال",
+      "website": "الموقع الإلكتروني",
+      "phone": "الهاتف",
+      "address": "العنوان",
+      "privacyNote": "لا تظهر المعلومات الخاصة أبدًا في الصفحة العامة ما لم تُفعّلها صراحةً أدناه.",
+      "showPhonePublicly": "إظهار الهاتف علنًا",
+      "showAddressPublicly": "إظهار العنوان علنًا"
+    },
+    "credits": {
+      "rolePlaceholder": "الدور (مثل منتج)",
+      "namePlaceholder": "الاسم",
+      "addCredit": "إضافة اعتماد"
+    },
+    "custom": {
+      "heading": "العنوان",
+      "content": "المحتوى",
+      "placeholder": "اكتب ما تريد…"
+    },
+    "downloads": {
+      "files": "الملفات القابلة للتنزيل"
+    },
+    "music": {
+      "trackTitlePlaceholder": "عنوان المقطع (يُستخدم اسم الملف افتراضيًا)",
+      "directUpload": "رفع مباشر",
+      "selectAudioFile": "اختر ملف صوتي",
+      "addTrack": "إضافة مقطع"
+    },
+    "photos": {
+      "captionPlaceholder": "التسمية التوضيحية (اختياري)",
+      "creditPlaceholder": "الاعتماد (اختياري، مثل تصوير: جين دو)",
+      "addPhoto": "إضافة صورة"
+    },
+    "press": {
+      "label": "التغطية الصحفية",
+      "outletPlaceholder": "الجهة الإعلامية (مثل رولينج ستون)",
+      "quotePlaceholder": "اقتباس",
+      "articleUrlPlaceholder": "رابط المقال (اختياري)",
+      "authorPlaceholder": "الكاتب (اختياري)",
+      "addMention": "إضافة ذكر صحفي"
+    },
+    "releases": {
+      "typeAlbum": "ألبوم",
+      "typeEp": "EP",
+      "typeSingle": "أغنية منفردة",
+      "titlePlaceholder": "عنوان الإصدار",
+      "selectCoverArt": "اختر صورة الغلاف",
+      "streamingLinks": "روابط البث (اختياري)",
+      "addRelease": "إضافة إصدار"
+    },
+    "videos": {
+      "directUpload": "رفع مباشر",
+      "titlePlaceholder": "عنوان الفيديو (اختياري)",
+      "selectVideoFile": "اختر ملف فيديو",
+      "addVideo": "إضافة فيديو"
+    },
+    "richText": {
+      "heading2": "عنوان 2",
+      "heading3": "عنوان 3",
+      "bold": "غامق",
+      "italic": "مائل",
+      "bulletList": "قائمة نقطية",
+      "numberedList": "قائمة مرقّمة",
+      "quote": "اقتباس",
+      "link": "رابط",
+      "linkUrlPrompt": "رابط URL"
+    }
+  },
+  "analytics": {
+    "pageViews": "مشاهدات الصفحة",
+    "noPageViews": "لا توجد مشاهدات صفحة في هذه الفترة بعد.",
+    "range": {
+      "days7": "7 أيام",
+      "days30": "30 يومًا",
+      "days90": "90 يومًا"
+    },
+    "stats": {
+      "pageViews": "مشاهدات الصفحة",
+      "uniqueVisitors": "الزوار الفريدون",
+      "downloads": "التنزيلات",
+      "audioPlays": "تشغيلات الصوت",
+      "videoPlays": "تشغيلات الفيديو"
+    },
+    "breakdowns": {
+      "topReferrers": "أهم المُحيلين",
+      "noReferrerData": "لا توجد بيانات إحالة بعد.",
+      "topCountries": "أهم الدول",
+      "noCountryData": "لا توجد بيانات دولة بعد — يتطلب ذلك GEOIP_COUNTRY_CODE (وحدة Apache mod_geoip2) أو ترويسة CF-IPCountry من مضيفك أو شبكة CDN.",
+      "devices": "الأجهزة",
+      "noDeviceData": "لا توجد بيانات أجهزة بعد.",
+      "topDownloads": "أهم التنزيلات",
+      "noDownloadData": "لا توجد تنزيلات بعد.",
+      "topPrivateLinks": "أهم الروابط الخاصة",
+      "noPrivateLinkData": "لا توجد حركة زيارات عبر روابط خاصة بعد."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل عرض الإحصائيات.",
+      "noEpksDescription": "أنشئ وانشر ملفًا صحفيًا لتبدأ برؤية المشاهدات والتنزيلات والتشغيلات هنا."
+    }
+  },
+  "dashboard": {
+    "welcome": "مرحبًا بك في KORAX",
+    "welcomeWithName": "مرحبًا بك في KORAX، {{name}}",
+    "welcomeBack": "مرحبًا بعودتك",
+    "welcomeBackWithName": "مرحبًا بعودتك، {{name}}",
+    "noWorkspaceDescription": "أنشئ مساحة عمل لتبدأ إنشاء ملفك الصحفي الأول.",
+    "createFirstWorkspace": "إنشاء مساحة عملك الأولى",
+    "createFirstEpk": "إنشاء ملفك الصحفي الأول",
+    "whatsHappening": "إليك ما يحدث في {{workspace}}.",
+    "stats": {
+      "totalEpks": "إجمالي الملفات الصحفية",
+      "publishedEpks": "الملفات الصحفية المنشورة",
+      "totalViews": "إجمالي المشاهدات",
+      "downloads": "التنزيلات"
+    }
+  },
+  "notFound": {
+    "description": "هذه الصفحة غير موجودة.",
+    "backToDashboard": "العودة إلى لوحة التحكم"
+  },
+  "layout": {
+    "openNavigation": "فتح التنقل",
+    "navigation": "التنقل"
+  },
+  "publicEpk": {
+    "notAvailable": {
+      "title": "هذا الملف الصحفي غير متاح",
+      "description": "ربما تم إلغاء نشره أو أن الرابط غير صحيح."
+    },
+    "readThePiece": "قراءة المقال",
+    "downloadPdf": "تنزيل PDF"
+  },
+  "privateEpk": {
+    "passwordGate": {
+      "title": "هذا الملف الصحفي محمي بكلمة مرور",
+      "description": "أدخل كلمة المرور التي حصلت عليها لعرضه.",
+      "checking": "جارٍ التحقق…",
+      "submit": "عرض الملف الصحفي"
+    },
+    "notAvailable": {
+      "title": "هذا الرابط غير متاح",
+      "description": "قد يكون الرابط غير صحيح."
+    },
+    "expired": {
+      "title": "هذا الرابط لم يعد متاحًا",
+      "description": "ربما انتهت صلاحيته أو ألغاه مالكه. اطلب منه رابطًا جديدًا."
+    }
+  },
+  "notifications": {
+    "trigger": "الإشعارات",
+    "title": "الإشعارات",
+    "markAllRead": "تعليم الكل كمقروء",
+    "empty": "لا توجد إشعارات بعد.",
+    "invitedByBlurb": "دعاك {{inviter}} للانضمام إلى {{workspace}} بصفة {{role}}",
+    "invitedBlurb": "تمت دعوتك للانضمام إلى {{workspace}} بصفة {{role}}",
+    "epkPublishedByBlurb": "نشر {{publisher}} \"{{epk}}\"",
+    "epkPublishedBlurb": "تم نشر \"{{epk}}\"",
+    "teamMemberJoinedBlurb": "انضم {{member}} إلى {{workspace}} بصفة {{role}}",
+    "someone": "شخص ما"
+  },
+  "common": {
+    "save": "حفظ التغييرات",
+    "cancel": "إلغاء",
+    "delete": "حذف",
+    "edit": "تعديل",
+    "create": "إنشاء",
+    "close": "إغلاق",
+    "loading": "جارٍ التحميل…",
+    "confirm": "تأكيد",
+    "back": "رجوع",
+    "next": "التالي",
+    "search": "بحث",
+    "actions": "الإجراءات",
+    "viewOnlyAccess": "لديك إمكانية وصول للعرض فقط في مساحة العمل هذه.",
+    "noWorkspaceYet": "لا توجد مساحة عمل بعد",
+    "roles": {
+      "owner": "المالك",
+      "admin": "مسؤول",
+      "editor": "محرر",
+      "viewer": "مُشاهد"
+    }
+  }
+}

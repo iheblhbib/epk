@@ -1,5 +1,13 @@
 import { apiClient, ensureCsrfCookie } from '@/api/client'
-import type { ApiCollection, ApiResource, Workspace, WorkspaceMember, WorkspaceRole } from '@/types'
+import type {
+  ApiCollection,
+  ApiPaginated,
+  ApiResource,
+  Workspace,
+  WorkspaceActivityLogEntry,
+  WorkspaceMember,
+  WorkspaceRole,
+} from '@/types'
 
 export async function listWorkspaces(): Promise<Workspace[]> {
   const { data } = await apiClient.get<ApiCollection<Workspace>>('/api/workspaces')
@@ -59,6 +67,17 @@ export async function updateWorkspaceMemberRole(
 
 export async function removeWorkspaceMember(workspaceId: number, memberId: number): Promise<void> {
   await apiClient.delete(`/api/workspaces/${workspaceId}/members/${memberId}`)
+}
+
+export async function listWorkspaceActivity(
+  workspaceId: number,
+  page = 1
+): Promise<ApiPaginated<WorkspaceActivityLogEntry>> {
+  const { data } = await apiClient.get<ApiPaginated<WorkspaceActivityLogEntry>>(
+    `/api/workspaces/${workspaceId}/activity`,
+    { params: { page } }
+  )
+  return data
 }
 
 export type InvitationPreview = {

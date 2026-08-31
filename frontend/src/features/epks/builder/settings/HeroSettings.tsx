@@ -1,3 +1,4 @@
+import { useTranslation } from 'react-i18next'
 import { Label } from '@/components/ui/label'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
@@ -6,9 +7,6 @@ import { Switch } from '@/components/ui/switch'
 import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
 import type { EpkSection, HeroConfig } from '@/types'
-
-const ALIGNMENT_ITEMS = { left: 'Left', center: 'Center', right: 'Right' }
-const HEIGHT_ITEMS = { small: 'Small', medium: 'Medium', large: 'Large' }
 
 export function HeroSettings({
   epkId,
@@ -19,28 +17,39 @@ export function HeroSettings({
   workspaceId: number
   section: EpkSection
 }) {
+  const { t } = useTranslation()
   const config = section.config as HeroConfig
   const setConfig = useDraftSectionConfig<HeroConfig>(epkId, section)
+  const alignmentItems = {
+    left: t('epkBuilder.hero.alignmentLeft'),
+    center: t('epkBuilder.hero.alignmentCenter'),
+    right: t('epkBuilder.hero.alignmentRight'),
+  }
+  const heightItems = {
+    small: t('epkBuilder.hero.heightSmall'),
+    medium: t('epkBuilder.hero.heightMedium'),
+    large: t('epkBuilder.hero.heightLarge'),
+  }
 
   return (
     <div className="space-y-5">
       <div className="space-y-1.5">
-        <Label>Headline</Label>
+        <Label>{t('epkBuilder.hero.headline')}</Label>
         <Input
-          placeholder="Defaults to the artist's name"
+          placeholder={t('epkBuilder.hero.headlinePlaceholder')}
           value={config.headline ?? ''}
           onChange={(event) => setConfig((prev) => ({ ...prev, headline: event.target.value }))}
         />
       </div>
       <div className="space-y-1.5">
-        <Label>Subtitle</Label>
+        <Label>{t('epkBuilder.hero.subtitle')}</Label>
         <Input
           value={config.subtitle ?? ''}
           onChange={(event) => setConfig((prev) => ({ ...prev, subtitle: event.target.value }))}
         />
       </div>
       <div className="space-y-1.5">
-        <Label>Short description</Label>
+        <Label>{t('epkBuilder.hero.description')}</Label>
         <Textarea
           rows={3}
           value={config.description ?? ''}
@@ -48,7 +57,7 @@ export function HeroSettings({
         />
       </div>
       <div className="space-y-1.5">
-        <Label>Profile image</Label>
+        <Label>{t('epkBuilder.hero.profileImage')}</Label>
         <MediaPickerSingle
           workspaceId={workspaceId}
           value={config.profile_media_id}
@@ -57,7 +66,7 @@ export function HeroSettings({
         />
       </div>
       <div className="space-y-1.5">
-        <Label>Background image</Label>
+        <Label>{t('epkBuilder.hero.backgroundImage')}</Label>
         <MediaPickerSingle
           workspaceId={workspaceId}
           value={config.background_media_id}
@@ -68,9 +77,9 @@ export function HeroSettings({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label>Alignment</Label>
+          <Label>{t('epkBuilder.hero.alignment')}</Label>
           <Select
-            items={ALIGNMENT_ITEMS}
+            items={alignmentItems}
             value={config.alignment ?? 'center'}
             onValueChange={(value) => setConfig((prev) => ({ ...prev, alignment: value as HeroConfig['alignment'] }))}
           >
@@ -78,7 +87,7 @@ export function HeroSettings({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(ALIGNMENT_ITEMS).map(([value, label]) => (
+              {Object.entries(alignmentItems).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -87,9 +96,9 @@ export function HeroSettings({
           </Select>
         </div>
         <div className="space-y-1.5">
-          <Label>Height</Label>
+          <Label>{t('epkBuilder.hero.height')}</Label>
           <Select
-            items={HEIGHT_ITEMS}
+            items={heightItems}
             value={config.height ?? 'large'}
             onValueChange={(value) => setConfig((prev) => ({ ...prev, height: value as HeroConfig['height'] }))}
           >
@@ -97,7 +106,7 @@ export function HeroSettings({
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {Object.entries(HEIGHT_ITEMS).map(([value, label]) => (
+              {Object.entries(heightItems).map(([value, label]) => (
                 <SelectItem key={value} value={value}>
                   {label}
                 </SelectItem>
@@ -108,7 +117,7 @@ export function HeroSettings({
       </div>
 
       <div className="flex items-center justify-between">
-        <Label>Dark overlay</Label>
+        <Label>{t('epkBuilder.hero.darkOverlay')}</Label>
         <Switch
           checked={config.overlay ?? true}
           onCheckedChange={(checked) => setConfig((prev) => ({ ...prev, overlay: checked }))}
@@ -116,15 +125,15 @@ export function HeroSettings({
       </div>
 
       <div className="space-y-1.5">
-        <Label>CTA button label</Label>
+        <Label>{t('epkBuilder.hero.ctaLabel')}</Label>
         <Input
-          placeholder="Listen now"
+          placeholder={t('epkBuilder.hero.ctaLabelPlaceholder')}
           value={config.cta_label ?? ''}
           onChange={(event) => setConfig((prev) => ({ ...prev, cta_label: event.target.value }))}
         />
       </div>
       <div className="space-y-1.5">
-        <Label>CTA URL</Label>
+        <Label>{t('epkBuilder.hero.ctaUrl')}</Label>
         <Input
           placeholder="https://…"
           value={config.cta_url ?? ''}

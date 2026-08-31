@@ -11,6 +11,7 @@ class AuditLog extends Model
 
     protected $fillable = [
         'user_id',
+        'workspace_id',
         'action',
         'subject_type',
         'subject_id',

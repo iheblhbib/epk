@@ -211,6 +211,34 @@ it('resolves music tracks to audio urls, falling back to the filename when untit
     $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
 });
 
+it('resolves spotify/soundcloud embed tracks alongside uploaded audio', function () {
+    $epk = makePublishedEpk();
+    $upload = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'live-take.mp3']);
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'Uploaded track', 'provider' => 'upload', 'audio_media_id' => $upload->id],
+            ['title' => 'On Spotify', 'provider' => 'spotify', 'url' => 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC'],
+            ['title' => 'On SoundCloud', 'provider' => 'soundcloud', 'url' => 'https://soundcloud.com/artist/track-name'],
+            ['title' => 'Broken embed', 'provider' => 'spotify', 'url' => 'not-a-url'],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $tracks = $response->json('data.sections.0.config.tracks');
+    expect($tracks)->toHaveCount(3);
+    expect($tracks[0]['audio_url'])->toBe($upload->url());
+    expect($tracks[1]['embed_url'])->toBe('https://open.spotify.com/embed/track/4uLU6hMCjMI75M1A2tKUQC');
+    expect($tracks[2]['embed_url'])->toBe(
+        'https://w.soundcloud.com/player/?url=https%3A%2F%2Fsoundcloud.com%2Fartist%2Ftrack-name&color=%23ff5500&auto_play=false&show_comments=false&visual=false'
+    );
+});
+
 it('resolves releases with a cover image and streaming links, dropping untitled entries', function () {
     $epk = makePublishedEpk();
     $cover = Media::factory()->image()->create(['workspace_id' => $epk->workspace_id]);

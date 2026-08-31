@@ -96,6 +96,10 @@ it('enforces the update/delete permission matrix', function () {
 
 it('duplicates an epk as a fresh draft with a new slug and uuid', function () {
     [$workspace, $editor] = workspaceWithMember(WorkspaceRole::Editor);
+    // Duplicating still counts against the free plan's 1-EPK limit (see the
+    // "blocks duplicating" test below for that gate itself) — upgrade so
+    // this test is only exercising the duplication mechanics.
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Pro]);
     $epk = Epk::factory()->published()->create(['workspace_id' => $workspace->id, 'title' => 'Original']);
 
     $response = $this->actingAs($editor)->postJson("/api/epks/{$epk->id}/duplicate")->assertCreated();

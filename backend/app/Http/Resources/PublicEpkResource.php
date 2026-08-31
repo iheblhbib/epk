@@ -13,6 +13,12 @@ class PublicEpkResource extends JsonResource
     {
         return [
             'title' => $this->title,
+            // Already public either way (it's literally the URL segment on
+            // the non-custom-domain page) — exposed here too so a visitor
+            // arriving via a custom domain can still hit the slug-keyed
+            // PDF/download/analytics-event endpoints (see
+            // frontend's CustomDomainEpkPage).
+            'slug' => $this->slug,
             'theme' => $this->theme,
             'custom_settings' => $this->custom_settings,
             'seo_title' => $this->seo_title,

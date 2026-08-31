@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { artistFormSchema, epkFormSchema } from '@/features/epks/schemas/epkSchemas'
+import i18n from '@/i18n'
+import { createArtistFormSchema, createEpkFormSchema } from '@/features/epks/schemas/epkSchemas'
+
+const epkFormSchema = createEpkFormSchema(i18n.t)
+const artistFormSchema = createArtistFormSchema(i18n.t)
 
 describe('epkFormSchema', () => {
   it('accepts a valid title and artist selection', () => {

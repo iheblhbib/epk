@@ -43,8 +43,3 @@ export async function importContacts(workspaceId: number, file: File): Promise<C
   )
   return data.data
 }
-
-export function contactsExportUrl(workspaceId: number): string {
-  const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
-  return `${apiUrl}/api/workspaces/${workspaceId}/contacts/export`
-}

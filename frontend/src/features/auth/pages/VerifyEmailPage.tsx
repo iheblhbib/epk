@@ -1,6 +1,7 @@
 import { useMutation } from '@tanstack/react-query'
 import { MailCheck } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Navigate } from 'react-router-dom'
 import { toast } from 'sonner'
 import { resendVerificationEmail } from '@/api/auth'
@@ -10,6 +11,7 @@ import { useAuth } from '@/providers/AuthProvider'
 import { useLogout } from '@/features/auth/hooks/useLogout'
 
 export function VerifyEmailPage() {
+  const { t } = useTranslation()
   const { user, isLoading } = useAuth()
   const [sent, setSent] = useState(false)
   const logout = useLogout()
@@ -21,15 +23,15 @@ export function VerifyEmailPage() {
 
   return (
     <AuthCard
-      title="Verify your email"
-      description={`We sent a verification link to ${user.email}`}
+      title={t('auth.verifyEmail.title')}
+      description={t('auth.verifyEmail.description', { email: user.email })}
       footer={
         <button
           type="button"
           onClick={() => logout.mutate()}
           className="font-medium text-foreground hover:underline"
         >
-          Log out
+          {t('auth.verifyEmail.logout')}
         </button>
       }
     >
@@ -37,9 +39,7 @@ export function VerifyEmailPage() {
         <div className="flex size-12 items-center justify-center rounded-full bg-primary/10">
           <MailCheck className="size-6 text-primary" />
         </div>
-        <p className="text-sm text-muted-foreground">
-          Click the link in that email to activate your account. Didn&apos;t get it?
-        </p>
+        <p className="text-sm text-muted-foreground">{t('auth.verifyEmail.instructions')}</p>
         <Button
           variant="outline"
           disabled={resend.isPending || sent}
@@ -47,13 +47,13 @@ export function VerifyEmailPage() {
             resend.mutate(undefined, {
               onSuccess: () => {
                 setSent(true)
-                toast.success('Verification email sent')
+                toast.success(t('auth.verifyEmail.sentToast'))
               },
-              onError: () => toast.error('Could not send the email right now'),
+              onError: () => toast.error(t('auth.verifyEmail.sendError')),
             })
           }
         >
-          {sent ? 'Email sent' : 'Resend verification email'}
+          {sent ? t('auth.verifyEmail.sent') : t('auth.verifyEmail.resend')}
         </Button>
       </div>
     </AuthCard>

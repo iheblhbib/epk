@@ -5,6 +5,7 @@ import {
   deleteWorkspace,
   inviteWorkspaceMember,
   leaveWorkspace,
+  listWorkspaceActivity,
   listWorkspaceMembers,
   listWorkspaces,
   loginForInvitation,
@@ -94,6 +95,14 @@ export function useRemoveWorkspaceMember(workspaceId: number) {
   return useMutation({
     mutationFn: (memberId: number) => removeWorkspaceMember(workspaceId, memberId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: workspaceMembersKey(workspaceId) }),
+  })
+}
+
+export function useWorkspaceActivity(workspaceId: number | undefined, page: number) {
+  return useQuery({
+    queryKey: ['workspaces', workspaceId ?? 0, 'activity', page] as const,
+    queryFn: () => listWorkspaceActivity(workspaceId as number, page),
+    enabled: workspaceId !== undefined,
   })
 }
 

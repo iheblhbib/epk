@@ -1,5 +1,6 @@
 import { Copy, Layers, Loader2, MoreHorizontal, Pencil, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
 import { toast } from 'sonner'
 import { Badge } from '@/components/ui/badge'
@@ -23,10 +24,10 @@ import {
 import { isAdminLevel, isEditorLevel } from '@/lib/permissions'
 import type { Epk, EpkStatus, WorkspaceRole } from '@/types'
 
-const STATUS_LABEL: Record<EpkStatus, string> = {
-  draft: 'Draft',
-  published: 'Published',
-  archived: 'Archived',
+const STATUS_LABEL_KEY: Record<EpkStatus, string> = {
+  draft: 'epks.status.draft',
+  published: 'epks.status.published',
+  archived: 'epks.status.archived',
 }
 
 const STATUS_VARIANT: Record<EpkStatus, 'secondary' | 'default' | 'outline'> = {
@@ -44,6 +45,7 @@ export function EpkCard({
   workspaceId: number
   myRole: WorkspaceRole | null
 }) {
+  const { t } = useTranslation()
   const [editOpen, setEditOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const duplicateEpk = useDuplicateEpk(workspaceId)
@@ -56,8 +58,8 @@ export function EpkCard({
   const togglePublish = (checked: boolean) => {
     const mutation = checked ? publishEpk : unpublishEpk
     mutation.mutate(epk.id, {
-      onSuccess: () => toast.success(checked ? 'EPK published' : 'EPK unpublished'),
-      onError: () => toast.error('Could not update the EPK status'),
+      onSuccess: () => toast.success(checked ? t('epks.toasts.published') : t('epks.toasts.unpublished')),
+      onError: () => toast.error(t('epks.toasts.statusError')),
     })
   }
 
@@ -75,20 +77,20 @@ export function EpkCard({
                 {canEdit && (
                   <DropdownMenuItem onSelect={(event) => event.preventDefault()} onClick={() => setEditOpen(true)}>
                     <Pencil className="size-4" />
-                    Edit
+                    {t('common.edit')}
                   </DropdownMenuItem>
                 )}
                 {canEdit && (
                   <DropdownMenuItem
                     onClick={() =>
                       duplicateEpk.mutate(epk.id, {
-                        onSuccess: () => toast.success('EPK duplicated'),
-                        onError: () => toast.error('Could not duplicate the EPK'),
+                        onSuccess: () => toast.success(t('epks.toasts.duplicated')),
+                        onError: () => toast.error(t('epks.toasts.duplicateError')),
                       })
                     }
                   >
                     <Copy className="size-4" />
-                    Duplicate
+                    {t('epks.duplicate')}
                   </DropdownMenuItem>
                 )}
                 {canDelete && (
@@ -97,7 +99,7 @@ export function EpkCard({
                     className="text-destructive"
                   >
                     <Trash2 className="size-4" />
-                    Delete
+                    {t('common.delete')}
                   </DropdownMenuItem>
                 )}
               </DropdownMenuContent>
@@ -106,8 +108,8 @@ export function EpkCard({
         </div>
       </CardHeader>
       <CardContent className="space-y-2">
-        <p className="text-sm text-muted-foreground">{epk.artist?.name ?? 'No artist'}</p>
-        <Badge variant={STATUS_VARIANT[epk.status]}>{STATUS_LABEL[epk.status]}</Badge>
+        <p className="text-sm text-muted-foreground">{epk.artist?.name ?? t('epks.noArtist')}</p>
+        <Badge variant={STATUS_VARIANT[epk.status]}>{t(STATUS_LABEL_KEY[epk.status])}</Badge>
       </CardContent>
       <CardFooter className="flex items-center justify-between gap-2">
         {canEdit ? (
@@ -117,7 +119,7 @@ export function EpkCard({
               disabled={publishEpk.isPending || unpublishEpk.isPending || epk.status === 'archived'}
               onCheckedChange={togglePublish}
             />
-            Published
+            {t('epks.status.published')}
             {(publishEpk.isPending || unpublishEpk.isPending) && (
               <Loader2 className="size-3.5 animate-spin" />
             )}
@@ -132,7 +134,7 @@ export function EpkCard({
           render={<Link to={`/epks/${epk.id}/builder`} />}
         >
           <Layers className="size-4" />
-          Builder
+          {t('epks.builder')}
         </Button>
       </CardFooter>
 
@@ -141,18 +143,18 @@ export function EpkCard({
       <ConfirmDialog
         open={confirmDeleteOpen}
         onOpenChange={setConfirmDeleteOpen}
-        title="Delete EPK"
-        description={`"${epk.title}" will be permanently removed.`}
-        confirmLabel="Delete"
+        title={t('epks.deleteDialog.title')}
+        description={t('epks.deleteDialog.description', { title: epk.title })}
+        confirmLabel={t('common.delete')}
         destructive
         isLoading={deleteEpk.isPending}
         onConfirm={() =>
           deleteEpk.mutate(epk.id, {
             onSuccess: () => {
-              toast.success('EPK deleted')
+              toast.success(t('epks.toasts.deleted'))
               setConfirmDeleteOpen(false)
             },
-            onError: () => toast.error('Could not delete the EPK'),
+            onError: () => toast.error(t('epks.toasts.deleteError')),
           })
         }
       />

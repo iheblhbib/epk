@@ -9,22 +9,23 @@ import {
   Users,
   UsersRound,
 } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 import { cn } from '@/lib/utils'
 import { useAuth } from '@/providers/AuthProvider'
 
 const NAV_ITEMS = [
-  { to: '/', label: 'Dashboard', icon: LayoutDashboard, end: true },
-  { to: '/epks', label: 'My EPKs', icon: Sparkles },
-  { to: '/media', label: 'Media Library', icon: FolderOpen },
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/contacts', label: 'Contacts', icon: Users },
-  { to: '/team', label: 'Team', icon: UsersRound },
+  { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard, end: true },
+  { to: '/epks', labelKey: 'nav.myEpks', icon: Sparkles, end: false },
+  { to: '/media', labelKey: 'nav.mediaLibrary', icon: FolderOpen, end: false },
+  { to: '/analytics', labelKey: 'nav.analytics', icon: BarChart3, end: false },
+  { to: '/contacts', labelKey: 'nav.contacts', icon: Users, end: false },
+  { to: '/team', labelKey: 'nav.team', icon: UsersRound, end: false },
 ] as const
 
 const FOOTER_ITEMS = [
-  { to: '/settings', label: 'Settings', icon: Settings },
-  { to: '/billing', label: 'Billing', icon: CreditCard },
+  { to: '/settings', labelKey: 'nav.settings', icon: Settings },
+  { to: '/billing', labelKey: 'nav.billing', icon: CreditCard },
 ] as const
 
 function NavItem({
@@ -63,6 +64,7 @@ function NavItem({
  * the mobile Sheet — `onNavigate` closes the sheet when a link is clicked.
  */
 export function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
+  const { t } = useTranslation()
   const { user } = useAuth()
 
   return (
@@ -71,21 +73,21 @@ export function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex size-7 items-center justify-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
           K
         </div>
-        <span className="font-heading text-sm font-semibold text-sidebar-foreground">Kitfolio</span>
+        <span className="font-heading text-sm font-semibold text-sidebar-foreground">KORAX</span>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">
         {NAV_ITEMS.map((item) => (
-          <NavItem key={item.to} {...item} onNavigate={onNavigate} />
+          <NavItem key={item.to} to={item.to} label={t(item.labelKey)} icon={item.icon} end={item.end} onNavigate={onNavigate} />
         ))}
       </nav>
 
       <nav className="flex flex-col gap-1 border-t border-sidebar-border pt-3">
         {user?.role === 'admin' && (
-          <NavItem to="/admin" label="Admin" icon={ShieldCheck} onNavigate={onNavigate} />
+          <NavItem to="/admin" label={t('nav.admin')} icon={ShieldCheck} onNavigate={onNavigate} />
         )}
         {FOOTER_ITEMS.map((item) => (
-          <NavItem key={item.to} {...item} onNavigate={onNavigate} />
+          <NavItem key={item.to} to={item.to} label={t(item.labelKey)} icon={item.icon} onNavigate={onNavigate} />
         ))}
       </nav>
     </>

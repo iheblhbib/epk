@@ -1,47 +1,52 @@
+import type { TFunction } from 'i18next'
 import { z } from 'zod'
-import { isStrongPassword, PASSWORD_STRENGTH_MESSAGE } from '@/lib/passwordStrength'
+import { isStrongPassword, passwordStrengthMessage } from '@/lib/passwordStrength'
 
-const email = z.string().min(1, 'Email is required').email('Enter a valid email address')
-const password = z
-  .string()
-  .min(1, 'Password is required')
-  .refine(isStrongPassword, { message: PASSWORD_STRENGTH_MESSAGE })
+// Schemas are built from a `t` function rather than exported as static
+// objects, so validation messages follow the active language. Building a
+// fresh schema per render is cheap; see the form components for usage.
+export function createAuthSchemas(t: TFunction) {
+  const email = z.string().min(1, t('validation.emailRequired')).email(t('validation.emailInvalid'))
+  const password = z
+    .string()
+    .min(1, t('validation.passwordRequired'))
+    .refine(isStrongPassword, { message: passwordStrengthMessage(t) })
 
-export const loginSchema = z.object({
-  email,
-  password: z.string().min(1, 'Password is required'),
-  remember: z.boolean().optional(),
-})
-
-export type LoginFormValues = z.infer<typeof loginSchema>
-
-export const registerSchema = z
-  .object({
-    name: z.string().min(1, 'Name is required').max(255),
+  const loginSchema = z.object({
     email,
-    password,
-    password_confirmation: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: 'Passwords do not match',
-    path: ['password_confirmation'],
+    password: z.string().min(1, t('validation.passwordRequired')),
+    remember: z.boolean().optional(),
   })
 
-export type RegisterFormValues = z.infer<typeof registerSchema>
+  const registerSchema = z
+    .object({
+      name: z.string().min(1, t('validation.nameRequired')).max(255),
+      email,
+      password,
+      password_confirmation: z.string().min(1, t('validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: t('validation.passwordsDoNotMatch'),
+      path: ['password_confirmation'],
+    })
 
-export const forgotPasswordSchema = z.object({ email })
+  const forgotPasswordSchema = z.object({ email })
 
-export type ForgotPasswordFormValues = z.infer<typeof forgotPasswordSchema>
+  const resetPasswordSchema = z
+    .object({
+      email,
+      password,
+      password_confirmation: z.string().min(1, t('validation.confirmPasswordRequired')),
+    })
+    .refine((data) => data.password === data.password_confirmation, {
+      message: t('validation.passwordsDoNotMatch'),
+      path: ['password_confirmation'],
+    })
 
-export const resetPasswordSchema = z
-  .object({
-    email,
-    password,
-    password_confirmation: z.string().min(1, 'Please confirm your password'),
-  })
-  .refine((data) => data.password === data.password_confirmation, {
-    message: 'Passwords do not match',
-    path: ['password_confirmation'],
-  })
+  return { loginSchema, registerSchema, forgotPasswordSchema, resetPasswordSchema }
+}
 
-export type ResetPasswordFormValues = z.infer<typeof resetPasswordSchema>
+export type LoginFormValues = z.infer<ReturnType<typeof createAuthSchemas>['loginSchema']>
+export type RegisterFormValues = z.infer<ReturnType<typeof createAuthSchemas>['registerSchema']>
+export type ForgotPasswordFormValues = z.infer<ReturnType<typeof createAuthSchemas>['forgotPasswordSchema']>
+export type ResetPasswordFormValues = z.infer<ReturnType<typeof createAuthSchemas>['resetPasswordSchema']>

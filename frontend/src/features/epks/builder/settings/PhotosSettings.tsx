@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,6 +10,7 @@ import { moveItem } from '@/lib/arrayMove'
 import type { EpkSection, PhotoItem, PhotosConfig } from '@/types'
 
 export function PhotosSettings({ epkId, workspaceId, section }: { epkId: number; workspaceId: number; section: EpkSection }) {
+  const { t } = useTranslation()
   const config = section.config as PhotosConfig
   const setConfig = useDraftSectionConfig<PhotosConfig>(epkId, section)
   const items = config.items ?? []
@@ -21,7 +23,7 @@ export function PhotosSettings({ epkId, workspaceId, section }: { epkId: number;
 
   return (
     <div className="space-y-3">
-      <Label>Photos</Label>
+      <Label>{t('epkBuilder.sectionTypes.photos')}</Label>
       {items.map((item, index) => (
         <GalleryItemRow
           key={index}
@@ -38,12 +40,12 @@ export function PhotosSettings({ epkId, workspaceId, section }: { epkId: number;
             type="image"
           />
           <Input
-            placeholder="Caption (optional)"
+            placeholder={t('epkBuilder.photos.captionPlaceholder')}
             value={item.caption ?? ''}
             onChange={(event) => updateItem(index, { caption: event.target.value })}
           />
           <Input
-            placeholder="Credit (optional, e.g. Photo: Jane Doe)"
+            placeholder={t('epkBuilder.photos.creditPlaceholder')}
             value={item.credit ?? ''}
             onChange={(event) => updateItem(index, { credit: event.target.value })}
           />
@@ -56,7 +58,7 @@ export function PhotosSettings({ epkId, workspaceId, section }: { epkId: number;
         onClick={() => setConfig((prev) => ({ ...prev, items: [...(prev.items ?? []), { media_id: null }] }))}
       >
         <Plus className="size-4" />
-        Add photo
+        {t('epkBuilder.photos.addPhoto')}
       </Button>
     </div>
   )

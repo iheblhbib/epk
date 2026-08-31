@@ -9,6 +9,7 @@ use App\Http\Requests\StoreWorkspaceRequest;
 use App\Http\Requests\UpdateWorkspaceRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
+use App\Services\AuditLogger;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -52,9 +53,11 @@ class WorkspaceController extends Controller
         return (new WorkspaceResource($workspace->loadCount('members')))->response();
     }
 
-    public function update(UpdateWorkspaceRequest $request, Workspace $workspace): JsonResponse
+    public function update(UpdateWorkspaceRequest $request, Workspace $workspace, AuditLogger $auditLogger): JsonResponse
     {
         $workspace->update($request->validated());
+
+        $auditLogger->log($request, 'workspace.updated', $workspace, $request->validated(), $workspace->id);
 
         return (new WorkspaceResource($workspace))->response();
     }

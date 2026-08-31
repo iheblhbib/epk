@@ -1,4 +1,5 @@
 import { Plus, X } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -6,17 +7,18 @@ import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSec
 import type { CreditsConfig, EpkSection } from '@/types'
 
 export function CreditsSettings({ epkId, section }: { epkId: number; section: EpkSection }) {
+  const { t } = useTranslation()
   const config = section.config as CreditsConfig
   const setConfig = useDraftSectionConfig<CreditsConfig>(epkId, section)
   const items = config.items ?? []
 
   return (
     <div className="space-y-3">
-      <Label>Credits</Label>
+      <Label>{t('epkBuilder.sectionTypes.credits')}</Label>
       {items.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <Input
-            placeholder="Role (e.g. Producer)"
+            placeholder={t('epkBuilder.credits.rolePlaceholder')}
             value={item.role}
             onChange={(event) =>
               setConfig((prev) => ({
@@ -28,7 +30,7 @@ export function CreditsSettings({ epkId, section }: { epkId: number; section: Ep
             }
           />
           <Input
-            placeholder="Name"
+            placeholder={t('epkBuilder.credits.namePlaceholder')}
             value={item.name}
             onChange={(event) =>
               setConfig((prev) => ({
@@ -58,7 +60,7 @@ export function CreditsSettings({ epkId, section }: { epkId: number; section: Ep
         onClick={() => setConfig((prev) => ({ ...prev, items: [...(prev.items ?? []), { role: '', name: '' }] }))}
       >
         <Plus className="size-4" />
-        Add credit
+        {t('epkBuilder.credits.addCredit')}
       </Button>
     </div>
   )

@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,7 +10,6 @@ import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSec
 import { moveItem } from '@/lib/arrayMove'
 import type { EpkSection, ReleaseItem, ReleaseLinks, ReleasesConfig } from '@/types'
 
-const TYPE_ITEMS = { album: 'Album', ep: 'EP', single: 'Single' }
 const LINK_PLATFORMS: { key: keyof ReleaseLinks; label: string; placeholder: string }[] = [
   { key: 'spotify', label: 'Spotify', placeholder: 'https://open.spotify.com/album/…' },
   { key: 'apple_music', label: 'Apple Music', placeholder: 'https://music.apple.com/…' },
@@ -20,9 +20,15 @@ const LINK_PLATFORMS: { key: keyof ReleaseLinks; label: string; placeholder: str
 ]
 
 export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: number; workspaceId: number; section: EpkSection }) {
+  const { t } = useTranslation()
   const config = section.config as ReleasesConfig
   const setConfig = useDraftSectionConfig<ReleasesConfig>(epkId, section)
   const releases = config.releases ?? []
+  const typeItems = {
+    album: t('epkBuilder.releases.typeAlbum'),
+    ep: t('epkBuilder.releases.typeEp'),
+    single: t('epkBuilder.releases.typeSingle'),
+  }
 
   const updateRelease = (index: number, patch: Partial<ReleaseItem>) =>
     setConfig((prev) => ({
@@ -32,7 +38,7 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
 
   return (
     <div className="space-y-3">
-      <Label>Releases</Label>
+      <Label>{t('epkBuilder.sectionTypes.releases')}</Label>
       {releases.map((release, index) => (
         <GalleryItemRow
           key={index}
@@ -43,13 +49,13 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
           onRemove={() => setConfig((prev) => ({ ...prev, releases: (prev.releases ?? []).filter((_, i) => i !== index) }))}
         >
           <Input
-            placeholder="Release title"
+            placeholder={t('epkBuilder.releases.titlePlaceholder')}
             value={release.title ?? ''}
             onChange={(event) => updateRelease(index, { title: event.target.value })}
           />
           <div className="grid grid-cols-2 gap-2">
             <Select
-              items={TYPE_ITEMS}
+              items={typeItems}
               value={release.type ?? 'album'}
               onValueChange={(value) => updateRelease(index, { type: value as ReleaseItem['type'] })}
             >
@@ -57,7 +63,7 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {Object.entries(TYPE_ITEMS).map(([value, label]) => (
+                {Object.entries(typeItems).map(([value, label]) => (
                   <SelectItem key={value} value={value}>
                     {label}
                   </SelectItem>
@@ -75,10 +81,10 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
             value={release.cover_media_id}
             onChange={(id) => updateRelease(index, { cover_media_id: id })}
             type="image"
-            label="Select cover art"
+            label={t('epkBuilder.releases.selectCoverArt')}
           />
           <div className="space-y-1.5 border-t border-border pt-2">
-            <p className="text-xs font-medium text-muted-foreground">Streaming links (optional)</p>
+            <p className="text-xs font-medium text-muted-foreground">{t('epkBuilder.releases.streamingLinks')}</p>
             {LINK_PLATFORMS.map(({ key, label, placeholder }) => (
               <Input
                 key={key}
@@ -99,7 +105,7 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
         onClick={() => setConfig((prev) => ({ ...prev, releases: [...(prev.releases ?? []), { type: 'album' }] }))}
       >
         <Plus className="size-4" />
-        Add release
+        {t('epkBuilder.releases.addRelease')}
       </Button>
     </div>
   )

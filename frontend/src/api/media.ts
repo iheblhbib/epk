@@ -53,8 +53,3 @@ export async function renameMedia(mediaId: number, originalFilename: string): Pr
 export async function deleteMedia(mediaId: number): Promise<void> {
   await apiClient.delete(`/api/media/${mediaId}`)
 }
-
-export function mediaDownloadUrl(mediaId: number): string {
-  const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
-  return `${apiUrl}/api/media/${mediaId}/download`
-}

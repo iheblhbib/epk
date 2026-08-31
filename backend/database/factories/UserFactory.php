@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Enums\Locale;
 use App\Enums\UserRole;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
@@ -31,6 +32,11 @@ class UserFactory extends Factory
             'email_verified_at' => now(),
             'password' => static::$password ??= Hash::make('password'),
             'role' => UserRole::User,
+            // Explicit rather than relying on the column's DB-level default
+            // — Eloquent doesn't sync that back into the in-memory model
+            // after create(), so a factory-created user's ->locale would
+            // read null in the same request instead of the real default.
+            'locale' => Locale::English,
             'remember_token' => Str::random(10),
         ];
     }

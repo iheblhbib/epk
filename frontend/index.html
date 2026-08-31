@@ -4,7 +4,24 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kitfolio</title>
+    <title>KORAX</title>
+    <script>
+      // Applies the saved/system theme before React mounts, so there's no
+      // flash of the wrong theme on load. next-themes normally injects this
+      // itself for Next.js's server-rendered <html> tag; a plain Vite SPA
+      // has no such render pass to hook into, so it's done by hand here —
+      // the key/logic matches what next-themes itself would generate.
+      (function () {
+        try {
+          var stored = localStorage.getItem('theme')
+          var theme = stored === 'light' || stored === 'dark' ? stored : null
+          if (!theme) {
+            theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+          }
+          if (theme === 'dark') document.documentElement.classList.add('dark')
+        } catch (e) {}
+      })()
+    </script>
   </head>
   <body>
     <div id="root"></div>

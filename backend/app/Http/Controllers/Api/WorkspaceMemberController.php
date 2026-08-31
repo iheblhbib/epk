@@ -11,8 +11,10 @@ use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceMember;
 use App\Notifications\WorkspaceInvitationNotification;
+use App\Services\AuditLogger;
 use App\Services\PlanLimits;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -28,7 +30,7 @@ class WorkspaceMemberController extends Controller
         return WorkspaceMemberResource::collection($members)->response();
     }
 
-    public function store(InviteMemberRequest $request, Workspace $workspace, PlanLimits $planLimits): JsonResponse
+    public function store(InviteMemberRequest $request, Workspace $workspace, PlanLimits $planLimits, AuditLogger $auditLogger): JsonResponse
     {
         if (! $planLimits->canAddTeamMember($workspace)) {
             throw ValidationException::withMessages([
@@ -62,24 +64,48 @@ class WorkspaceMemberController extends Controller
 
         $member->load(['user', 'inviter', 'workspace']);
 
-        // Routed by email address rather than $existingUser->notify() — an
-        // invite can target someone who has no account yet, and this covers
-        // both cases identically.
-        Notification::route('mail', $email)->notify(new WorkspaceInvitationNotification($member));
+        // An existing user gets both channels (mail + an in-app bell
+        // notification) via the normal $user->notify() so it lands in their
+        // notifications() relation; someone with no account yet can only be
+        // reached by mail, routed on-demand by email address since there's
+        // no User row to attach an in-app notification to.
+        if ($existingUser) {
+            $existingUser->notify(new WorkspaceInvitationNotification($member));
+        } else {
+            Notification::route('mail', $email)->notify(new WorkspaceInvitationNotification($member));
+        }
+
+        $auditLogger->log($request, 'member.invited', $member, ['email' => $email, 'role' => $member->role->value], $workspace->id);
 
         return (new WorkspaceMemberResource($member))->response()->setStatusCode(201);
     }
 
-    public function update(UpdateMemberRoleRequest $request, Workspace $workspace, WorkspaceMember $member): JsonResponse
+    public function update(UpdateMemberRoleRequest $request, Workspace $workspace, WorkspaceMember $member, AuditLogger $auditLogger): JsonResponse
     {
         $member->update(['role' => $request->validated('role')]);
+
+        $auditLogger->log(
+            $request,
+            'member.role_changed',
+            $member,
+            ['member' => $member->user?->name ?? $member->invited_email, 'role' => $member->role->value],
+            $workspace->id
+        );
 
         return (new WorkspaceMemberResource($member->load(['user', 'inviter'])))->response();
     }
 
-    public function destroy(Workspace $workspace, WorkspaceMember $member): JsonResponse
+    public function destroy(Request $request, Workspace $workspace, WorkspaceMember $member, AuditLogger $auditLogger): JsonResponse
     {
         $this->authorize('removeMember', [$workspace, $member]);
+
+        $auditLogger->log(
+            $request,
+            'member.removed',
+            $member,
+            ['member' => $member->user?->name ?? $member->invited_email],
+            $workspace->id
+        );
 
         $member->delete();
 

@@ -7,6 +7,7 @@ use Database\Factories\EpkSectionFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class EpkSection extends Model
 {
@@ -38,5 +39,13 @@ class EpkSection extends Model
     public function epk(): BelongsTo
     {
         return $this->belongsTo(Epk::class);
+    }
+
+    /**
+     * @return HasMany<EpkSectionComment, $this>
+     */
+    public function comments(): HasMany
+    {
+        return $this->hasMany(EpkSectionComment::class);
     }
 }

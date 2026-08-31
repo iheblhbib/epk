@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\Admin\AdminStatsController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Admin\AdminWorkspaceController;
 use App\Http\Controllers\Api\AnalyticsController;
+use App\Http\Controllers\Api\ApiTokenController;
 use App\Http\Controllers\Api\ArtistController;
 use App\Http\Controllers\Api\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Api\Auth\EmailVerificationNotificationController;
@@ -13,17 +14,28 @@ use App\Http\Controllers\Api\Auth\NewPasswordController;
 use App\Http\Controllers\Api\Auth\PasswordController;
 use App\Http\Controllers\Api\Auth\PasswordResetLinkController;
 use App\Http\Controllers\Api\Auth\RegisteredUserController;
+use App\Http\Controllers\Api\Auth\TwoFactorAuthenticationController;
+use App\Http\Controllers\Api\Auth\TwoFactorChallengeController;
 use App\Http\Controllers\Api\Auth\VerifyEmailController;
 use App\Http\Controllers\Api\BillingController;
 use App\Http\Controllers\Api\ContactController;
 use App\Http\Controllers\Api\EpkController;
+use App\Http\Controllers\Api\EpkCustomDomainController;
+use App\Http\Controllers\Api\EpkPdfController;
+use App\Http\Controllers\Api\EpkSectionCommentController;
 use App\Http\Controllers\Api\EpkSectionController;
+use App\Http\Controllers\Api\GlobalSearchController;
 use App\Http\Controllers\Api\MediaController;
+use App\Http\Controllers\Api\NotificationController;
+use App\Http\Controllers\Api\NotificationPreferenceController;
 use App\Http\Controllers\Api\PrivateLinkController;
 use App\Http\Controllers\Api\PrivatePageController;
 use App\Http\Controllers\Api\PublicAnalyticsEventController;
 use App\Http\Controllers\Api\PublicEpkController;
+use App\Http\Controllers\Api\StripeWebhookController;
+use App\Http\Controllers\Api\UserLocaleController;
 use App\Http\Controllers\Api\UserProfileController;
+use App\Http\Controllers\Api\WorkspaceActivityLogController;
 use App\Http\Controllers\Api\WorkspaceController;
 use App\Http\Controllers\Api\WorkspaceInvitationController;
 use App\Http\Controllers\Api\WorkspaceMemberController;
@@ -37,6 +49,9 @@ Route::post('/register', [RegisteredUserController::class, 'store'])
 Route::post('/login', [AuthenticatedSessionController::class, 'store'])
     ->middleware('throttle:login');
 
+Route::post('/two-factor-challenge', [TwoFactorChallengeController::class, 'store'])
+    ->middleware('throttle:login');
+
 Route::post('/forgot-password', [PasswordResetLinkController::class, 'store'])
     ->middleware('throttle:6,1');
 
@@ -47,8 +62,14 @@ Route::get('/verify-email/{id}/{hash}', VerifyEmailController::class)
     ->middleware(['signed', 'throttle:6,1'])
     ->name('verification.verify');
 
-// Public, unauthenticated — powers the /epk/{slug} public page.
+// Public, unauthenticated — powers the /epk/{slug} public page. Registered
+// before {slug} below: as a literal path segment it would otherwise never
+// be reached, since Laravel matches routes in registration order and
+// {slug} greedily matches "by-domain" too.
+Route::get('/public/epks/by-domain', [PublicEpkController::class, 'showByDomain']);
 Route::get('/public/epks/{slug}', [PublicEpkController::class, 'show']);
+Route::get('/public/epks/{slug}/pdf', [EpkPdfController::class, 'downloadPublic'])
+    ->middleware('throttle:20,1');
 Route::get('/public/epks/{slug}/downloads/{media}', [PublicEpkController::class, 'downloadFile'])
     ->name('public.epk.download');
 Route::post('/public/epks/{slug}/events', [PublicAnalyticsEventController::class, 'store'])
@@ -74,6 +95,10 @@ Route::post('/private/{token}/events', [PrivatePageController::class, 'storeEven
 // rather than bouncing an unauthenticated visitor through /login or
 // /register and back. Accepting still requires being authenticated — see
 // the accept route inside the auth:sanctum group below.
+// Public, unauthenticated — Stripe itself is the caller. See
+// StripeWebhookController for how the signature check replaces auth here.
+Route::post('/stripe/webhook', [StripeWebhookController::class, 'handle']);
+
 Route::get('/invitations/{token}', [WorkspaceInvitationController::class, 'show'])
     ->middleware('throttle:20,1');
 Route::post('/invitations/{token}/login', [WorkspaceInvitationController::class, 'login'])
@@ -81,7 +106,7 @@ Route::post('/invitations/{token}/login', [WorkspaceInvitationController::class,
 Route::post('/invitations/{token}/register', [WorkspaceInvitationController::class, 'register'])
     ->middleware('throttle:10,1');
 
-Route::middleware(['auth:sanctum', 'active'])->group(function () {
+Route::middleware(['auth:sanctum', 'active', 'tokens-enabled'])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
@@ -90,10 +115,30 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::put('/user/password', [PasswordController::class, 'update'])
         ->middleware('throttle:6,1');
     Route::put('/user/profile', [UserProfileController::class, 'update']);
+    Route::put('/user/locale', [UserLocaleController::class, 'update']);
+    Route::get('/user/notification-preferences', [NotificationPreferenceController::class, 'show']);
+    Route::put('/user/notification-preferences', [NotificationPreferenceController::class, 'update']);
+
+    Route::get('/user/api-tokens', [ApiTokenController::class, 'index']);
+    Route::post('/user/api-tokens', [ApiTokenController::class, 'store'])->middleware('throttle:10,1');
+    Route::delete('/user/api-tokens/{tokenId}', [ApiTokenController::class, 'destroy']);
+
+    Route::post('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'store'])
+        ->middleware('throttle:6,1');
+    Route::post('/user/confirmed-two-factor-authentication', [TwoFactorAuthenticationController::class, 'confirm'])
+        ->middleware('throttle:6,1');
+    Route::delete('/user/two-factor-authentication', [TwoFactorAuthenticationController::class, 'destroy']);
+    Route::get('/user/two-factor-recovery-codes', [TwoFactorAuthenticationController::class, 'recoveryCodes']);
+    Route::post('/user/two-factor-recovery-codes', [TwoFactorAuthenticationController::class, 'regenerateRecoveryCodes']);
 
     Route::get('/user', function (Request $request) {
         return new UserResource($request->user());
     });
+
+    Route::get('/notifications', [NotificationController::class, 'index']);
+    Route::get('/notifications/unread-count', [NotificationController::class, 'unreadCount']);
+    Route::post('/notifications/mark-all-read', [NotificationController::class, 'markAllAsRead']);
+    Route::post('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
 
     Route::get('/workspaces', [WorkspaceController::class, 'index']);
     Route::post('/workspaces', [WorkspaceController::class, 'store']);
@@ -101,6 +146,8 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::put('/workspaces/{workspace}', [WorkspaceController::class, 'update']);
     Route::delete('/workspaces/{workspace}', [WorkspaceController::class, 'destroy']);
     Route::post('/workspaces/{workspace}/leave', [WorkspaceController::class, 'leave']);
+    Route::get('/workspaces/{workspace}/activity', [WorkspaceActivityLogController::class, 'index']);
+    Route::get('/workspaces/{workspace}/search', [GlobalSearchController::class, 'index']);
 
     Route::get('/workspaces/{workspace}/members', [WorkspaceMemberController::class, 'index']);
     Route::post('/workspaces/{workspace}/members', [WorkspaceMemberController::class, 'store']);
@@ -132,12 +179,26 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::delete('/epks/{epk}/sections/{section}', [EpkSectionController::class, 'destroy']);
     Route::post('/epks/{epk}/sections/{section}/duplicate', [EpkSectionController::class, 'duplicate']);
 
+    Route::get('/epks/{epk}/sections/{section}/comments', [EpkSectionCommentController::class, 'index']);
+    Route::post('/epks/{epk}/sections/{section}/comments', [EpkSectionCommentController::class, 'store']);
+    Route::put('/epks/{epk}/sections/{section}/comments/{comment}', [EpkSectionCommentController::class, 'update']);
+    Route::delete('/epks/{epk}/sections/{section}/comments/{comment}', [EpkSectionCommentController::class, 'destroy']);
+
     Route::get('/epks/{epk}/analytics', [AnalyticsController::class, 'show']);
+    Route::get('/epks/{epk}/pdf', [EpkPdfController::class, 'download'])
+        ->middleware('throttle:10,1');
 
     Route::get('/epks/{epk}/private-links', [PrivateLinkController::class, 'index']);
     Route::post('/epks/{epk}/private-links', [PrivateLinkController::class, 'store']);
     Route::put('/epks/{epk}/private-links/{privateLink}', [PrivateLinkController::class, 'update']);
     Route::delete('/epks/{epk}/private-links/{privateLink}', [PrivateLinkController::class, 'destroy']);
+
+    Route::get('/epks/{epk}/custom-domain', [EpkCustomDomainController::class, 'show']);
+    Route::post('/epks/{epk}/custom-domain', [EpkCustomDomainController::class, 'store'])
+        ->middleware('throttle:10,1');
+    Route::post('/epks/{epk}/custom-domain/verify', [EpkCustomDomainController::class, 'verify'])
+        ->middleware('throttle:10,1');
+    Route::delete('/epks/{epk}/custom-domain', [EpkCustomDomainController::class, 'destroy']);
 
     Route::get('/workspaces/{workspace}/contacts', [ContactController::class, 'index']);
     Route::post('/workspaces/{workspace}/contacts', [ContactController::class, 'store']);
@@ -149,6 +210,10 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy']);
 
     Route::get('/workspaces/{workspace}/billing', [BillingController::class, 'show']);
+    Route::post('/workspaces/{workspace}/billing/checkout', [BillingController::class, 'checkout'])
+        ->middleware('throttle:10,1');
+    Route::post('/workspaces/{workspace}/billing/portal', [BillingController::class, 'portal'])
+        ->middleware('throttle:10,1');
 
     Route::get('/workspaces/{workspace}/media', [MediaController::class, 'index']);
     Route::post('/workspaces/{workspace}/media', [MediaController::class, 'store'])
@@ -158,7 +223,7 @@ Route::middleware(['auth:sanctum', 'active'])->group(function () {
     Route::get('/media/{media}/download', [MediaController::class, 'download']);
 });
 
-Route::middleware(['auth:sanctum', 'active', 'admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'admin'])->prefix('admin')->group(function () {
     Route::get('/stats', [AdminStatsController::class, 'index']);
 
     Route::get('/users', [AdminUserController::class, 'index']);

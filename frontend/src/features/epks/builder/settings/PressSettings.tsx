@@ -1,4 +1,5 @@
 import { Plus } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -9,6 +10,7 @@ import { moveItem } from '@/lib/arrayMove'
 import type { EpkSection, PressConfig, PressItem } from '@/types'
 
 export function PressSettings({ epkId, section }: { epkId: number; section: EpkSection }) {
+  const { t } = useTranslation()
   const config = section.config as PressConfig
   const setConfig = useDraftSectionConfig<PressConfig>(epkId, section)
   const items = config.items ?? []
@@ -21,7 +23,7 @@ export function PressSettings({ epkId, section }: { epkId: number; section: EpkS
 
   return (
     <div className="space-y-3">
-      <Label>Press coverage</Label>
+      <Label>{t('epkBuilder.press.label')}</Label>
       {items.map((item, index) => (
         <GalleryItemRow
           key={index}
@@ -32,24 +34,24 @@ export function PressSettings({ epkId, section }: { epkId: number; section: EpkS
           onRemove={() => setConfig((prev) => ({ ...prev, items: (prev.items ?? []).filter((_, i) => i !== index) }))}
         >
           <Input
-            placeholder="Outlet (e.g. Pitchfork)"
+            placeholder={t('epkBuilder.press.outletPlaceholder')}
             value={item.outlet ?? ''}
             onChange={(event) => updateItem(index, { outlet: event.target.value })}
           />
           <Textarea
             rows={2}
-            placeholder="Quote"
+            placeholder={t('epkBuilder.press.quotePlaceholder')}
             value={item.quote ?? ''}
             onChange={(event) => updateItem(index, { quote: event.target.value })}
           />
           <Input
-            placeholder="Article URL (optional)"
+            placeholder={t('epkBuilder.press.articleUrlPlaceholder')}
             value={item.article_url ?? ''}
             onChange={(event) => updateItem(index, { article_url: event.target.value })}
           />
           <div className="grid grid-cols-2 gap-2">
             <Input
-              placeholder="Author (optional)"
+              placeholder={t('epkBuilder.press.authorPlaceholder')}
               value={item.author ?? ''}
               onChange={(event) => updateItem(index, { author: event.target.value })}
             />
@@ -68,7 +70,7 @@ export function PressSettings({ epkId, section }: { epkId: number; section: EpkS
         onClick={() => setConfig((prev) => ({ ...prev, items: [...(prev.items ?? []), { outlet: '' }] }))}
       >
         <Plus className="size-4" />
-        Add press mention
+        {t('epkBuilder.press.addMention')}
       </Button>
     </div>
   )

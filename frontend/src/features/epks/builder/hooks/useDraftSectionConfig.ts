@@ -1,6 +1,7 @@
 import { useQueryClient } from '@tanstack/react-query'
 import { useCallback, useEffect, useRef } from 'react'
 import { toast } from 'sonner'
+import i18n from '@/i18n'
 import { updateSection } from '@/api/epkSections'
 import { sectionsKey } from '@/features/epks/hooks/useEpkSections'
 import type { EpkSection } from '@/types'
@@ -37,7 +38,7 @@ export function useDraftSectionConfig<C extends object>(epkId: number, section: 
       clearTimeout(timer.current)
       timer.current = setTimeout(() => {
         updateSection(epkId, section.id, { config: nextConfig as Record<string, unknown> }).catch(() => {
-          toast.error('Could not save changes')
+          toast.error(i18n.t('epkBuilder.settingsPanel.saveError'))
           queryClient.invalidateQueries({ queryKey: sectionsKey(epkId) })
         })
       }, 500)

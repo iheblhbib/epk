@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { loginSchema, registerSchema } from '@/features/auth/schemas/authSchemas'
+import i18n from '@/i18n'
+import { createAuthSchemas } from '@/features/auth/schemas/authSchemas'
+
+const { loginSchema, registerSchema } = createAuthSchemas(i18n.t)
 
 describe('loginSchema', () => {
   it('accepts a valid email and password', () => {

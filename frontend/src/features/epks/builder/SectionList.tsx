@@ -10,7 +10,9 @@ import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-
 import { CSS } from '@dnd-kit/utilities'
 import { Copy, GripVertical, MoreHorizontal, Trash2 } from 'lucide-react'
 import { useState } from 'react'
+import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
+import type { TFunction } from 'i18next'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { Button } from '@/components/ui/button'
 import {
@@ -49,6 +51,7 @@ function SortableSectionRow({
   isTogglePending: boolean
   canEdit: boolean
 }) {
+  const { t } = useTranslation()
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
     id: section.id,
     disabled: !canEdit,
@@ -80,7 +83,7 @@ function SortableSectionRow({
       <button type="button" onClick={onSelect} className="flex flex-1 items-center gap-2 overflow-hidden text-start">
         <Icon className="size-4 shrink-0 text-muted-foreground" />
         <span className="truncate text-sm font-medium text-foreground">
-          {section.title || SECTION_TYPE_META[section.type].label}
+          {section.title || t(SECTION_TYPE_META[section.type].labelKey)}
         </span>
       </button>
 
@@ -95,22 +98,26 @@ function SortableSectionRow({
             <DropdownMenuContent align="end">
               <DropdownMenuItem disabled={!canDuplicate} onClick={onDuplicate}>
                 <Copy className="size-4" />
-                Duplicate
+                {t('epks.duplicate')}
               </DropdownMenuItem>
               <DropdownMenuItem onClick={onDelete} className="text-destructive">
                 <Trash2 className="size-4" />
-                Delete
+                {t('common.delete')}
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
       ) : (
         !section.is_enabled && (
-          <span className="shrink-0 text-xs text-muted-foreground">Hidden</span>
+          <span className="shrink-0 text-xs text-muted-foreground">{t('epkBuilder.hidden')}</span>
         )
       )}
     </div>
   )
+}
+
+function sectionLabel(t: TFunction, section: EpkSection): string {
+  return section.title || t(SECTION_TYPE_META[section.type].labelKey)
 }
 
 export function SectionList({
@@ -126,6 +133,7 @@ export function SectionList({
   onSelectSection: (id: number) => void
   canEdit: boolean
 }) {
+  const { t } = useTranslation()
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null)
   const updateSection = useUpdateSection(epkId)
   const duplicateSection = useDuplicateSection(epkId)
@@ -167,8 +175,8 @@ export function SectionList({
               }
               onDuplicate={() =>
                 duplicateSection.mutate(section.id, {
-                  onSuccess: () => toast.success('Section duplicated'),
-                  onError: () => toast.error('Could not duplicate this section'),
+                  onSuccess: () => toast.success(t('epkBuilder.toasts.sectionDuplicated')),
+                  onError: () => toast.error(t('epkBuilder.toasts.sectionDuplicateError')),
                 })
               }
               onDelete={() => setPendingDeleteId(section.id)}
@@ -180,30 +188,30 @@ export function SectionList({
 
       {ordered.length === 0 && (
         <p className="rounded-lg border border-dashed border-border p-4 text-center text-sm text-muted-foreground">
-          {canEdit ? 'No sections yet. Add one to start building this EPK.' : 'No sections yet.'}
+          {canEdit ? t('epkBuilder.noSectionsCanEdit') : t('epkBuilder.noSections')}
         </p>
       )}
 
       <ConfirmDialog
         open={pendingDeleteId !== null}
         onOpenChange={(open) => !open && setPendingDeleteId(null)}
-        title="Delete section"
+        title={t('epkBuilder.deleteSectionDialog.title')}
         description={
           sectionToDelete
-            ? `"${sectionToDelete.title || SECTION_TYPE_META[sectionToDelete.type].label}" will be permanently removed from this EPK.`
+            ? t('epkBuilder.deleteSectionDialog.description', { title: sectionLabel(t, sectionToDelete) })
             : ''
         }
-        confirmLabel="Delete"
+        confirmLabel={t('common.delete')}
         destructive
         isLoading={deleteSection.isPending}
         onConfirm={() => {
           if (pendingDeleteId === null) return
           deleteSection.mutate(pendingDeleteId, {
             onSuccess: () => {
-              toast.success('Section deleted')
+              toast.success(t('epkBuilder.toasts.sectionDeleted'))
               setPendingDeleteId(null)
             },
-            onError: () => toast.error('Could not delete this section'),
+            onError: () => toast.error(t('epkBuilder.toasts.sectionDeleteError')),
           })
         }}
       />

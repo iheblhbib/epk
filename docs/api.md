@@ -1,6 +1,6 @@
 # API Reference
 
-Base path: `/api` (e.g. `https://api.yourdomain.com/api/login` in production, `http://localhost:8000/api/login` in dev). Every route in this document is defined in `backend/routes/api.php` — that file is the source of truth; this is the organized map of it.
+Base path: `/api` (e.g. `https://api.karthagopm.com/api/login` in production, `http://localhost:8000/api/login` in dev). Every route in this document is defined in `backend/routes/api.php` — that file is the source of truth; this is the organized map of it.
 
 ## Conventions
 

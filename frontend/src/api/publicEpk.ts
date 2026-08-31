@@ -6,6 +6,18 @@ export async function getPublicEpk(slug: string): Promise<PublicEpk> {
   return data.data
 }
 
+export async function getPublicEpkByDomain(domain: string): Promise<PublicEpk> {
+  const { data } = await apiClient.get<ApiResource<PublicEpk>>('/api/public/epks/by-domain', {
+    params: { domain },
+  })
+  return data.data
+}
+
+export function publicEpkPdfUrl(slug: string): string {
+  const apiUrl = import.meta.env.VITE_API_URL ?? 'http://localhost:8000'
+  return `${apiUrl}/api/public/epks/${slug}/pdf`
+}
+
 /**
  * Fire-and-forget: a visitor's page view/download/play must never fail (or
  * even appear to fail) because analytics reporting had trouble — errors are

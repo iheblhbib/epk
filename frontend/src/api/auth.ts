@@ -1,5 +1,5 @@
 import { apiClient, ensureCsrfCookie } from '@/api/client'
-import type { ApiResource, User } from '@/types'
+import type { ApiResource, LoginResult, TwoFactorSetup, User } from '@/types'
 
 export interface LoginPayload {
   email: string
@@ -35,9 +35,42 @@ export async function getAuthUser(): Promise<User | null> {
   }
 }
 
-export async function login(payload: LoginPayload): Promise<User> {
+export async function login(payload: LoginPayload): Promise<LoginResult> {
   await ensureCsrfCookie()
-  const { data } = await apiClient.post<ApiResource<User>>('/api/login', payload)
+  const { data } = await apiClient.post<ApiResource<LoginResult>>('/api/login', payload)
+  return data.data
+}
+
+export async function twoFactorChallenge(payload: { code?: string; recovery_code?: string }): Promise<User> {
+  const { data } = await apiClient.post<ApiResource<User>>('/api/two-factor-challenge', payload)
+  return data.data
+}
+
+export async function enableTwoFactorAuthentication(currentPassword: string): Promise<TwoFactorSetup> {
+  const { data } = await apiClient.post<ApiResource<TwoFactorSetup>>('/api/user/two-factor-authentication', {
+    current_password: currentPassword,
+  })
+  return data.data
+}
+
+export async function confirmTwoFactorAuthentication(code: string): Promise<string[]> {
+  const { data } = await apiClient.post<ApiResource<string[]>>('/api/user/confirmed-two-factor-authentication', {
+    code,
+  })
+  return data.data
+}
+
+export async function disableTwoFactorAuthentication(currentPassword: string): Promise<void> {
+  await apiClient.delete('/api/user/two-factor-authentication', { data: { current_password: currentPassword } })
+}
+
+export async function getTwoFactorRecoveryCodes(): Promise<string[]> {
+  const { data } = await apiClient.get<ApiResource<string[]>>('/api/user/two-factor-recovery-codes')
+  return data.data
+}
+
+export async function regenerateTwoFactorRecoveryCodes(): Promise<string[]> {
+  const { data } = await apiClient.post<ApiResource<string[]>>('/api/user/two-factor-recovery-codes')
   return data.data
 }
 
@@ -77,6 +110,11 @@ export async function updateProfile(payload: UpdateProfilePayload): Promise<User
 
 export async function updatePassword(payload: UpdatePasswordPayload): Promise<void> {
   await apiClient.put('/api/user/password', payload)
+}
+
+export async function updateLocale(locale: string): Promise<User> {
+  const { data } = await apiClient.put<ApiResource<User>>('/api/user/locale', { locale })
+  return data.data
 }
 
 function isAxios401(error: unknown): boolean {

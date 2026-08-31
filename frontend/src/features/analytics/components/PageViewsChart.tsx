@@ -8,6 +8,7 @@ import {
   Tooltip,
   type ChartOptions,
 } from 'chart.js'
+import { useTranslation } from 'react-i18next'
 import { Line } from 'react-chartjs-2'
 import type { AnalyticsDailyPoint } from '@/types'
 
@@ -26,13 +27,15 @@ const OPTIONS: ChartOptions<'line'> = {
 }
 
 export function PageViewsChart({ points }: { points: AnalyticsDailyPoint[] }) {
+  const { t } = useTranslation()
+
   const data = {
     labels: points.map((point) =>
       new Date(`${point.date}T00:00:00`).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })
     ),
     datasets: [
       {
-        label: 'Page views',
+        label: t('analytics.pageViews'),
         data: points.map((point) => point.count),
         borderColor: '#6d5ef9',
         backgroundColor: 'rgba(109, 94, 249, 0.12)',
@@ -45,10 +48,10 @@ export function PageViewsChart({ points }: { points: AnalyticsDailyPoint[] }) {
 
   return (
     <div className="rounded-xl border border-border bg-card p-4">
-      <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">Page views</p>
+      <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('analytics.pageViews')}</p>
       {points.every((point) => point.count === 0) ? (
         <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
-          No page views in this range yet.
+          {t('analytics.noPageViews')}
         </div>
       ) : (
         <div className="h-48">

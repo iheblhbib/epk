@@ -1,6 +1,7 @@
 import { AtSign, Camera, Download, ExternalLink, Globe, Mail, MapPin, MessageCircle, Music2, Music4, Phone, Quote, Video } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useRef } from 'react'
+import { useTranslation } from 'react-i18next'
 import { buttonRadiusClass, resolveTheme, type HeaderStyle } from '@/lib/epkThemes'
 import { cn } from '@/lib/utils'
 import type {
@@ -211,10 +212,11 @@ function SocialNetworksSection({ title, headerStyle, config }: { title: string; 
 }
 
 function ContactSection({ title, headerStyle, config }: { title: string; headerStyle: HeaderStyle; config: PublicContactConfig }) {
+  const { t } = useTranslation()
   const rows: { icon: LucideIcon; label: string; href?: string }[] = []
-  if (config.booking_email) rows.push({ icon: Mail, label: `Booking · ${config.booking_email}`, href: `mailto:${config.booking_email}` })
-  if (config.press_email) rows.push({ icon: Mail, label: `Press · ${config.press_email}`, href: `mailto:${config.press_email}` })
-  if (config.management_email) rows.push({ icon: Mail, label: `Management · ${config.management_email}`, href: `mailto:${config.management_email}` })
+  if (config.booking_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.booking')} · ${config.booking_email}`, href: `mailto:${config.booking_email}` })
+  if (config.press_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.press')} · ${config.press_email}`, href: `mailto:${config.press_email}` })
+  if (config.management_email) rows.push({ icon: Mail, label: `${t('epkBuilder.preview.management')} · ${config.management_email}`, href: `mailto:${config.management_email}` })
   if (config.website) rows.push({ icon: Globe, label: config.website, href: config.website })
   if (config.phone) rows.push({ icon: Phone, label: config.phone, href: `tel:${config.phone}` })
   if (config.address) rows.push({ icon: MapPin, label: config.address })
@@ -335,7 +337,7 @@ function PhotosSection({ title, headerStyle, config }: { title: string; headerSt
 }
 
 /** Fires its play event at most once, no matter how many times the visitor pauses/resumes. */
-function TrackAudio({ src, onFirstPlay }: { src: string; onFirstPlay: () => void }) {
+function TrackAudio({ src, onFirstPlay }: { src?: string; onFirstPlay: () => void }) {
   const hasPlayed = useRef(false)
 
   return (
@@ -370,8 +372,20 @@ function MusicSection({
       <ul className="space-y-4">
         {config.tracks.map((track, index) => (
           <li key={index}>
-            <p className="mb-1.5 text-sm font-medium text-[var(--epk-fg)]">{track.title}</p>
-            <TrackAudio src={track.audio_url} onFirstPlay={() => onTrack('audio_play')} />
+            {track.title && <p className="mb-1.5 text-sm font-medium text-[var(--epk-fg)]">{track.title}</p>}
+            {track.provider === 'upload' || !track.provider ? (
+              <TrackAudio src={track.audio_url} onFirstPlay={() => onTrack('audio_play')} />
+            ) : (
+              <iframe
+                src={track.embed_url}
+                title={track.title || `Track ${index + 1}`}
+                className="w-full overflow-hidden"
+                style={{ borderRadius: 'var(--epk-radius)' }}
+                height={track.provider === 'soundcloud' ? 166 : 152}
+                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture"
+                loading="lazy"
+              />
+            )}
           </li>
         ))}
       </ul>
@@ -492,6 +506,7 @@ function VideosSection({
 }
 
 function PressSection({ title, headerStyle, config }: { title: string; headerStyle: HeaderStyle; config: PublicPressConfig }) {
+  const { t } = useTranslation()
   if (!config.items || config.items.length === 0) return null
 
   return (
@@ -515,7 +530,7 @@ function PressSection({ title, headerStyle, config }: { title: string; headerSty
                   rel="noreferrer"
                   className="ms-2 inline-flex items-center gap-1 text-[var(--epk-accent)] hover:underline"
                 >
-                  Read the piece <ExternalLink className="size-3.5" />
+                  {t('publicEpk.readThePiece')} <ExternalLink className="size-3.5" />
                 </a>
               )}
             </p>

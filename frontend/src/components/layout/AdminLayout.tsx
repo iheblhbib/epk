@@ -1,16 +1,22 @@
 import { ArrowLeft, FileStack, Gauge, ScrollText, Users, UsersRound } from 'lucide-react'
+import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router-dom'
+import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
+import { NotificationBell } from '@/components/common/NotificationBell'
+import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { cn } from '@/lib/utils'
 
 const ADMIN_NAV_ITEMS = [
-  { to: '/admin', label: 'Dashboard', icon: Gauge, end: true },
-  { to: '/admin/users', label: 'Users', icon: Users, end: false },
-  { to: '/admin/workspaces', label: 'Workspaces', icon: UsersRound, end: false },
-  { to: '/admin/epks', label: 'EPKs', icon: FileStack, end: false },
-  { to: '/admin/audit-log', label: 'Audit log', icon: ScrollText, end: false },
+  { to: '/admin', labelKey: 'admin.nav.dashboard', icon: Gauge, end: true },
+  { to: '/admin/users', labelKey: 'admin.nav.users', icon: Users, end: false },
+  { to: '/admin/workspaces', labelKey: 'admin.nav.workspaces', icon: UsersRound, end: false },
+  { to: '/admin/epks', labelKey: 'admin.nav.epks', icon: FileStack, end: false },
+  { to: '/admin/audit-log', labelKey: 'admin.nav.auditLog', icon: ScrollText, end: false },
 ] as const
 
 export function AdminLayout() {
+  const { t } = useTranslation()
+
   return (
     <div className="flex h-screen bg-background">
       <aside className="hidden w-60 shrink-0 flex-col border-e border-sidebar-border bg-sidebar px-3 py-4 md:flex">
@@ -18,11 +24,11 @@ export function AdminLayout() {
           <div className="flex size-7 items-center justify-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
             K
           </div>
-          <span className="font-heading text-sm font-semibold text-sidebar-foreground">Admin</span>
+          <span className="font-heading text-sm font-semibold text-sidebar-foreground">{t('nav.admin')}</span>
         </div>
 
         <nav className="flex flex-1 flex-col gap-1">
-          {ADMIN_NAV_ITEMS.map(({ to, label, icon: Icon, end }) => (
+          {ADMIN_NAV_ITEMS.map(({ to, labelKey, icon: Icon, end }) => (
             <NavLink
               key={to}
               to={to}
@@ -35,7 +41,7 @@ export function AdminLayout() {
               }
             >
               <Icon className="size-4" />
-              {label}
+              {t(labelKey)}
             </NavLink>
           ))}
         </nav>
@@ -46,12 +52,17 @@ export function AdminLayout() {
             className="flex items-center gap-2.5 rounded-lg px-3 py-2 text-sm font-medium text-sidebar-foreground/70 transition-colors hover:bg-sidebar-accent hover:text-sidebar-accent-foreground"
           >
             <ArrowLeft className="size-4" />
-            Back to app
+            {t('admin.nav.backToApp')}
           </NavLink>
         </nav>
       </aside>
 
       <div className="flex min-w-0 flex-1 flex-col">
+        <header className="flex h-14 shrink-0 items-center justify-end gap-2 border-b border-border px-4 sm:px-6">
+          <NotificationBell />
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">
           <Outlet />
         </main>
