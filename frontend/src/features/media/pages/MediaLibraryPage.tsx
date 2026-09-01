@@ -1,4 +1,4 @@
-import { FolderOpen, Search } from 'lucide-react'
+import { FileText, Film, FolderOpen, ImageIcon, Music, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -12,7 +12,7 @@ import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorks
 import { useAudioPreview } from '@/hooks/useAudioPreview'
 import { isEditorLevel } from '@/lib/permissions'
 import type { MediaListParams } from '@/api/media'
-import type { MediaType } from '@/types'
+import type { Media, MediaType } from '@/types'
 import type { TFunction } from 'i18next'
 
 const TYPE_VALUES: (MediaType | 'all')[] = ['all', 'image', 'audio', 'video', 'document']
@@ -22,6 +22,19 @@ const TYPE_LABEL_KEYS: Record<MediaType | 'all', string> = {
   audio: 'media.types.audio',
   video: 'media.types.video',
   document: 'media.types.document',
+}
+
+// Fixed display order for the "All types" view — music, then video, then
+// images, then documents, per how the user wants to scan the library. Only
+// relevant when nothing narrows it to a single type already (the type
+// filter already gives a flat, single-type list, where grouping would just
+// be a redundant single heading).
+const GROUP_ORDER: MediaType[] = ['audio', 'video', 'image', 'document']
+const GROUP_ICON: Record<MediaType, typeof Music> = {
+  audio: Music,
+  video: Film,
+  image: ImageIcon,
+  document: FileText,
 }
 
 const SORT_OPTIONS: { value: string; sortBy: MediaListParams['sortBy']; sortDir: MediaListParams['sortDir']; labelKey: string }[] = [
@@ -65,6 +78,18 @@ export function MediaLibraryPage() {
     sortBy: sortOption.sortBy,
     sortDir: sortOption.sortDir,
   })
+
+  // Only grouped in the "All types" view — the type filter already narrows
+  // the list to one type, where a single group heading would be redundant.
+  // The chosen sort still applies within each group; only the grouping
+  // itself (and the fixed audio → video → image → document order) is new.
+  const groupedMedia: { type: MediaType; items: Media[] }[] =
+    type === 'all' && media
+      ? GROUP_ORDER.map((groupType) => ({
+          type: groupType,
+          items: media.filter((item) => item.type === groupType),
+        })).filter((group) => group.items.length > 0)
+      : []
 
   if (workspaceLoading) {
     return <LoadingSkeleton />
@@ -145,6 +170,31 @@ export function MediaLibraryPage() {
                 : t('media.emptyState.viewOnlyDescription')
           }
         />
+      ) : type === 'all' ? (
+        <div className="space-y-6">
+          {groupedMedia.map((group) => {
+            const GroupIcon = GROUP_ICON[group.type]
+            return (
+              <div key={group.type} className="space-y-2">
+                <div className="flex items-center gap-1.5 text-sm font-medium text-foreground">
+                  <GroupIcon className="size-4 text-muted-foreground" />
+                  {t(TYPE_LABEL_KEYS[group.type])}
+                  <span className="text-muted-foreground">({group.items.length})</span>
+                </div>
+                {group.items.map((item) => (
+                  <MediaCard
+                    key={item.id}
+                    media={item}
+                    workspaceId={currentWorkspace.id}
+                    myRole={currentWorkspace.my_role}
+                    isPlaying={playingId === item.id}
+                    onTogglePreview={() => toggleAudioPreview(item.id, item.url)}
+                  />
+                ))}
+              </div>
+            )
+          })}
+        </div>
       ) : (
         <div className="space-y-2">
           {media.map((item) => (
