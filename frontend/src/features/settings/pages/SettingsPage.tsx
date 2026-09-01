@@ -620,8 +620,8 @@ export function SettingsPage() {
           <TabsTrigger value="twoFactor">{t('settings.tabs.twoFactor')}</TabsTrigger>
         </TabsList>
         <TabsContent value="profile" className="mt-4 space-y-6">
-          <LanguageCard />
           <ProfileTab />
+          <LanguageCard />
         </TabsContent>
         <TabsContent value="password" className="mt-4">
           <PasswordTab />
