@@ -6,6 +6,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { describe, expect, it } from 'vitest'
 import { LoginPage } from '@/features/auth/pages/LoginPage'
 import { server } from '@/test/server'
+import { AuthProvider } from '@/providers/AuthProvider'
 
 const API_URL = 'http://localhost:8000'
 
@@ -14,12 +15,17 @@ function renderLoginPage() {
 
   return render(
     <QueryClientProvider client={queryClient}>
-      <MemoryRouter initialEntries={['/login']}>
-        <Routes>
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/" element={<div>Dashboard home</div>} />
-        </Routes>
-      </MemoryRouter>
+      {/* AuthCard now renders LanguageSwitcher/ThemeToggle, and the former
+          needs useAuth() — mirrors how App.tsx wraps the whole tree in a
+          real render. */}
+      <AuthProvider>
+        <MemoryRouter initialEntries={['/login']}>
+          <Routes>
+            <Route path="/login" element={<LoginPage />} />
+            <Route path="/" element={<div>Dashboard home</div>} />
+          </Routes>
+        </MemoryRouter>
+      </AuthProvider>
     </QueryClientProvider>
   )
 }
