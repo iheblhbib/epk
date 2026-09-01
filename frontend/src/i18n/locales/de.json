@@ -362,6 +362,10 @@
       "updated": "Profil aktualisiert",
       "updateError": "Ihr Profil konnte nicht aktualisiert werden"
     },
+    "language": {
+      "title": "Sprache",
+      "description": "Wählen Sie die in der App verwendete Sprache."
+    },
     "password": {
       "title": "Passwort",
       "description": "Wählen Sie ein starkes, einzigartiges Passwort.",

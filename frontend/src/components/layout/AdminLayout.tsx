@@ -1,7 +1,6 @@
 import { ArrowLeft, FileStack, Gauge, ScrollText, Users, UsersRound } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import { NavLink, Outlet } from 'react-router-dom'
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
 import { NotificationBell } from '@/components/common/NotificationBell'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { cn } from '@/lib/utils'
@@ -60,7 +59,6 @@ export function AdminLayout() {
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="flex h-14 shrink-0 items-center justify-end gap-2 border-b border-border px-4 sm:px-6">
           <NotificationBell />
-          <LanguageSwitcher />
           <ThemeToggle />
         </header>
         <main className="flex-1 overflow-y-auto p-4 sm:p-6">

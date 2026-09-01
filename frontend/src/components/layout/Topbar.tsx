@@ -13,7 +13,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { GlobalSearchDialog } from '@/components/common/GlobalSearchDialog'
-import { LanguageSwitcher } from '@/components/common/LanguageSwitcher'
 import { NotificationBell } from '@/components/common/NotificationBell'
 import { ThemeToggle } from '@/components/common/ThemeToggle'
 import { MobileSidebar } from '@/components/layout/MobileSidebar'
@@ -55,7 +54,6 @@ export function Topbar() {
       <div className="flex items-center gap-2">
         <GlobalSearchDialog />
         <NotificationBell />
-        <LanguageSwitcher />
         <ThemeToggle />
         <DropdownMenu>
         <DropdownMenuTrigger className="flex items-center gap-2 rounded-full outline-none focus-visible:ring-3 focus-visible:ring-ring/50">

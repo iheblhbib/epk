@@ -362,6 +362,10 @@
       "updated": "Profile updated",
       "updateError": "Could not update your profile"
     },
+    "language": {
+      "title": "Language",
+      "description": "Choose the language used across the app."
+    },
     "password": {
       "title": "Password",
       "description": "Choose a strong, unique password.",

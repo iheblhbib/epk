@@ -362,6 +362,10 @@
       "updated": "Perfil actualizado",
       "updateError": "No se pudo actualizar tu perfil"
     },
+    "language": {
+      "title": "Idioma",
+      "description": "Elige el idioma que se usa en la aplicación."
+    },
     "password": {
       "title": "Contraseña",
       "description": "Elige una contraseña fuerte y única.",

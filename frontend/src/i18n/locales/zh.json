@@ -362,6 +362,10 @@
       "updated": "个人资料已更新",
       "updateError": "无法更新您的个人资料"
     },
+    "language": {
+      "title": "语言",
+      "description": "选择应用中使用的语言。"
+    },
     "password": {
       "title": "密码",
       "description": "选择一个强且唯一的密码。",

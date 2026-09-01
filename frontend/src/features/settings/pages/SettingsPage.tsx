@@ -19,9 +19,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { PasswordInput } from '@/components/ui/password-input'
 import { PasswordRequirements } from '@/components/ui/password-requirements'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { Switch } from '@/components/ui/switch'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Textarea } from '@/components/ui/textarea'
+import { useUpdateLocale } from '@/features/auth/hooks/useUpdateLocale'
 import {
   useNotificationPreferences,
   useUpdateNotificationPreferences,
@@ -35,6 +37,7 @@ import {
   useUpdateWorkspace,
   useWorkspaceActivity,
 } from '@/features/workspaces/hooks/useWorkspaces'
+import { LANGUAGE_NAMES, SUPPORTED_LANGUAGES, type SupportedLanguage } from '@/i18n'
 import { isStrongPassword, passwordStrengthMessage } from '@/lib/passwordStrength'
 import { authUserKey } from '@/lib/queryClient'
 import { formatRelativeTime } from '@/lib/relativeTime'
@@ -129,6 +132,48 @@ function ProfileTab() {
             </Button>
           </form>
         </Form>
+      </CardContent>
+    </Card>
+  )
+}
+
+// Applies immediately on change (no Save button) — same instant-apply
+// behavior as the standalone LanguageSwitcher this replaces on the auth'd
+// side of the app, just with a labeled field instead of an icon dropdown
+// now that it lives on a settings page rather than a topbar.
+function LanguageCard() {
+  const { t, i18n } = useTranslation()
+  const updateLocale = useUpdateLocale()
+  const current = i18n.resolvedLanguage as SupportedLanguage | undefined
+  const items = Object.fromEntries(SUPPORTED_LANGUAGES.map((lang) => [lang, LANGUAGE_NAMES[lang]]))
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>{t('settings.language.title')}</CardTitle>
+        <CardDescription>{t('settings.language.description')}</CardDescription>
+      </CardHeader>
+      <CardContent>
+        <Select
+          items={items}
+          value={current}
+          onValueChange={(value) => {
+            if (!value) return
+            i18n.changeLanguage(value)
+            updateLocale.mutate(value)
+          }}
+        >
+          <SelectTrigger className="w-full sm:w-56">
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <SelectItem key={lang} value={lang}>
+                {LANGUAGE_NAMES[lang]}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </CardContent>
     </Card>
   )
@@ -574,7 +619,8 @@ export function SettingsPage() {
           {API_TOKENS_ENABLED && <TabsTrigger value="apiTokens">{t('settings.tabs.apiTokens')}</TabsTrigger>}
           <TabsTrigger value="twoFactor">{t('settings.tabs.twoFactor')}</TabsTrigger>
         </TabsList>
-        <TabsContent value="profile" className="mt-4">
+        <TabsContent value="profile" className="mt-4 space-y-6">
+          <LanguageCard />
           <ProfileTab />
         </TabsContent>
         <TabsContent value="password" className="mt-4">

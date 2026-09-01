@@ -362,6 +362,10 @@
       "updated": "Profil mis à jour",
       "updateError": "Impossible de mettre à jour votre profil"
     },
+    "language": {
+      "title": "Langue",
+      "description": "Choisissez la langue utilisée dans l'application."
+    },
     "password": {
       "title": "Mot de passe",
       "description": "Choisissez un mot de passe fort et unique.",
