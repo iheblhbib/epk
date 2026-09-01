@@ -814,7 +814,9 @@
       "selectFromLibrary": "Sélectionner depuis la bibliothèque média",
       "noFilesYet": "Aucun fichier pour le moment — envoyez-en d'abord dans la bibliothèque média.",
       "addFiles": "Ajouter des fichiers depuis la bibliothèque média",
-      "selectDownloadable": "Sélectionner les fichiers téléchargeables"
+      "selectDownloadable": "Sélectionner les fichiers téléchargeables",
+      "playPreview": "Écouter un aperçu",
+      "pausePreview": "Mettre en pause"
     },
     "hero": {
       "headline": "Titre principal",

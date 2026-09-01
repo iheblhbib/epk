@@ -814,7 +814,9 @@
       "selectFromLibrary": "Select from Media Library",
       "noFilesYet": "No files yet — upload some in the Media Library first.",
       "addFiles": "Add files from Media Library",
-      "selectDownloadable": "Select downloadable files"
+      "selectDownloadable": "Select downloadable files",
+      "playPreview": "Play preview",
+      "pausePreview": "Pause preview"
     },
     "hero": {
       "headline": "Headline",

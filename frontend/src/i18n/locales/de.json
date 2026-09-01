@@ -814,7 +814,9 @@
       "selectFromLibrary": "Aus der Medienbibliothek auswählen",
       "noFilesYet": "Noch keine Dateien — laden Sie zuerst welche in die Medienbibliothek hoch.",
       "addFiles": "Dateien aus der Medienbibliothek hinzufügen",
-      "selectDownloadable": "Herunterladbare Dateien auswählen"
+      "selectDownloadable": "Herunterladbare Dateien auswählen",
+      "playPreview": "Vorschau abspielen",
+      "pausePreview": "Vorschau pausieren"
     },
     "hero": {
       "headline": "Überschrift",

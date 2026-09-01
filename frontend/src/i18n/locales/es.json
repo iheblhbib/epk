@@ -814,7 +814,9 @@
       "selectFromLibrary": "Seleccionar de la biblioteca multimedia",
       "noFilesYet": "Aún no hay archivos — sube algunos en la biblioteca multimedia primero.",
       "addFiles": "Añadir archivos de la biblioteca multimedia",
-      "selectDownloadable": "Seleccionar archivos descargables"
+      "selectDownloadable": "Seleccionar archivos descargables",
+      "playPreview": "Escuchar vista previa",
+      "pausePreview": "Pausar vista previa"
     },
     "hero": {
       "headline": "Titular",

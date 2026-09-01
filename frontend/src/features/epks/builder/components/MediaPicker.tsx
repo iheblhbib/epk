@@ -1,9 +1,10 @@
-import { FileText, Film, ImageIcon, Music, X } from 'lucide-react'
-import { useState } from 'react'
+import { FileText, Film, ImageIcon, Music, Pause, Play, X } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { useMediaList } from '@/features/media/hooks/useMedia'
+import { formatBytes } from '@/lib/formatBytes'
 import { cn } from '@/lib/utils'
 import type { Media, MediaType } from '@/types'
 
@@ -40,9 +41,37 @@ export function MediaPickerSingle({
 }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
+  const [playingId, setPlayingId] = useState<number | null>(null)
+  const audioRef = useRef<HTMLAudioElement>(null)
   const { data: media } = useMediaList(workspaceId, { type })
   const selected = media?.find((item) => item.id === value)
   const triggerLabel = label ?? t('epkBuilder.mediaPicker.selectImage')
+
+  // A single shared <audio> element rather than one per row — only one
+  // preview should ever play at a time, and swapping its src on each play
+  // is simpler than juggling N media elements and pausing the rest.
+  function togglePreview(item: Media) {
+    const audio = audioRef.current
+    if (!audio) return
+
+    if (playingId === item.id) {
+      audio.pause()
+      setPlayingId(null)
+      return
+    }
+
+    audio.src = item.url
+    audio.play()
+    setPlayingId(item.id)
+  }
+
+  function closeDialog(open: boolean) {
+    if (!open) {
+      audioRef.current?.pause()
+      setPlayingId(null)
+    }
+    setOpen(open)
+  }
 
   return (
     <div className="flex items-center gap-2">
@@ -58,7 +87,7 @@ export function MediaPickerSingle({
           </button>
         </div>
       ) : null}
-      <Dialog open={open} onOpenChange={setOpen}>
+      <Dialog open={open} onOpenChange={closeDialog}>
         <DialogTrigger render={<Button type="button" variant="outline" size="sm" />}>
           {selected ? t('epkBuilder.mediaPicker.change') : triggerLabel}
         </DialogTrigger>
@@ -69,26 +98,58 @@ export function MediaPickerSingle({
           {!media || media.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">{t('epkBuilder.mediaPicker.noFilesYet')}</p>
           ) : (
-            <div className="grid max-h-96 grid-cols-4 gap-2 overflow-y-auto">
+            <div className="max-h-96 space-y-1 overflow-y-auto">
               {media.map((item) => (
-                <button
+                <div
                   key={item.id}
-                  type="button"
+                  role="button"
+                  tabIndex={0}
                   onClick={() => {
                     onChange(item.id)
-                    setOpen(false)
+                    closeDialog(false)
+                  }}
+                  onKeyDown={(event) => {
+                    if (event.key === 'Enter' || event.key === ' ') {
+                      event.preventDefault()
+                      onChange(item.id)
+                      closeDialog(false)
+                    }
                   }}
                   className={cn(
-                    'flex aspect-square items-center justify-center overflow-hidden rounded-lg border-2 border-transparent bg-muted hover:border-primary/50',
-                    value === item.id && 'border-primary'
+                    'flex w-full cursor-pointer items-center gap-2 rounded-lg border border-border px-2 py-1.5 text-start text-sm hover:bg-muted',
+                    value === item.id && 'border-primary bg-primary/5'
                   )}
-                  title={item.original_filename}
                 >
-                  <MediaThumb media={item} />
-                </button>
+                  <div className="flex size-9 shrink-0 items-center justify-center overflow-hidden rounded bg-muted">
+                    <MediaThumb media={item} />
+                  </div>
+                  <div className="min-w-0 flex-1">
+                    <p className="truncate">{item.original_filename}</p>
+                    <p className="text-xs text-muted-foreground">{formatBytes(item.size)}</p>
+                  </div>
+                  {item.type === 'audio' && (
+                    <button
+                      type="button"
+                      onClick={(event) => {
+                        event.stopPropagation()
+                        togglePreview(item)
+                      }}
+                      className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-background hover:text-foreground"
+                      aria-label={
+                        playingId === item.id
+                          ? t('epkBuilder.mediaPicker.pausePreview')
+                          : t('epkBuilder.mediaPicker.playPreview')
+                      }
+                    >
+                      {playingId === item.id ? <Pause className="size-4" /> : <Play className="size-4" />}
+                    </button>
+                  )}
+                </div>
               ))}
             </div>
           )}
+          {/* eslint-disable-next-line jsx-a11y/media-has-caption -- a preview scrubber, not content; captions don't apply */}
+          <audio ref={audioRef} onEnded={() => setPlayingId(null)} className="hidden" />
         </DialogContent>
       </Dialog>
     </div>
