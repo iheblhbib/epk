@@ -24,10 +24,14 @@ backend/auth.json
 
 # Frontend (Vite/React)
 frontend/node_modules/
-frontend/dist/
 frontend/.env
 frontend/.env.local
 frontend/*.local
+# frontend/dist/ is deliberately tracked (not ignored) -- see
+# docs/cpanel-deployment.md: committing the build output is what lets
+# epk.karthagopm.com deploy via a plain `git pull` on the server, no
+# Node.js needed there. Always `npm run build` and commit dist/ together
+# with any frontend source change that should go live.
 
 # Editors / OS
 .idea/

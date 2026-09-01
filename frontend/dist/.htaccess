@@ -1,0 +1,35 @@
+# Apache config for serving this SPA build under its own document root
+# (the app.yourdomain.com subdomain in the recommended cPanel deployment —
+# see docs/cpanel-deployment.md). Vite copies everything in frontend/public/
+# into frontend/dist/ verbatim at build time, so this file ships with every
+# production build automatically.
+#
+# Client-side routing (react-router) means most URLs the browser requests
+# directly — a bookmark, a refresh, a shared link to /epks/5/builder — don't
+# correspond to a real file on disk. Without this rewrite, Apache 404s them
+# instead of handing the request to index.html so react-router can take over.
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+
+    # Real files and directories (js/css/font/image assets, etc.) are served
+    # as-is — only fall through to index.html for everything else.
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{REQUEST_FILENAME} !-d
+    RewriteRule ^ index.html [L]
+</IfModule>
+
+# Long-cache the content-hashed asset bundle; index.html itself must stay
+# revalidated so a redeploy is picked up rather than served stale.
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType text/html "access plus 0 seconds"
+    ExpiresByType application/javascript "access plus 1 year"
+    ExpiresByType text/css "access plus 1 year"
+    ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+<IfModule mod_headers.c>
+    <FilesMatch "\.html$">
+        Header set Cache-Control "no-cache, must-revalidate"
+    </FilesMatch>
+</IfModule>
