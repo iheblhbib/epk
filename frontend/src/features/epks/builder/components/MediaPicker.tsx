@@ -1,14 +1,107 @@
-import { Pause, Play, X } from 'lucide-react'
-import { useState } from 'react'
+import { Loader2, Pause, Play, UploadCloud, X } from 'lucide-react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { toast } from 'sonner'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { MediaThumb } from '@/components/common/MediaThumb'
-import { useMediaList } from '@/features/media/hooks/useMedia'
+import { useMediaList, useUploadMedia } from '@/features/media/hooks/useMedia'
 import { useAudioPreview } from '@/hooks/useAudioPreview'
 import { formatBytes } from '@/lib/formatBytes'
 import { cn } from '@/lib/utils'
-import type { MediaType } from '@/types'
+import type { Media, MediaType } from '@/types'
+
+// Mirrors backend config/media.php's allowed_extensions, grouped by the
+// type they map to, so the upload zone below never lets someone pick a
+// file the server would reject anyway.
+const TYPE_ACCEPT: Record<MediaType, string> = {
+  image: '.jpg,.jpeg,.png,.webp',
+  audio: '.mp3,.wav,.flac',
+  video: '.mp4,.mov',
+  document: '.pdf,.docx',
+}
+const ALL_ACCEPT = Object.values(TYPE_ACCEPT).join(',')
+
+/**
+ * A compact drag-and-drop/click uploader embedded directly in the picker
+ * dialog — the whole point is letting someone add a brand-new file without
+ * ever leaving the section they're editing to go to the Media Library and
+ * back. Deliberately its own (smaller) styling rather than reusing
+ * MediaUploadZone as-is, which is sized for a full page, not a dialog.
+ */
+function PickerUploadZone({
+  workspaceId,
+  type,
+  multiple,
+  onUploaded,
+}: {
+  workspaceId: number
+  type?: MediaType
+  multiple: boolean
+  onUploaded: (uploaded: Media[]) => void
+}) {
+  const { t } = useTranslation()
+  const [isDragging, setIsDragging] = useState(false)
+  const inputRef = useRef<HTMLInputElement>(null)
+  const upload = useUploadMedia(workspaceId)
+  const accept = type ? TYPE_ACCEPT[type] : ALL_ACCEPT
+
+  function uploadFiles(files: FileList | File[]) {
+    const fileArray = Array.from(files)
+    if (fileArray.length === 0) return
+
+    upload.mutate(
+      { files: fileArray },
+      {
+        onSuccess: (uploaded) => {
+          toast.success(
+            uploaded.length === 1
+              ? t('media.upload.oneFileUploaded')
+              : t('media.upload.filesUploaded', { count: uploaded.length })
+          )
+          onUploaded(uploaded)
+        },
+        onError: () => toast.error(t('media.upload.error')),
+      }
+    )
+  }
+
+  return (
+    <div
+      onDragOver={(event) => {
+        event.preventDefault()
+        setIsDragging(true)
+      }}
+      onDragLeave={() => setIsDragging(false)}
+      onDrop={(event) => {
+        event.preventDefault()
+        setIsDragging(false)
+        uploadFiles(event.dataTransfer.files)
+      }}
+      onClick={() => inputRef.current?.click()}
+      role="button"
+      tabIndex={0}
+      className={cn(
+        'flex cursor-pointer items-center justify-center gap-2 rounded-lg border-2 border-dashed border-border px-3 py-3 text-sm text-muted-foreground transition-colors hover:border-primary/50 hover:bg-muted/50',
+        isDragging && 'border-primary bg-primary/5'
+      )}
+    >
+      <input
+        ref={inputRef}
+        type="file"
+        multiple={multiple}
+        accept={accept}
+        className="hidden"
+        onChange={(event) => {
+          if (event.target.files) uploadFiles(event.target.files)
+          event.target.value = ''
+        }}
+      />
+      {upload.isPending ? <Loader2 className="size-4 animate-spin" /> : <UploadCloud className="size-4" />}
+      {upload.isPending ? t('media.upload.uploading') : t('epkBuilder.mediaPicker.uploadNew')}
+    </div>
+  )
+}
 
 /** Single-file picker — used for Hero's profile/background image. */
 export function MediaPickerSingle({
@@ -58,6 +151,20 @@ export function MediaPickerSingle({
           <DialogHeader>
             <DialogTitle>{t('epkBuilder.mediaPicker.selectFromLibrary')}</DialogTitle>
           </DialogHeader>
+
+          <PickerUploadZone
+            workspaceId={workspaceId}
+            type={type}
+            multiple={false}
+            onUploaded={(uploaded) => {
+              // Uploading here *is* picking — auto-select the new file and
+              // close, same as clicking an existing one, instead of making
+              // the user upload and then separately click their own upload.
+              onChange(uploaded[0].id)
+              closeDialog(false)
+            }}
+          />
+
           {!media || media.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">{t('epkBuilder.mediaPicker.noFilesYet')}</p>
           ) : (
@@ -163,6 +270,17 @@ export function MediaPickerMultiple({
           <DialogHeader>
             <DialogTitle>{t('epkBuilder.mediaPicker.selectDownloadable')}</DialogTitle>
           </DialogHeader>
+
+          <PickerUploadZone
+            workspaceId={workspaceId}
+            multiple
+            onUploaded={(uploaded) => {
+              // Stays open (unlike the single picker) — adding one file
+              // from Downloads is rarely the only one someone wants to add.
+              onChange([...value, ...uploaded.map((item) => item.id)])
+            }}
+          />
+
           {!media || media.length === 0 ? (
             <p className="py-6 text-center text-sm text-muted-foreground">{t('epkBuilder.mediaPicker.noFilesYet')}</p>
           ) : (

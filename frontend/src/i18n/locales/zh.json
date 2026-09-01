@@ -826,7 +826,8 @@
       "addFiles": "从媒体库添加文件",
       "selectDownloadable": "选择可下载的文件",
       "playPreview": "播放预览",
-      "pausePreview": "暂停预览"
+      "pausePreview": "暂停预览",
+      "uploadNew": "上传新文件"
     },
     "hero": {
       "headline": "主标题",

@@ -826,7 +826,8 @@
       "addFiles": "Adicionar ficheiros da biblioteca de media",
       "selectDownloadable": "Selecionar ficheiros para transferência",
       "playPreview": "Ouvir pré-visualização",
-      "pausePreview": "Pausar pré-visualização"
+      "pausePreview": "Pausar pré-visualização",
+      "uploadNew": "Carregar um novo ficheiro"
     },
     "hero": {
       "headline": "Título principal",

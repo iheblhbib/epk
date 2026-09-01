@@ -826,7 +826,8 @@
       "addFiles": "إضافة ملفات من مكتبة الوسائط",
       "selectDownloadable": "اختر الملفات القابلة للتنزيل",
       "playPreview": "تشغيل المعاينة",
-      "pausePreview": "إيقاف المعاينة مؤقتًا"
+      "pausePreview": "إيقاف المعاينة مؤقتًا",
+      "uploadNew": "رفع ملف جديد"
     },
     "hero": {
       "headline": "العنوان الرئيسي",

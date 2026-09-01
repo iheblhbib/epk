@@ -826,7 +826,8 @@
       "addFiles": "Dateien aus der Medienbibliothek hinzufügen",
       "selectDownloadable": "Herunterladbare Dateien auswählen",
       "playPreview": "Vorschau abspielen",
-      "pausePreview": "Vorschau pausieren"
+      "pausePreview": "Vorschau pausieren",
+      "uploadNew": "Neue Datei hochladen"
     },
     "hero": {
       "headline": "Überschrift",

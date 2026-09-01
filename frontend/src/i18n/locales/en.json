@@ -826,7 +826,8 @@
       "addFiles": "Add files from Media Library",
       "selectDownloadable": "Select downloadable files",
       "playPreview": "Play preview",
-      "pausePreview": "Pause preview"
+      "pausePreview": "Pause preview",
+      "uploadNew": "Upload a new file"
     },
     "hero": {
       "headline": "Headline",
