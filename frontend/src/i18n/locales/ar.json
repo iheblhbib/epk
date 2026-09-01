@@ -588,6 +588,16 @@
     "searchPlaceholder": "ابحث عن ملفات…",
     "rename": "إعادة تسمية",
     "download": "تنزيل",
+    "addedRelative": "أُضيف {{when}}",
+    "uploadedBy": "بواسطة {{name}}",
+    "playPreview": "تشغيل المعاينة",
+    "pausePreview": "إيقاف المعاينة مؤقتًا",
+    "typeBadge": {
+      "image": "صورة",
+      "audio": "صوت",
+      "video": "فيديو",
+      "document": "مستند"
+    },
     "types": {
       "all": "كل الأنواع",
       "image": "صور",

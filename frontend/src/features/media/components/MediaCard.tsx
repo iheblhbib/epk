@@ -1,13 +1,14 @@
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Download, FileText, Film, Loader2, MoreHorizontal, Music, Pencil, Trash2 } from 'lucide-react'
+import { Download, Loader2, MoreHorizontal, Pause, Pencil, Play, Trash2 } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
 import { z } from 'zod'
 import type { TFunction } from 'i18next'
+import { MediaThumb } from '@/components/common/MediaThumb'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
@@ -28,13 +29,14 @@ import { useDeleteMedia, useRenameMedia } from '@/features/media/hooks/useMedia'
 import { downloadAuthenticatedFile } from '@/lib/downloadFile'
 import { formatBytes } from '@/lib/formatBytes'
 import { isEditorLevel } from '@/lib/permissions'
+import { formatRelativeTime } from '@/lib/relativeTime'
 import type { Media, WorkspaceRole } from '@/types'
 
-const TYPE_ICON: Record<Media['type'], typeof Music> = {
-  image: FileText, // unused: images render their thumbnail instead
-  audio: Music,
-  video: Film,
-  document: FileText,
+const TYPE_LABEL_KEYS: Record<Media['type'], string> = {
+  image: 'media.typeBadge.image',
+  audio: 'media.typeBadge.audio',
+  video: 'media.typeBadge.video',
+  document: 'media.typeBadge.document',
 }
 
 /**
@@ -60,12 +62,18 @@ export function MediaCard({
   media,
   workspaceId,
   myRole,
+  isPlaying,
+  onTogglePreview,
 }: {
   media: Media
   workspaceId: number
   myRole: WorkspaceRole | null
+  /** Whether this row's audio is the one currently playing — the list page
+   * owns the actual <audio> element so only one row ever plays at a time. */
+  isPlaying: boolean
+  onTogglePreview: () => void
 }) {
-  const { t } = useTranslation()
+  const { t, i18n } = useTranslation()
   const [renameOpen, setRenameOpen] = useState(false)
   const [confirmDeleteOpen, setConfirmDeleteOpen] = useState(false)
   const [isDownloading, setIsDownloading] = useState(false)
@@ -106,61 +114,75 @@ export function MediaCard({
     )
   })
 
-  const Icon = TYPE_ICON[media.type]
-
   return (
-    <Card className="overflow-hidden">
-      <div className="flex aspect-video items-center justify-center bg-muted">
-        {media.type === 'image' ? (
-          <img
-            src={media.thumbnail_url ?? media.url}
-            alt={media.original_filename}
-            className="size-full object-cover"
-          />
-        ) : (
-          <Icon className="size-8 text-muted-foreground" />
-        )}
+    <div className="flex items-center gap-3 rounded-lg border border-border px-3 py-2.5">
+      <div className="flex size-11 shrink-0 items-center justify-center overflow-hidden rounded-md bg-muted">
+        <MediaThumb media={media} />
       </div>
-      <CardContent className="flex items-start justify-between gap-2 p-3">
-        <div className="min-w-0">
-          <p className="truncate text-sm font-medium text-foreground" title={media.original_filename}>
-            {media.original_filename}
-          </p>
-          <p className="text-xs text-muted-foreground">{formatBytes(media.size)}</p>
+
+      <div className="min-w-0 flex-1">
+        <p className="truncate text-sm font-medium text-foreground" title={media.original_filename}>
+          {media.original_filename}
+        </p>
+        <div className="mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5 text-xs text-muted-foreground">
+          <Badge variant="secondary" className="px-1.5 text-[10px]">
+            {t(TYPE_LABEL_KEYS[media.type])}
+          </Badge>
+          <span>{formatBytes(media.size)}</span>
+          <span className="hidden sm:inline">
+            {t('media.addedRelative', { when: formatRelativeTime(media.created_at, i18n.resolvedLanguage ?? 'en') })}
+          </span>
+          {media.uploaded_by && (
+            <span className="hidden sm:inline">{t('media.uploadedBy', { name: media.uploaded_by.name })}</span>
+          )}
         </div>
-        <DropdownMenu>
-          <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" />}>
-            <MoreHorizontal className="size-4" />
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            {canEdit && (
-              <DropdownMenuItem onClick={() => setRenameOpen(true)}>
-                <Pencil className="size-4" />
-                {t('media.rename')}
-              </DropdownMenuItem>
-            )}
-            <DropdownMenuItem
-              onSelect={(event) => event.preventDefault()}
-              disabled={isDownloading}
-              onClick={() => {
-                setIsDownloading(true)
-                downloadAuthenticatedFile(`/api/media/${media.id}/download`, media.original_filename)
-                  .catch(() => toast.error(t('media.toasts.downloadError')))
-                  .finally(() => setIsDownloading(false))
-              }}
-            >
-              {isDownloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
-              {t('media.download')}
+      </div>
+
+      {media.type === 'audio' && (
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon-sm"
+          className="shrink-0"
+          onClick={onTogglePreview}
+          aria-label={isPlaying ? t('media.pausePreview') : t('media.playPreview')}
+        >
+          {isPlaying ? <Pause className="size-4" /> : <Play className="size-4" />}
+        </Button>
+      )}
+
+      <DropdownMenu>
+        <DropdownMenuTrigger render={<Button variant="ghost" size="icon-sm" className="shrink-0" />}>
+          <MoreHorizontal className="size-4" />
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          {canEdit && (
+            <DropdownMenuItem onClick={() => setRenameOpen(true)}>
+              <Pencil className="size-4" />
+              {t('media.rename')}
             </DropdownMenuItem>
-            {canEdit && (
-              <DropdownMenuItem onClick={() => setConfirmDeleteOpen(true)} className="text-destructive">
-                <Trash2 className="size-4" />
-                {t('common.delete')}
-              </DropdownMenuItem>
-            )}
-          </DropdownMenuContent>
-        </DropdownMenu>
-      </CardContent>
+          )}
+          <DropdownMenuItem
+            onSelect={(event) => event.preventDefault()}
+            disabled={isDownloading}
+            onClick={() => {
+              setIsDownloading(true)
+              downloadAuthenticatedFile(`/api/media/${media.id}/download`, media.original_filename)
+                .catch(() => toast.error(t('media.toasts.downloadError')))
+                .finally(() => setIsDownloading(false))
+            }}
+          >
+            {isDownloading ? <Loader2 className="size-4 animate-spin" /> : <Download className="size-4" />}
+            {t('media.download')}
+          </DropdownMenuItem>
+          {canEdit && (
+            <DropdownMenuItem onClick={() => setConfirmDeleteOpen(true)} className="text-destructive">
+              <Trash2 className="size-4" />
+              {t('common.delete')}
+            </DropdownMenuItem>
+          )}
+        </DropdownMenuContent>
+      </DropdownMenu>
 
       <Dialog open={renameOpen} onOpenChange={setRenameOpen}>
         <DialogContent>
@@ -216,6 +238,6 @@ export function MediaCard({
           })
         }
       />
-    </Card>
+    </div>
   )
 }

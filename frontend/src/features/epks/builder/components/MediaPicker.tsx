@@ -1,29 +1,14 @@
-import { FileText, Film, ImageIcon, Music, Pause, Play, X } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { Pause, Play, X } from 'lucide-react'
+import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Button } from '@/components/ui/button'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { MediaThumb } from '@/components/common/MediaThumb'
 import { useMediaList } from '@/features/media/hooks/useMedia'
+import { useAudioPreview } from '@/hooks/useAudioPreview'
 import { formatBytes } from '@/lib/formatBytes'
 import { cn } from '@/lib/utils'
-import type { Media, MediaType } from '@/types'
-
-const TYPE_ICON: Record<MediaType, typeof Music> = {
-  image: ImageIcon,
-  audio: Music,
-  video: Film,
-  document: FileText,
-}
-
-function MediaThumb({ media }: { media: Media }) {
-  const Icon = TYPE_ICON[media.type]
-
-  return media.type === 'image' ? (
-    <img src={media.thumbnail_url ?? media.url} alt={media.original_filename} className="size-full object-cover" />
-  ) : (
-    <Icon className="size-6 text-muted-foreground" />
-  )
-}
+import type { MediaType } from '@/types'
 
 /** Single-file picker — used for Hero's profile/background image. */
 export function MediaPickerSingle({
@@ -41,35 +26,13 @@ export function MediaPickerSingle({
 }) {
   const { t } = useTranslation()
   const [open, setOpen] = useState(false)
-  const [playingId, setPlayingId] = useState<number | null>(null)
-  const audioRef = useRef<HTMLAudioElement>(null)
+  const { playingId, audioRef, toggle: togglePreview, stop: stopPreview } = useAudioPreview()
   const { data: media } = useMediaList(workspaceId, { type })
   const selected = media?.find((item) => item.id === value)
   const triggerLabel = label ?? t('epkBuilder.mediaPicker.selectImage')
 
-  // A single shared <audio> element rather than one per row — only one
-  // preview should ever play at a time, and swapping its src on each play
-  // is simpler than juggling N media elements and pausing the rest.
-  function togglePreview(item: Media) {
-    const audio = audioRef.current
-    if (!audio) return
-
-    if (playingId === item.id) {
-      audio.pause()
-      setPlayingId(null)
-      return
-    }
-
-    audio.src = item.url
-    audio.play()
-    setPlayingId(item.id)
-  }
-
   function closeDialog(open: boolean) {
-    if (!open) {
-      audioRef.current?.pause()
-      setPlayingId(null)
-    }
+    if (!open) stopPreview()
     setOpen(open)
   }
 
@@ -132,7 +95,7 @@ export function MediaPickerSingle({
                       type="button"
                       onClick={(event) => {
                         event.stopPropagation()
-                        togglePreview(item)
+                        togglePreview(item.id, item.url)
                       }}
                       className="flex size-7 shrink-0 items-center justify-center rounded-full text-muted-foreground hover:bg-background hover:text-foreground"
                       aria-label={
@@ -149,7 +112,7 @@ export function MediaPickerSingle({
             </div>
           )}
           {/* eslint-disable-next-line jsx-a11y/media-has-caption -- a preview scrubber, not content; captions don't apply */}
-          <audio ref={audioRef} onEnded={() => setPlayingId(null)} className="hidden" />
+          <audio ref={audioRef} onEnded={stopPreview} className="hidden" />
         </DialogContent>
       </Dialog>
     </div>

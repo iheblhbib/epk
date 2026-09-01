@@ -588,6 +588,16 @@
     "searchPlaceholder": "Rechercher des fichiers…",
     "rename": "Renommer",
     "download": "Télécharger",
+    "addedRelative": "Ajouté {{when}}",
+    "uploadedBy": "par {{name}}",
+    "playPreview": "Écouter un aperçu",
+    "pausePreview": "Mettre en pause",
+    "typeBadge": {
+      "image": "Image",
+      "audio": "Audio",
+      "video": "Vidéo",
+      "document": "Document"
+    },
     "types": {
       "all": "Tous les types",
       "image": "Images",

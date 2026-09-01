@@ -588,6 +588,16 @@
     "searchPlaceholder": "Dateien suchen…",
     "rename": "Umbenennen",
     "download": "Herunterladen",
+    "addedRelative": "Hinzugefügt {{when}}",
+    "uploadedBy": "von {{name}}",
+    "playPreview": "Vorschau abspielen",
+    "pausePreview": "Vorschau pausieren",
+    "typeBadge": {
+      "image": "Bild",
+      "audio": "Audio",
+      "video": "Video",
+      "document": "Dokument"
+    },
     "types": {
       "all": "Alle Typen",
       "image": "Bilder",

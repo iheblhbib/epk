@@ -2,13 +2,14 @@ import { FolderOpen, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
-import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
+import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { MediaCard } from '@/features/media/components/MediaCard'
 import { MediaUploadZone } from '@/features/media/components/MediaUploadZone'
 import { useMediaList } from '@/features/media/hooks/useMedia'
 import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorkspace'
+import { useAudioPreview } from '@/hooks/useAudioPreview'
 import { isEditorLevel } from '@/lib/permissions'
 import type { MediaListParams } from '@/api/media'
 import type { MediaType } from '@/types'
@@ -53,6 +54,10 @@ export function MediaLibraryPage() {
   const canEdit = isEditorLevel(currentWorkspace?.my_role)
   const typeOpts = typeItems(t)
   const sortOpts = sortItems(t)
+  // Owned here (not per-row) so playing one track's preview stops whichever
+  // other row was already playing — see MediaPicker, which needs the exact
+  // same behavior for the same reason.
+  const { playingId, audioRef, toggle: toggleAudioPreview, stop: stopAudioPreview } = useAudioPreview()
 
   const { data: media, isLoading } = useMediaList(currentWorkspace?.id, {
     search: search || undefined,
@@ -62,7 +67,7 @@ export function MediaLibraryPage() {
   })
 
   if (workspaceLoading) {
-    return <CardGridSkeleton />
+    return <LoadingSkeleton />
   }
 
   if (!currentWorkspace) {
@@ -127,7 +132,7 @@ export function MediaLibraryPage() {
       </div>
 
       {isLoading ? (
-        <CardGridSkeleton />
+        <LoadingSkeleton />
       ) : !media || media.length === 0 ? (
         <EmptyState
           icon={FolderOpen}
@@ -141,17 +146,22 @@ export function MediaLibraryPage() {
           }
         />
       ) : (
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+        <div className="space-y-2">
           {media.map((item) => (
             <MediaCard
               key={item.id}
               media={item}
               workspaceId={currentWorkspace.id}
               myRole={currentWorkspace.my_role}
+              isPlaying={playingId === item.id}
+              onTogglePreview={() => toggleAudioPreview(item.id, item.url)}
             />
           ))}
         </div>
       )}
+
+      {/* eslint-disable-next-line jsx-a11y/media-has-caption -- a preview scrubber, not content; captions don't apply */}
+      <audio ref={audioRef} onEnded={stopAudioPreview} className="hidden" />
     </div>
   )
 }

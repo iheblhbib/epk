@@ -588,6 +588,16 @@
     "searchPlaceholder": "Search files…",
     "rename": "Rename",
     "download": "Download",
+    "addedRelative": "Added {{when}}",
+    "uploadedBy": "by {{name}}",
+    "playPreview": "Play preview",
+    "pausePreview": "Pause preview",
+    "typeBadge": {
+      "image": "Image",
+      "audio": "Audio",
+      "video": "Video",
+      "document": "Document"
+    },
     "types": {
       "all": "All types",
       "image": "Images",
