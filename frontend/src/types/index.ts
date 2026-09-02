@@ -753,7 +753,7 @@ export interface BillingUsageMetric {
   limit: number | null
 }
 
-export type SubscriptionStatus = 'active' | 'canceled' | 'past_due'
+export type SubscriptionStatus = 'trialing' | 'active' | 'canceled' | 'past_due'
 
 export interface BillingData {
   plan: SubscriptionPlan
