@@ -22,18 +22,18 @@ function makeWorkspaceWithRoleForBilling(WorkspaceRole $role): array
     return [$workspace, $member];
 }
 
-it('creates a Stripe Checkout session for a valid plan', function () {
+it('creates a Stripe Checkout session for a valid plan and interval', function () {
     [$workspace, $owner] = makeWorkspaceWithRoleForBilling(WorkspaceRole::Owner);
 
     $this->mock(StripeBillingService::class, function ($mock) {
         $mock->shouldReceive('createCheckoutSession')
             ->once()
-            ->withArgs(fn ($ws, $plan) => $plan === SubscriptionPlan::Pro)
+            ->withArgs(fn ($ws, $plan, $interval) => $plan === SubscriptionPlan::Pro && $interval === 'yearly')
             ->andReturn('https://checkout.stripe.com/c/pay/fake_session');
     });
 
     $this->actingAs($owner)
-        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'pro'])
+        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'pro', 'interval' => 'yearly'])
         ->assertOk()
         ->assertJsonPath('data.url', 'https://checkout.stripe.com/c/pay/fake_session');
 });
@@ -42,7 +42,15 @@ it('rejects an unknown plan for checkout', function () {
     [$workspace, $owner] = makeWorkspaceWithRoleForBilling(WorkspaceRole::Owner);
 
     $this->actingAs($owner)
-        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'not-a-real-plan'])
+        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'not-a-real-plan', 'interval' => 'monthly'])
+        ->assertUnprocessable();
+});
+
+it('rejects an unknown billing interval for checkout', function () {
+    [$workspace, $owner] = makeWorkspaceWithRoleForBilling(WorkspaceRole::Owner);
+
+    $this->actingAs($owner)
+        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'pro', 'interval' => 'weekly'])
         ->assertUnprocessable();
 });
 
@@ -50,7 +58,7 @@ it('refuses checkout for a viewer (admin-level ability required)', function () {
     [$workspace, $viewer] = makeWorkspaceWithRoleForBilling(WorkspaceRole::Viewer);
 
     $this->actingAs($viewer)
-        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'pro'])
+        ->postJson("/api/workspaces/{$workspace->id}/billing/checkout", ['plan' => 'pro', 'interval' => 'monthly'])
         ->assertForbidden();
 });
 
@@ -82,4 +90,13 @@ it('surfaces a friendly error when the portal is requested with no Stripe custom
         ->postJson("/api/workspaces/{$workspace->id}/billing/portal")
         ->assertUnprocessable()
         ->assertJsonPath('errors.workspace.0', 'This workspace has no billing account yet — subscribe to a paid plan first.');
+});
+
+it('includes trial_ends_at in the billing show response', function () {
+    [$workspace, $owner] = makeWorkspaceWithRoleForBilling(WorkspaceRole::Owner);
+
+    $this->actingAs($owner)
+        ->getJson("/api/workspaces/{$workspace->id}/billing")
+        ->assertOk()
+        ->assertJsonPath('data.trial_ends_at', fn ($value) => $value !== null);
 });

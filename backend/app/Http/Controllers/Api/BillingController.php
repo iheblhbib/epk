@@ -23,6 +23,8 @@ class BillingController extends Controller
             'data' => [
                 'plan' => $planLimits->plan($workspace),
                 'subscription_status' => $workspace->subscription?->status,
+                'trial_ends_at' => $workspace->subscription?->trial_ends_at,
+                'billing_interval' => $workspace->subscription?->billing_interval,
                 'current_period_ends_at' => $workspace->subscription?->current_period_ends_at,
                 'has_stripe_customer' => $workspace->subscription?->stripe_customer_id !== null,
                 'usage' => [
@@ -42,15 +44,21 @@ class BillingController extends Controller
 
     /**
      * Starts a Stripe Checkout session to subscribe (or switch) this
-     * workspace to a paid plan. Admin-level only — same ability as any
-     * other workspace-settings change, matching WorkspacePolicy::update.
+     * workspace to a paid plan, at the requested billing interval.
+     * Admin-level only — same ability as any other workspace-settings
+     * change, matching WorkspacePolicy::update.
      */
     public function checkout(Request $request, Workspace $workspace, StripeBillingService $stripe): JsonResponse
     {
         $this->authorize('update', $workspace);
 
         $validated = $request->validate([
-            'plan' => ['required', Rule::in([SubscriptionPlan::Pro->value, SubscriptionPlan::Business->value])],
+            'plan' => ['required', Rule::in([
+                SubscriptionPlan::Starter->value,
+                SubscriptionPlan::Pro->value,
+                SubscriptionPlan::Business->value,
+            ])],
+            'interval' => ['required', Rule::in(['monthly', 'yearly'])],
         ]);
 
         $frontendUrl = rtrim((string) config('app.frontend_url'), '/');
@@ -59,6 +67,7 @@ class BillingController extends Controller
             $url = $stripe->createCheckoutSession(
                 $workspace,
                 SubscriptionPlan::from($validated['plan']),
+                $validated['interval'],
                 successUrl: "{$frontendUrl}/billing?checkout=success",
                 cancelUrl: "{$frontendUrl}/billing?checkout=canceled",
             );
