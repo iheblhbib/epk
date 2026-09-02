@@ -90,7 +90,7 @@
       "title": "Espaços de trabalho",
       "description": "Todos os espaços de trabalho da plataforma.",
       "searchPlaceholder": "Pesquisar por nome…",
-      "planFree": "Grátis",
+      "planStarter": "Starter",
       "planPro": "Pro",
       "planBusiness": "Empresa",
       "planUpdated": "Plano atualizado para {{plan}}",

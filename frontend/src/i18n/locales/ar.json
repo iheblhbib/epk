@@ -90,7 +90,7 @@
       "title": "مساحات العمل",
       "description": "جميع مساحات العمل على المنصة.",
       "searchPlaceholder": "ابحث بالاسم…",
-      "planFree": "مجاني",
+      "planStarter": "Starter",
       "planPro": "احترافي",
       "planBusiness": "أعمال",
       "planUpdated": "تم تحديث الخطة إلى {{plan}}",

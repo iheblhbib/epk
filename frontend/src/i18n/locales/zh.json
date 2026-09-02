@@ -90,7 +90,7 @@
       "title": "工作区",
       "description": "平台上的所有工作区。",
       "searchPlaceholder": "按名称搜索…",
-      "planFree": "免费版",
+      "planStarter": "Starter",
       "planPro": "专业版",
       "planBusiness": "商业版",
       "planUpdated": "套餐已更新为 {{plan}}",

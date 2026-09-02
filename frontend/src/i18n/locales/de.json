@@ -90,7 +90,7 @@
       "title": "Arbeitsbereiche",
       "description": "Alle Arbeitsbereiche auf der Plattform.",
       "searchPlaceholder": "Nach Name suchen…",
-      "planFree": "Kostenlos",
+      "planStarter": "Starter",
       "planPro": "Pro",
       "planBusiness": "Business",
       "planUpdated": "Tarif auf {{plan}} aktualisiert",

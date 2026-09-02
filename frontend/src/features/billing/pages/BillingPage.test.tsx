@@ -25,8 +25,10 @@ const workspace = {
 
 function billingData(overrides: Partial<BillingData> = {}): BillingData {
   return {
-    plan: 'free',
+    plan: 'starter',
     subscription_status: 'active',
+    trial_ends_at: null,
+    billing_interval: 'monthly',
     current_period_ends_at: null,
     has_stripe_customer: false,
     usage: {
@@ -35,9 +37,9 @@ function billingData(overrides: Partial<BillingData> = {}): BillingData {
       storage_bytes: { used: 0, limit: 500 * 1024 * 1024 },
     },
     plans: {
-      free: { plan: 'free', label: 'Free', max_epks: 1, max_storage_bytes: 500 * 1024 * 1024, max_team_members: 2, custom_themes: false, private_links: false, white_label: false, custom_domains: false },
-      pro: { plan: 'pro', label: 'Pro', max_epks: 10, max_storage_bytes: 10 * 1024 * 1024 * 1024, max_team_members: 10, custom_themes: true, private_links: true, white_label: false, custom_domains: false },
-      business: { plan: 'business', label: 'Business', max_epks: null, max_storage_bytes: 100 * 1024 * 1024 * 1024, max_team_members: null, custom_themes: true, private_links: true, white_label: true, custom_domains: true },
+      starter: { plan: 'starter', label: 'Starter', max_epks: 1, max_storage_bytes: 500 * 1024 * 1024, max_team_members: 2, custom_themes: false, private_links: false, white_label: false, custom_domains: false, stripe_price_id_monthly: '', stripe_price_id_yearly: '' },
+      pro: { plan: 'pro', label: 'Pro', max_epks: 10, max_storage_bytes: 10 * 1024 * 1024 * 1024, max_team_members: 10, custom_themes: true, private_links: true, white_label: false, custom_domains: false, stripe_price_id_monthly: '', stripe_price_id_yearly: '' },
+      business: { plan: 'business', label: 'Business', max_epks: null, max_storage_bytes: 100 * 1024 * 1024 * 1024, max_team_members: null, custom_themes: true, private_links: true, white_label: true, custom_domains: true, stripe_price_id_monthly: '', stripe_price_id_yearly: '' },
     },
     ...overrides,
   }

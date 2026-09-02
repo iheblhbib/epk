@@ -16,7 +16,7 @@ import { isAdminLevel } from '@/lib/permissions'
 import type { BillingData, PlanDetails, SubscriptionPlan } from '@/types'
 import type { TFunction } from 'i18next'
 
-const PLAN_ORDER: SubscriptionPlan[] = ['free', 'pro', 'business']
+const PLAN_ORDER: SubscriptionPlan[] = ['starter', 'pro', 'business']
 
 const FEATURE_ROW_KEYS: { key: keyof PlanDetails; labelKey: string }[] = [
   { key: 'custom_themes', labelKey: 'billing.features.customThemes' },
@@ -40,7 +40,7 @@ function PlanCard({
   isUpgrading: boolean
   t: TFunction
 }) {
-  const canUpgradeToThis = !isCurrent && plan.plan !== 'free'
+  const canUpgradeToThis = !isCurrent && plan.plan !== 'starter'
 
   return (
     <Card className={isCurrent ? 'border-primary ring-1 ring-primary' : undefined}>
@@ -138,12 +138,15 @@ export function BillingPage() {
   const canManage = isAdminLevel(currentWorkspace.my_role)
 
   const startCheckout = (plan: Extract<SubscriptionPlan, 'pro' | 'business'>) => {
-    checkout.mutate(plan, {
-      onSuccess: (url) => {
-        window.location.href = url
-      },
-      onError: () => toast.error(t('billing.checkoutError')),
-    })
+    checkout.mutate(
+      { plan, interval: 'monthly' },
+      {
+        onSuccess: (url) => {
+          window.location.href = url
+        },
+        onError: () => toast.error(t('billing.checkoutError')),
+      }
+    )
   }
 
   const openPortal = () => {
@@ -204,7 +207,7 @@ export function BillingPage() {
               plan={billing.plans[plan]}
               isCurrent={plan === billing.plan}
               canManage={canManage}
-              isUpgrading={checkout.isPending && checkout.variables === plan}
+              isUpgrading={checkout.isPending && checkout.variables?.plan === plan}
               onUpgrade={() => startCheckout(plan as Extract<SubscriptionPlan, 'pro' | 'business'>)}
               t={t}
             />

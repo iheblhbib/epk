@@ -14,7 +14,7 @@ import { useAdminWorkspaces, useDeleteAdminWorkspace, useUpdateAdminWorkspacePla
 import type { AdminWorkspace, SubscriptionPlan } from '@/types'
 
 function planItems(t: TFunction): Record<SubscriptionPlan, string> {
-  return { free: t('admin.workspaces.planFree'), pro: t('admin.workspaces.planPro'), business: t('admin.workspaces.planBusiness') }
+  return { starter: t('admin.workspaces.planStarter'), pro: t('admin.workspaces.planPro'), business: t('admin.workspaces.planBusiness') }
 }
 
 function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
@@ -33,7 +33,7 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
       <TableCell>
         <Select
           items={items}
-          value={workspace.plan ?? 'free'}
+          value={workspace.plan ?? 'starter'}
           onValueChange={(value) =>
             updatePlan.mutate(
               { workspaceId: workspace.id, plan: value as SubscriptionPlan },

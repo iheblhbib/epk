@@ -90,7 +90,7 @@
       "title": "Workspaces",
       "description": "Every workspace on the platform.",
       "searchPlaceholder": "Search by name…",
-      "planFree": "Free",
+      "planStarter": "Starter",
       "planPro": "Pro",
       "planBusiness": "Business",
       "planUpdated": "Plan updated to {{plan}}",
