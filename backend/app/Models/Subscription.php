@@ -21,6 +21,8 @@ class Subscription extends Model
         'stripe_customer_id',
         'stripe_subscription_id',
         'current_period_ends_at',
+        'trial_ends_at',
+        'billing_interval',
         'canceled_at',
     ];
 
@@ -30,6 +32,7 @@ class Subscription extends Model
             'plan' => SubscriptionPlan::class,
             'status' => SubscriptionStatus::class,
             'current_period_ends_at' => 'datetime',
+            'trial_ends_at' => 'datetime',
             'canceled_at' => 'datetime',
         ];
     }
