@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('subscriptions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('workspace_id')->unique()->constrained()->cascadeOnDelete();
-            $table->string('plan', 20)->default('free');
+            $table->string('plan', 20)->default('starter');
             $table->string('status', 20)->default('active');
             // Populated once Stripe is actually wired up — present now so
             // that later integration is a data-backfill, not a migration.
