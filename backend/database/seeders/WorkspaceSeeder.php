@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use App\Enums\WorkspaceMemberStatus;
 use App\Enums\WorkspaceRole;
 use App\Models\User;
@@ -24,14 +25,17 @@ class WorkspaceSeeder extends Seeder
             'created_by' => $owner->id,
         ]);
 
-        // A demo/sandbox workspace should showcase every feature, not get
-        // capped by the Free plan's limits the moment it's explored — it
-        // already ships with 3 members and is meant to demo private links,
-        // custom themes, etc. `Workspace::booted()` gives it a Free
-        // subscription automatically; this upgrades that row (updateOrCreate
-        // rather than update() so this stays correct even if that event
-        // hook is ever bypassed).
-        $workspace->subscription()->updateOrCreate([], ['plan' => SubscriptionPlan::Business]);
+        // A demo/sandbox workspace should showcase every feature indefinitely,
+        // not be time-boxed to a 14-day trial like a normal new workspace --
+        // it already ships with 3 members and is meant to demo private links,
+        // custom themes, etc. `Workspace::booted()` already grants a trial at
+        // Business-tier limits; this just makes it permanent (status=Active,
+        // no trial_ends_at) rather than something that'll eventually expire.
+        $workspace->subscription()->updateOrCreate([], [
+            'plan' => SubscriptionPlan::Business,
+            'status' => SubscriptionStatus::Active,
+            'trial_ends_at' => null,
+        ]);
 
         $workspace->members()->create([
             'user_id' => $owner->id,
