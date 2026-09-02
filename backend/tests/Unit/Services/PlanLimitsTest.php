@@ -13,7 +13,7 @@ beforeEach(function () {
 
 it('defaults to the starter plan when a subscription somehow has no plan set', function () {
     $workspace = Workspace::factory()->create();
-    $workspace->subscription()->update(['plan' => null]);
+    $workspace->subscription()->delete();
 
     expect($this->limits->plan($workspace->fresh()))->toBe(SubscriptionPlan::Starter);
 });
