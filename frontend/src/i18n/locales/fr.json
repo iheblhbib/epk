@@ -486,6 +486,13 @@
   },
   "billing": {
     "currentPlan": "Forfait actuel",
+    "monthly": "Mensuel",
+    "yearly": "Annuel",
+    "perMonth": "mois",
+    "billedAnnually": "Facturé {{amount}} par an",
+    "mostPopular": "Le plus populaire",
+    "trialDaysLeft_one": "Il reste {{count}} jour dans votre essai",
+    "trialDaysLeft_other": "Il reste {{count}} jours dans votre essai",
     "unlimitedEpks": "EPK illimités",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",

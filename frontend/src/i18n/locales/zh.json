@@ -486,6 +486,12 @@
   },
   "billing": {
     "currentPlan": "当前套餐",
+    "monthly": "按月",
+    "yearly": "按年",
+    "perMonth": "月",
+    "billedAnnually": "每年计费 {{amount}}",
+    "mostPopular": "最受欢迎",
+    "trialDaysLeft_other": "试用期还剩 {{count}} 天",
     "unlimitedEpks": "EPK 数量不限",
     "epkCount_one": "{{count}} 个 EPK",
     "epkCount_other": "{{count}} 个 EPK",

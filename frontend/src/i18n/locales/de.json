@@ -486,6 +486,13 @@
   },
   "billing": {
     "currentPlan": "Aktueller Tarif",
+    "monthly": "Monatlich",
+    "yearly": "Jährlich",
+    "perMonth": "Monat",
+    "billedAnnually": "{{amount}} jährlich abgerechnet",
+    "mostPopular": "Am beliebtesten",
+    "trialDaysLeft_one": "Noch {{count}} Tag Ihrer Testphase",
+    "trialDaysLeft_other": "Noch {{count}} Tage Ihrer Testphase",
     "unlimitedEpks": "Unbegrenzte EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",

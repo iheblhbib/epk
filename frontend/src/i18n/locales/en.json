@@ -486,6 +486,13 @@
   },
   "billing": {
     "currentPlan": "Current plan",
+    "monthly": "Monthly",
+    "yearly": "Yearly",
+    "perMonth": "month",
+    "billedAnnually": "Billed {{amount}} annually",
+    "mostPopular": "Most popular",
+    "trialDaysLeft_one": "{{count}} day left in your trial",
+    "trialDaysLeft_other": "{{count}} days left in your trial",
     "unlimitedEpks": "Unlimited EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",
