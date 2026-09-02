@@ -493,6 +493,7 @@
     "mostPopular": "الأكثر شيوعًا",
     "trialDaysLeft_one": "تبقّى يوم واحد من فترتك التجريبية",
     "trialDaysLeft_other": "تبقّى {{count}} أيام من فترتك التجريبية",
+    "trialCta": "اختر باقة",
     "unlimitedEpks": "ملفات صحفية غير محدودة",
     "epkCount_one": "ملف صحفي واحد",
     "epkCount_other": "{{count}} ملف صحفي",

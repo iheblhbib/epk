@@ -493,6 +493,7 @@
     "mostPopular": "Most popular",
     "trialDaysLeft_one": "{{count}} day left in your trial",
     "trialDaysLeft_other": "{{count}} days left in your trial",
+    "trialCta": "Choose a plan",
     "unlimitedEpks": "Unlimited EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",

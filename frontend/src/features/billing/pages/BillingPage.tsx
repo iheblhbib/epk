@@ -114,12 +114,19 @@ function SubscriptionStatusBanner({ billing, t }: { billing: BillingData; t: TFu
     )
   }
 
-  if (billing.subscription_status === 'trialing' && billing.trial_ends_at) {
+  if (billing.subscription_status === 'trialing' && billing.trial_ends_at && new Date(billing.trial_ends_at) > new Date()) {
     const daysLeft = Math.max(0, Math.ceil((new Date(billing.trial_ends_at).getTime() - Date.now()) / (1000 * 60 * 60 * 24)))
 
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-foreground">
-        {t('billing.trialDaysLeft', { count: daysLeft })}
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-lg border border-primary/30 bg-primary/5 px-3 py-2 text-sm text-foreground">
+        <span>{t('billing.trialDaysLeft', { count: daysLeft })}</span>
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={() => document.getElementById('plans-section')?.scrollIntoView({ behavior: 'smooth' })}
+        >
+          {t('billing.trialCta')}
+        </Button>
       </div>
     )
   }
@@ -234,7 +241,7 @@ export function BillingPage() {
         </CardContent>
       </Card>
 
-      <div>
+      <div id="plans-section">
         <div className="mb-3 flex items-center justify-between">
           <h2 className="font-heading text-lg font-semibold text-foreground">{t('billing.plans')}</h2>
           <div className="flex items-center gap-2 text-sm">

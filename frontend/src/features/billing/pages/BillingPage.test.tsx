@@ -3,7 +3,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { HttpResponse, http } from 'msw'
 import { MemoryRouter } from 'react-router-dom'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { BillingPage } from '@/features/billing/pages/BillingPage'
 import { server } from '@/test/server'
 
@@ -110,5 +110,38 @@ describe('BillingPage', () => {
     await user.click(await screen.findByRole('button', { name: /upgrade to pro/i }))
 
     await waitFor(() => expect(checkoutRequestBody).toEqual({ plan: 'pro', interval: 'monthly' }))
+  })
+
+  it('hides the trial banner once trial_ends_at has passed, even if status is still trialing', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(
+          billingResponse({ trial_ends_at: new Date(Date.now() - 60 * 1000).toISOString() })
+        )
+      )
+    )
+
+    renderBillingPage()
+
+    await screen.findByText('Starter')
+    expect(screen.queryByText(/left in your trial/i)).not.toBeInTheDocument()
+  })
+
+  it('scrolls to the plans section when the trial banner CTA is clicked', async () => {
+    mockWorkspace()
+    server.use(http.get(`${API_URL}/api/workspaces/:id/billing`, () => HttpResponse.json(billingResponse())))
+    const scrollIntoView = vi.fn()
+    // jsdom doesn't implement scrollIntoView at all — stub it so the click
+    // handler (document.getElementById('plans-section')?.scrollIntoView(...))
+    // doesn't throw, and so we can assert it was actually invoked.
+    Element.prototype.scrollIntoView = scrollIntoView
+
+    renderBillingPage()
+
+    const user = userEvent.setup()
+    await user.click(await screen.findByRole('button', { name: /choose a plan/i }))
+
+    expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' })
   })
 })

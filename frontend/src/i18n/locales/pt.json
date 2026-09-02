@@ -493,6 +493,7 @@
     "mostPopular": "Mais popular",
     "trialDaysLeft_one": "Resta {{count}} dia do seu período de teste",
     "trialDaysLeft_other": "Restam {{count}} dias do seu período de teste",
+    "trialCta": "Escolher um plano",
     "unlimitedEpks": "EPK ilimitados",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",

@@ -493,6 +493,7 @@
     "mostPopular": "Am beliebtesten",
     "trialDaysLeft_one": "Noch {{count}} Tag Ihrer Testphase",
     "trialDaysLeft_other": "Noch {{count}} Tage Ihrer Testphase",
+    "trialCta": "Tarif wählen",
     "unlimitedEpks": "Unbegrenzte EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",
