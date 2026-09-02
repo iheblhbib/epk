@@ -1,4 +1,8 @@
+import { useEffect } from 'react'
+import { useTranslation } from 'react-i18next'
 import { RouterProvider } from 'react-router-dom'
+import { toast } from 'sonner'
+import { registerSubscriptionLockedHandler } from '@/api/client'
 import { Toaster } from '@/components/ui/sonner'
 import { CustomDomainEpkPage } from '@/features/public-epk/CustomDomainEpkPage'
 import { useSyncLocale } from '@/i18n/useSyncLocale'
@@ -11,6 +15,26 @@ import { router } from '@/router'
 // call the hook directly in App() — this is that one line of glue.
 function LocaleSync() {
   useSyncLocale()
+  return null
+}
+
+// Needs useTranslation() for the toast copy, so — like LocaleSync above —
+// it's a tiny standalone component rather than logic inlined in App().
+// A full-page redirect (not React Router's navigate()) is deliberate: this
+// fires from inside an axios interceptor, potentially mid-render of an
+// arbitrary page that has no idea it's about to be yanked away.
+function SubscriptionLockRedirect() {
+  const { t } = useTranslation()
+
+  useEffect(() => {
+    registerSubscriptionLockedHandler(() => {
+      if (window.location.pathname !== '/billing') {
+        toast.error(t('billing.lockedOut'))
+        window.location.href = '/billing'
+      }
+    })
+  }, [t])
+
   return null
 }
 
@@ -32,6 +56,7 @@ function App() {
       <QueryProvider>
         <AuthProvider>
           <LocaleSync />
+          <SubscriptionLockRedirect />
           {isCustomDomainVisitor ? <CustomDomainEpkPage /> : <RouterProvider router={router} />}
           <Toaster />
         </AuthProvider>

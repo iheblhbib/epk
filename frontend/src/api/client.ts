@@ -53,6 +53,10 @@ apiClient.interceptors.response.use(
       queryClientAuthInvalidate?.()
     }
 
+    if (status === 402) {
+      subscriptionLockedHandler?.()
+    }
+
     return Promise.reject(error)
   }
 )
@@ -62,4 +66,13 @@ apiClient.interceptors.response.use(
 let queryClientAuthInvalidate: (() => void) | null = null
 export function registerAuthInvalidator(fn: () => void) {
   queryClientAuthInvalidate = fn
+}
+
+// Set lazily by App.tsx to avoid a circular import between the api client
+// and the router. Fires on any 402 from the backend -- the access-gate
+// middleware's signal that this workspace's trial expired or its
+// subscription was canceled, with nothing active to replace it.
+let subscriptionLockedHandler: (() => void) | null = null
+export function registerSubscriptionLockedHandler(fn: () => void) {
+  subscriptionLockedHandler = fn
 }
