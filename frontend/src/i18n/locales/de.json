@@ -494,6 +494,7 @@
     "trialDaysLeft_one": "Noch {{count}} Tag Ihrer Testphase",
     "trialDaysLeft_other": "Noch {{count}} Tage Ihrer Testphase",
     "trialCta": "Tarif wählen",
+    "lockedOut": "Ihre Testphase ist abgelaufen. Wählen Sie einen Tarif, um diesen Arbeitsbereich weiter zu nutzen.",
     "unlimitedEpks": "Unbegrenzte EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",

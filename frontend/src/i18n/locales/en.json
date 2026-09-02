@@ -494,6 +494,7 @@
     "trialDaysLeft_one": "{{count}} day left in your trial",
     "trialDaysLeft_other": "{{count}} days left in your trial",
     "trialCta": "Choose a plan",
+    "lockedOut": "Your trial has ended. Choose a plan to keep using this workspace.",
     "unlimitedEpks": "Unlimited EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",

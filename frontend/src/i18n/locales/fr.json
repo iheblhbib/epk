@@ -494,6 +494,7 @@
     "trialDaysLeft_one": "Il reste {{count}} jour dans votre essai",
     "trialDaysLeft_other": "Il reste {{count}} jours dans votre essai",
     "trialCta": "Choisir un forfait",
+    "lockedOut": "Votre essai est terminé. Choisissez un forfait pour continuer à utiliser cet espace de travail.",
     "unlimitedEpks": "EPK illimités",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",

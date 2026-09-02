@@ -494,6 +494,7 @@
     "trialDaysLeft_one": "Queda {{count}} día de tu prueba",
     "trialDaysLeft_other": "Quedan {{count}} días de tu prueba",
     "trialCta": "Elegir un plan",
+    "lockedOut": "Tu prueba ha terminado. Elige un plan para seguir usando este espacio de trabajo.",
     "unlimitedEpks": "EPK ilimitados",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",
