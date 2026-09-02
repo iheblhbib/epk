@@ -139,3 +139,12 @@ it('returns plan, usage, and the plan comparison table from the billing endpoint
         ->assertJsonPath('data.usage.epks.limit', 1)
         ->assertJsonStructure(['data' => ['plan', 'usage', 'plans' => ['free', 'pro', 'business']]]);
 });
+
+it('exposes starter limits and two Stripe price ids per plan from config', function () {
+    expect(config('plans.starter.max_epks'))->toBe(3);
+    expect(config('plans.starter.max_storage_bytes'))->toBe(150 * 1024 * 1024);
+    expect(config('plans.pro.max_storage_bytes'))->toBe(2 * 1024 * 1024 * 1024);
+    expect(config('plans.business.max_storage_bytes'))->toBe(20 * 1024 * 1024 * 1024);
+    expect(config('plans.starter'))->toHaveKeys(['stripe_price_id_monthly', 'stripe_price_id_yearly']);
+    expect(config('plans'))->not->toHaveKey('free');
+});

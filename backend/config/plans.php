@@ -6,64 +6,72 @@
 |--------------------------------------------------------------------------
 |
 | The static feature/limit table for each plan tier. This is deliberately a
-| config file rather than a database table — these three tiers are product
+| config file rather than a database table -- these three tiers are product
 | decisions, not admin-editable data, much like Stripe Price/Product objects
 | aren't edited from inside the app that sells them.
 |
-| 'stripe_price_id' is the Stripe Price object id for that tier's recurring
-| subscription (see docs/stripe.md for how to create these in the Stripe
-| Dashboard and where to put the id) — null for Free since there's nothing
-| to check out for it. An admin can still set a workspace's plan directly
-| via /admin/workspaces/{workspace}/subscription regardless of Stripe (e.g.
-| comps, manual grants); that path doesn't touch Stripe at all.
+| Two Stripe price ids per plan (not one): 'stripe_price_id_monthly' and
+| 'stripe_price_id_yearly'. The yearly one is a genuine Stripe recurring
+| price with interval=year -- one invoice per year at the discounted
+| effective-monthly rate, not a monthly price with a coupon applied twelve
+| times. StripeBillingService::createCheckoutSession() picks between the
+| two based on which interval the frontend requested.
+|
+| There is no Free tier. Every new workspace gets a 14-day trial at full
+| Business-tier limits (see Workspace::booted()) with no Stripe object
+| created at all -- these three configs are only ever read once a real
+| Stripe price id needs resolving, either at checkout or from a webhook.
 |
 | 'white_label' is recorded here as a plan flag but has no enforcement
-| point yet — that feature doesn't exist in the app at all, so there's
+| point yet -- that feature doesn't exist in the app at all, so there's
 | nothing to gate. It's included so the comparison table is honest about
 | what each tier is eventually meant to unlock.
 |
 | 'custom_domains' gates EpkCustomDomainController (see PlanLimits::
-| canUseCustomDomains()) — DNS/SSL for the domain itself is still a manual
+| canUseCustomDomains()) -- DNS/SSL for the domain itself is still a manual
 | step on the host, this only controls who's allowed to attach one.
 |
 */
 
 return [
 
-    'free' => [
-        'label' => 'Free',
-        'max_epks' => 1,
-        'max_storage_bytes' => 500 * 1024 * 1024, // 500 MB
+    'starter' => [
+        'label' => 'Starter',
+        'max_epks' => 3,
+        'max_storage_bytes' => 150 * 1024 * 1024, // 150 MB
         'max_team_members' => 2,
         'custom_themes' => false,
         'private_links' => false,
         'white_label' => false,
         'custom_domains' => false,
-        'stripe_price_id' => null,
+        'stripe_price_id_monthly' => env('STRIPE_PRICE_STARTER_MONTHLY'),
+        'stripe_price_id_yearly' => env('STRIPE_PRICE_STARTER_YEARLY'),
     ],
 
     'pro' => [
         'label' => 'Pro',
         'max_epks' => 10,
-        'max_storage_bytes' => 10 * 1024 * 1024 * 1024, // 10 GB
+        'max_storage_bytes' => 2 * 1024 * 1024 * 1024, // 2 GB
         'max_team_members' => 10,
         'custom_themes' => true,
         'private_links' => true,
         'white_label' => false,
         'custom_domains' => false,
-        'stripe_price_id' => env('STRIPE_PRICE_PRO'),
+        'stripe_price_id_monthly' => env('STRIPE_PRICE_PRO_MONTHLY'),
+        'stripe_price_id_yearly' => env('STRIPE_PRICE_PRO_YEARLY'),
     ],
 
     'business' => [
         'label' => 'Business',
         'max_epks' => null, // unlimited
-        'max_storage_bytes' => 100 * 1024 * 1024 * 1024, // 100 GB
+        'max_storage_bytes' => 20 * 1024 * 1024 * 1024, // 20 GB
         'max_team_members' => null, // unlimited
         'custom_themes' => true,
         'private_links' => true,
         'white_label' => true,
         'custom_domains' => true,
-        'stripe_price_id' => env('STRIPE_PRICE_BUSINESS'),
+        'stripe_price_id_monthly' => env('STRIPE_PRICE_BUSINESS_MONTHLY'),
+        'stripe_price_id_yearly' => env('STRIPE_PRICE_BUSINESS_YEARLY'),
     ],
 
 ];

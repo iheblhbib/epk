@@ -14,7 +14,7 @@ class PlanLimits
 {
     public function plan(Workspace $workspace): SubscriptionPlan
     {
-        return $workspace->subscription?->plan ?? SubscriptionPlan::Free;
+        return $workspace->subscription?->plan ?? SubscriptionPlan::Starter;
     }
 
     /**

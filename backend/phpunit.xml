@@ -40,8 +40,12 @@
              Stripe API and is mocked in those specific tests instead. -->
         <env name="STRIPE_SECRET" value="sk_test_fake"/>
         <env name="STRIPE_WEBHOOK_SECRET" value="whsec_test_fake_secret"/>
-        <env name="STRIPE_PRICE_PRO" value="price_test_pro"/>
-        <env name="STRIPE_PRICE_BUSINESS" value="price_test_business"/>
+        <env name="STRIPE_PRICE_STARTER_MONTHLY" value="price_test_starter_monthly"/>
+        <env name="STRIPE_PRICE_STARTER_YEARLY" value="price_test_starter_yearly"/>
+        <env name="STRIPE_PRICE_PRO_MONTHLY" value="price_test_pro_monthly"/>
+        <env name="STRIPE_PRICE_PRO_YEARLY" value="price_test_pro_yearly"/>
+        <env name="STRIPE_PRICE_BUSINESS_MONTHLY" value="price_test_business_monthly"/>
+        <env name="STRIPE_PRICE_BUSINESS_YEARLY" value="price_test_business_yearly"/>
         <env name="PULSE_ENABLED" value="false"/>
         <env name="TELESCOPE_ENABLED" value="false"/>
         <env name="NIGHTWATCH_ENABLED" value="false"/>
