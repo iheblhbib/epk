@@ -35,12 +35,12 @@ class StripeBillingService
     /**
      * @return string The Stripe-hosted Checkout URL to redirect the browser to.
      */
-    public function createCheckoutSession(Workspace $workspace, SubscriptionPlan $plan, string $successUrl, string $cancelUrl): string
+    public function createCheckoutSession(Workspace $workspace, SubscriptionPlan $plan, string $interval, string $successUrl, string $cancelUrl): string
     {
-        $priceId = config("plans.{$plan->value}.stripe_price_id");
+        $priceId = config("plans.{$plan->value}.stripe_price_id_{$interval}");
 
         if (! $priceId) {
-            throw new RuntimeException("No Stripe price is configured for the \"{$plan->value}\" plan.");
+            throw new RuntimeException("No Stripe {$interval} price is configured for the \"{$plan->value}\" plan.");
         }
 
         $existingCustomerId = $workspace->subscription?->stripe_customer_id;
@@ -114,10 +114,13 @@ class StripeBillingService
         // 2026-08-26.dahlia, well past that change.
         $periodEnd = $firstItem?->current_period_end ?? null;
 
+        [$plan, $interval] = $this->planAndIntervalFromPriceId($priceId);
+
         Subscription::updateOrCreate(
             ['workspace_id' => $workspaceId],
             [
-                'plan' => $this->planFromPriceId($priceId),
+                'plan' => $plan,
+                'billing_interval' => $interval,
                 'status' => $this->mapStatus($stripeSubscription->status),
                 'stripe_customer_id' => is_string($stripeSubscription->customer)
                     ? $stripeSubscription->customer
@@ -135,8 +138,11 @@ class StripeBillingService
 
     /**
      * The subscription no longer exists on Stripe's side at all (as
-     * opposed to merely being past-due) — drop the workspace back to Free
-     * rather than leave it reading a paid plan's limits forever.
+     * opposed to merely being past-due). There's no Free plan to fall back
+     * to any more — this just marks the subscription canceled, which the
+     * access-gate middleware (EnsureSubscriptionIsActive) reads as a hard
+     * lockout, same as an expired trial. `plan` is deliberately left
+     * untouched: it no longer means anything once status is Canceled.
      */
     public function handleSubscriptionDeleted(StripeSubscription $stripeSubscription): void
     {
@@ -147,24 +153,28 @@ class StripeBillingService
         }
 
         Subscription::where('workspace_id', $workspaceId)->update([
-            'plan' => SubscriptionPlan::Free,
             'status' => SubscriptionStatus::Canceled,
             'stripe_subscription_id' => null,
             'canceled_at' => now(),
         ]);
     }
 
-    private function planFromPriceId(?string $priceId): SubscriptionPlan
+    /**
+     * @return array{0: SubscriptionPlan, 1: string|null}
+     */
+    private function planAndIntervalFromPriceId(?string $priceId): array
     {
         if ($priceId !== null) {
             foreach (SubscriptionPlan::cases() as $plan) {
-                if (config("plans.{$plan->value}.stripe_price_id") === $priceId) {
-                    return $plan;
+                foreach (['monthly', 'yearly'] as $interval) {
+                    if (config("plans.{$plan->value}.stripe_price_id_{$interval}") === $priceId) {
+                        return [$plan, $interval];
+                    }
                 }
             }
         }
 
-        return SubscriptionPlan::Free;
+        return [SubscriptionPlan::Starter, null];
     }
 
     private function mapStatus(string $stripeStatus): SubscriptionStatus
