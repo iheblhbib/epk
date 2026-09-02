@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use App\Enums\WorkspaceRole;
 use App\Models\Artist;
 use App\Models\Epk;
@@ -9,26 +10,29 @@ use App\Models\Workspace;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 
-function billingWorkspaceWithOwner(): array
+function billingWorkspaceWithOwner(SubscriptionPlan $plan = SubscriptionPlan::Starter): array
 {
     $owner = User::factory()->create();
     $workspace = Workspace::factory()->create(['created_by' => $owner->id]);
+    $workspace->subscription()->update(['plan' => $plan, 'status' => SubscriptionStatus::Active, 'trial_ends_at' => null]);
     $workspace->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
 
     return [$workspace, $owner];
 }
 
-it('gives every new workspace a free subscription automatically', function () {
-    [$workspace] = billingWorkspaceWithOwner();
-
-    expect($workspace->subscription)->not->toBeNull();
-    expect($workspace->subscription->plan)->toBe(SubscriptionPlan::Free);
+it('exposes starter limits and two Stripe price ids per plan from config', function () {
+    expect(config('plans.starter.max_epks'))->toBe(3);
+    expect(config('plans.starter.max_storage_bytes'))->toBe(150 * 1024 * 1024);
+    expect(config('plans.pro.max_storage_bytes'))->toBe(2 * 1024 * 1024 * 1024);
+    expect(config('plans.business.max_storage_bytes'))->toBe(20 * 1024 * 1024 * 1024);
+    expect(config('plans.starter'))->toHaveKeys(['stripe_price_id_monthly', 'stripe_price_id_yearly']);
+    expect(config('plans'))->not->toHaveKey('free');
 });
 
-it('blocks creating a second epk on the free plan', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+it('blocks creating a fourth epk on the starter plan (limit is 3)', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+    Epk::factory()->count(3)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
     $this->actingAs($owner)->postJson('/api/epks', [
         'workspace_id' => $workspace->id,
@@ -37,43 +41,30 @@ it('blocks creating a second epk on the free plan', function () {
     ])->assertUnprocessable();
 });
 
-it('allows a second epk once the workspace is on a paid plan', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
-    $workspace->subscription()->update(['plan' => SubscriptionPlan::Pro]);
+it('allows a fourth epk once the workspace is on Pro', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Pro);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+    Epk::factory()->count(3)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
     $this->actingAs($owner)->postJson('/api/epks', [
         'workspace_id' => $workspace->id,
         'artist_id' => $artist->id,
-        'title' => 'Second EPK',
+        'title' => 'Fourth EPK',
     ])->assertCreated();
 });
 
-it('blocks duplicating an epk on the free plan, same as creating one directly', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+it('blocks duplicating an epk on the starter plan, same as creating one directly', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    Epk::factory()->count(2)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
     $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
-    // The bug this guards: duplicate() used to skip the plan-limit check
-    // that store() enforces, so "create your one free EPK, then duplicate
-    // it" was a free way past the free plan's 1-EPK limit.
     $this->actingAs($owner)->postJson("/api/epks/{$epk->id}/duplicate")->assertUnprocessable();
-    expect($workspace->epks()->count())->toBe(1);
+    expect($workspace->epks()->count())->toBe(3);
 });
 
-it('allows duplicating an epk once the workspace is on a paid plan', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
-    $workspace->subscription()->update(['plan' => SubscriptionPlan::Pro]);
-    $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
-
-    $this->actingAs($owner)->postJson("/api/epks/{$epk->id}/duplicate")->assertCreated();
-    expect($workspace->epks()->count())->toBe(2);
-});
-
-it('blocks custom theme overrides on the free plan but still allows picking a preset', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+it('blocks custom theme overrides on the starter plan but still allows picking a preset', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
     $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
@@ -86,8 +77,8 @@ it('blocks custom theme overrides on the free plan but still allows picking a pr
     ])->assertUnprocessable();
 });
 
-it('blocks creating a private link on the free plan', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+it('blocks creating a private link on the starter plan', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
     $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
@@ -95,12 +86,12 @@ it('blocks creating a private link on the free plan', function () {
         ->assertUnprocessable();
 });
 
-it('blocks inviting past the free plan team member limit', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+it('blocks inviting past the starter plan team member limit', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $second = User::factory()->create();
     $workspace->members()->create(['user_id' => $second->id, 'role' => WorkspaceRole::Editor, 'status' => 'active', 'joined_at' => now()]);
 
-    // Free plan's max_team_members is 2, and the workspace already has 2.
+    // Starter's max_team_members is 2, and the workspace already has 2.
     $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
         'email' => 'third@example.com',
         'role' => WorkspaceRole::Viewer->value,
@@ -109,17 +100,17 @@ it('blocks inviting past the free plan team member limit', function () {
 
 it('blocks a media upload that would exceed the plan storage limit', function () {
     Storage::fake('public');
-    config(['plans.free.max_storage_bytes' => 1024]); // 1KB, smaller than any real fake image
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+    config(['plans.starter.max_storage_bytes' => 1024]); // 1KB, smaller than any real fake image
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
 
     $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/media", [
         'files' => [UploadedFile::fake()->image('cover.jpg', 200, 200)],
     ])->assertUnprocessable();
 });
 
-it('lets an admin change a workspace plan, unlocking that workspace’s limits', function () {
+it('lets an admin change a workspace plan, unlocking that workspace\'s limits', function () {
     $admin = User::factory()->admin()->create();
-    [$workspace] = billingWorkspaceWithOwner();
+    [$workspace] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
 
     $this->actingAs($admin)->patchJson("/api/admin/workspaces/{$workspace->id}/subscription", [
         'plan' => SubscriptionPlan::Business->value,
@@ -130,21 +121,12 @@ it('lets an admin change a workspace plan, unlocking that workspace’s limits',
 });
 
 it('returns plan, usage, and the plan comparison table from the billing endpoint', function () {
-    [$workspace, $owner] = billingWorkspaceWithOwner();
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
 
     $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/billing");
 
     $response->assertOk()
-        ->assertJsonPath('data.plan', SubscriptionPlan::Free->value)
-        ->assertJsonPath('data.usage.epks.limit', 1)
-        ->assertJsonStructure(['data' => ['plan', 'usage', 'plans' => ['free', 'pro', 'business']]]);
-});
-
-it('exposes starter limits and two Stripe price ids per plan from config', function () {
-    expect(config('plans.starter.max_epks'))->toBe(3);
-    expect(config('plans.starter.max_storage_bytes'))->toBe(150 * 1024 * 1024);
-    expect(config('plans.pro.max_storage_bytes'))->toBe(2 * 1024 * 1024 * 1024);
-    expect(config('plans.business.max_storage_bytes'))->toBe(20 * 1024 * 1024 * 1024);
-    expect(config('plans.starter'))->toHaveKeys(['stripe_price_id_monthly', 'stripe_price_id_yearly']);
-    expect(config('plans'))->not->toHaveKey('free');
+        ->assertJsonPath('data.plan', SubscriptionPlan::Starter->value)
+        ->assertJsonPath('data.usage.epks.limit', 3)
+        ->assertJsonStructure(['data' => ['plan', 'usage', 'plans' => ['starter', 'pro', 'business']]]);
 });

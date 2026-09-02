@@ -106,7 +106,7 @@ Route::post('/invitations/{token}/login', [WorkspaceInvitationController::class,
 Route::post('/invitations/{token}/register', [WorkspaceInvitationController::class, 'register'])
     ->middleware('throttle:10,1');
 
-Route::middleware(['auth:sanctum', 'active', 'tokens-enabled'])->group(function () {
+Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-active'])->group(function () {
     Route::post('/logout', [AuthenticatedSessionController::class, 'destroy']);
 
     Route::post('/email/verification-notification', [EmailVerificationNotificationController::class, 'store'])
@@ -209,11 +209,13 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled'])->group(function 
     Route::put('/contacts/{contact}', [ContactController::class, 'update']);
     Route::delete('/contacts/{contact}', [ContactController::class, 'destroy']);
 
-    Route::get('/workspaces/{workspace}/billing', [BillingController::class, 'show']);
-    Route::post('/workspaces/{workspace}/billing/checkout', [BillingController::class, 'checkout'])
-        ->middleware('throttle:10,1');
-    Route::post('/workspaces/{workspace}/billing/portal', [BillingController::class, 'portal'])
-        ->middleware('throttle:10,1');
+    Route::withoutMiddleware('subscription-active')->group(function () {
+        Route::get('/workspaces/{workspace}/billing', [BillingController::class, 'show']);
+        Route::post('/workspaces/{workspace}/billing/checkout', [BillingController::class, 'checkout'])
+            ->middleware('throttle:10,1');
+        Route::post('/workspaces/{workspace}/billing/portal', [BillingController::class, 'portal'])
+            ->middleware('throttle:10,1');
+    });
 
     Route::get('/workspaces/{workspace}/media', [MediaController::class, 'index']);
     Route::post('/workspaces/{workspace}/media', [MediaController::class, 'store'])

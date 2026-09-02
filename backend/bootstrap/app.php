@@ -2,6 +2,7 @@
 
 use App\Http\Middleware\AddSecurityHeaders;
 use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsureSubscriptionIsActive;
 use App\Http\Middleware\EnsureUserIsAdmin;
 use App\Http\Middleware\RejectDisabledApiTokens;
 use App\Http\Middleware\SetLocaleFromUser;
@@ -22,6 +23,7 @@ return Application::configure(basePath: dirname(__DIR__))
             'admin' => EnsureUserIsAdmin::class,
             'active' => EnsureAccountIsActive::class,
             'tokens-enabled' => RejectDisabledApiTokens::class,
+            'subscription-active' => EnsureSubscriptionIsActive::class,
         ]);
         // Global (every request, not just authenticated ones) — the guest
         // fallback covers login/register/public-EPK-page messages too. Runs
