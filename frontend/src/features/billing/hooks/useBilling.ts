@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createCheckoutSession, createPortalSession, getBilling } from '@/api/billing'
+import { createCheckoutSession, createPortalSession, getBilling, type BillingInterval } from '@/api/billing'
 import type { SubscriptionPlan } from '@/types'
 
 export function useBilling(workspaceId: number | undefined) {
@@ -19,7 +19,8 @@ export function useBilling(workspaceId: number | undefined) {
 // user is redirected back and it refetches.
 export function useCreateCheckoutSession(workspaceId: number) {
   return useMutation({
-    mutationFn: (plan: Extract<SubscriptionPlan, 'pro' | 'business'>) => createCheckoutSession(workspaceId, plan),
+    mutationFn: ({ plan, interval }: { plan: SubscriptionPlan; interval: BillingInterval }) =>
+      createCheckoutSession(workspaceId, plan, interval),
   })
 }
 

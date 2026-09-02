@@ -1,7 +1,7 @@
 export type UserRole = 'user' | 'admin'
 export type WorkspaceRole = 'owner' | 'admin' | 'editor' | 'viewer'
 export type WorkspaceMemberStatus = 'pending' | 'active'
-export type SubscriptionPlan = 'free' | 'pro' | 'business'
+export type SubscriptionPlan = 'starter' | 'pro' | 'business'
 // Mirrors backend/app/Enums/Locale.php exactly.
 export type UserLocale = 'en' | 'fr' | 'ar' | 'es' | 'pt' | 'de' | 'zh'
 
@@ -744,6 +744,8 @@ export interface PlanDetails {
   private_links: boolean
   white_label: boolean
   custom_domains: boolean
+  stripe_price_id_monthly: string | null
+  stripe_price_id_yearly: string | null
 }
 
 export interface BillingUsageMetric {
@@ -756,6 +758,8 @@ export type SubscriptionStatus = 'active' | 'canceled' | 'past_due'
 export interface BillingData {
   plan: SubscriptionPlan
   subscription_status: SubscriptionStatus | null
+  trial_ends_at: string | null
+  billing_interval: 'monthly' | 'yearly' | null
   current_period_ends_at: string | null
   has_stripe_customer: boolean
   usage: {

@@ -6,13 +6,16 @@ export async function getBilling(workspaceId: number): Promise<BillingData> {
   return data.data
 }
 
+export type BillingInterval = 'monthly' | 'yearly'
+
 export async function createCheckoutSession(
   workspaceId: number,
-  plan: Extract<SubscriptionPlan, 'pro' | 'business'>
+  plan: SubscriptionPlan,
+  interval: BillingInterval
 ): Promise<string> {
   const { data } = await apiClient.post<ApiResource<{ url: string }>>(
     `/api/workspaces/${workspaceId}/billing/checkout`,
-    { plan }
+    { plan, interval }
   )
   return data.data.url
 }
