@@ -1,37 +1,42 @@
 <?php
 
 use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use App\Enums\WorkspaceRole;
+use App\Models\Artist;
+use App\Models\Epk;
+use App\Models\User;
 use App\Models\Workspace;
 
-it('gives every seeded workspace a real subscription row, not just the default fallback', function () {
-    $this->seed();
+function seederWorkspaceWithOwner(): array
+{
+    $owner = User::factory()->create();
+    $workspace = Workspace::factory()->create(['created_by' => $owner->id]);
+    $workspace->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
 
-    $workspace = Workspace::where('slug', 'korax-demo')->firstOrFail();
+    return [$workspace, $owner];
+}
 
-    // Regression: DatabaseSeeder used to run under WithoutModelEvents, which
-    // silently skipped Workspace::booted()'s auto-provisioned Subscription
-    // — so this row simply didn't exist after seeding, and PlanLimits fell
-    // back to treating the workspace as Free even though the seeder's own
-    // updateOrCreate() call (also silently) never took effect.
+it('gives every new workspace a 14-day full-access trial automatically', function () {
+    [$workspace] = seederWorkspaceWithOwner();
+
     expect($workspace->subscription)->not->toBeNull();
+    expect($workspace->subscription->plan)->toBe(SubscriptionPlan::Business);
+    expect($workspace->subscription->status)->toBe(SubscriptionStatus::Trialing);
+    expect($workspace->subscription->trial_ends_at->diffInDays(now()))->toBeLessThanOrEqual(14)
+        ->and($workspace->subscription->trial_ends_at->isFuture())->toBeTrue();
 });
 
-it('seeds the demo workspace on a paid plan so its 3 seeded members don\'t already exceed a limit', function () {
-    $this->seed();
+it('grants full Business-tier limits during the trial regardless of eventual pack choice', function () {
+    [$workspace, $owner] = seederWorkspaceWithOwner();
+    $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    Epk::factory()->count(5)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
-    $workspace = Workspace::where('slug', 'korax-demo')->firstOrFail();
-
-    expect($workspace->subscription->plan)->not->toBe(SubscriptionPlan::Free);
-    expect($workspace->members()->count())->toBeGreaterThanOrEqual(3);
-
-    $owner = $workspace->members()->where('role', WorkspaceRole::Owner)->firstOrFail()->user;
-
-    // The actual regression this fixes: inviting a new teammate on the
-    // freshly-seeded demo workspace used to 422 immediately, before a
-    // first-time explorer ever got to try the feature.
-    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
-        'email' => 'new-teammate@example.com',
-        'role' => WorkspaceRole::Viewer->value,
+    // Starter's own limit is 3 EPKs -- proves the trial isn't capped at
+    // whatever tier the workspace might eventually subscribe to.
+    $this->actingAs($owner)->postJson('/api/epks', [
+        'workspace_id' => $workspace->id,
+        'artist_id' => $artist->id,
+        'title' => 'Sixth EPK, still fine during trial',
     ])->assertCreated();
 });

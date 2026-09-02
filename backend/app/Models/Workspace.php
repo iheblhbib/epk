@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use Database\Factories\WorkspaceFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -25,11 +27,17 @@ class Workspace extends Model
 
     protected static function booted(): void
     {
-        // Every workspace has exactly one subscription row from the moment
-        // it exists — defaults to Free — so PlanLimits never has to handle
-        // "no subscription yet" as a separate case.
+        // Every new workspace gets a 14-day trial at full Business-tier
+        // limits, no Stripe interaction at all -- see docs/superpowers/
+        // specs/2026-09-02-subscription-billing-overhaul-design.md. The
+        // access-gate middleware (EnsureSubscriptionIsActive) is what
+        // actually enforces the 14-day cutoff; this just sets it up.
         static::created(function (Workspace $workspace) {
-            $workspace->subscription()->create([]);
+            $workspace->subscription()->create([
+                'plan' => SubscriptionPlan::Business,
+                'status' => SubscriptionStatus::Trialing,
+                'trial_ends_at' => now()->addDays(14),
+            ]);
         });
     }
 
