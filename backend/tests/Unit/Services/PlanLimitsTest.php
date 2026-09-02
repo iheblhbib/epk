@@ -11,11 +11,18 @@ beforeEach(function () {
     $this->limits = new PlanLimits;
 });
 
-it('defaults to the free plan for a fresh workspace', function () {
+it('defaults to the starter plan when a subscription somehow has no plan set', function () {
     $workspace = Workspace::factory()->create();
+    $workspace->subscription()->update(['plan' => null]);
 
-    expect($this->limits->plan($workspace))->toBe(SubscriptionPlan::Free);
-    expect($this->limits->maxEpks($workspace))->toBe(1);
+    expect($this->limits->plan($workspace->fresh()))->toBe(SubscriptionPlan::Starter);
+});
+
+it('applies starter plan limits', function () {
+    $workspace = Workspace::factory()->create();
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Starter]);
+
+    expect($this->limits->maxEpks($workspace))->toBe(3);
     expect($this->limits->maxTeamMembers($workspace))->toBe(2);
     expect($this->limits->canUseCustomThemes($workspace))->toBeFalse();
     expect($this->limits->canUsePrivateLinks($workspace))->toBeFalse();
@@ -31,17 +38,17 @@ it('treats a null limit as unlimited', function () {
 });
 
 it('allows creating up to, but not at, the epk limit', function () {
-    $workspace = Workspace::factory()->create(); // free: max_epks = 1
-    expect($this->limits->canCreateEpk($workspace))->toBeTrue();
-
+    $workspace = Workspace::factory()->create();
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Starter]); // max_epks = 3
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+    Epk::factory()->count(3)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
     expect($this->limits->canCreateEpk($workspace))->toBeFalse();
 });
 
 it('counts existing members (including the owner) toward the team member limit', function () {
-    $workspace = Workspace::factory()->create(); // free: max_team_members = 2
+    $workspace = Workspace::factory()->create();
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Starter]); // max_team_members = 2
     $owner = WorkspaceMember::factory()->for($workspace)->create();
 
     expect($this->limits->canAddTeamMember($workspace))->toBeTrue();
@@ -49,16 +56,14 @@ it('counts existing members (including the owner) toward the team member limit',
     WorkspaceMember::factory()->for($workspace)->create();
 
     expect($this->limits->canAddTeamMember($workspace))->toBeFalse();
-
-    // Sanity: two members were actually created against this workspace.
     expect($workspace->members()->count())->toBe(2);
     expect($owner->workspace_id)->toBe($workspace->id);
 });
 
 it('computes remaining storage and whether an upload fits', function () {
     $workspace = Workspace::factory()->create();
-    // Free plan: 500MB. No media uploaded yet.
-    expect($this->limits->remainingStorageBytes($workspace))->toBe(500 * 1024 * 1024);
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Starter]); // 150 MB
+    expect($this->limits->remainingStorageBytes($workspace))->toBe(150 * 1024 * 1024);
     expect($this->limits->hasStorageFor($workspace, 100))->toBeTrue();
-    expect($this->limits->hasStorageFor($workspace, 500 * 1024 * 1024 + 1))->toBeFalse();
+    expect($this->limits->hasStorageFor($workspace, 150 * 1024 * 1024 + 1))->toBeFalse();
 });
