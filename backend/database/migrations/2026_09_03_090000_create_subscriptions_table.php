@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('workspace_id')->unique()->constrained()->cascadeOnDelete();
             $table->string('plan', 20)->default('starter');
-            $table->string('status', 20)->default('active');
+            $table->string('status', 20)->default('trialing');
             // Populated once Stripe is actually wired up — present now so
             // that later integration is a data-backfill, not a migration.
             $table->string('stripe_customer_id')->nullable();

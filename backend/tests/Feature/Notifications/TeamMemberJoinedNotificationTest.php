@@ -11,7 +11,7 @@ it('notifies existing members when someone accepts an invite and joins', functio
     $workspace = Workspace::factory()->create(['created_by' => $owner->id]);
     $workspace->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
     $workspace->members()->create(['user_id' => $existingMember->id, 'role' => WorkspaceRole::Viewer, 'status' => 'active', 'joined_at' => now()]);
-    // Free's 2-member cap would otherwise block inviting a third person.
+    // Starter's 2-member cap would otherwise block inviting a third person.
     $workspace->subscription()->update(['plan' => SubscriptionPlan::Business]);
 
     $invitee = User::factory()->create(['email' => 'invitee@example.com']);
