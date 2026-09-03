@@ -503,6 +503,7 @@
     "teamMemberCount_other": "{{count}} miembros de equipo",
     "storage": "de almacenamiento",
     "pageDescription": "{{workspace}} está en el plan {{plan}}.",
+    "pageDescriptionTrialing": "{{workspace}} está en una prueba gratuita.",
     "plans": "Planes",
     "upgradeTo": "Cambiar al plan {{plan}}",
     "manageBilling": "Gestionar facturación",

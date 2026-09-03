@@ -503,6 +503,7 @@
     "teamMemberCount_other": "{{count}} أعضاء فريق",
     "storage": "تخزين",
     "pageDescription": "{{workspace}} على خطة {{plan}}.",
+    "pageDescriptionTrialing": "{{workspace}} في فترة تجريبية مجانية.",
     "plans": "الخطط",
     "upgradeTo": "الترقية إلى {{plan}}",
     "manageBilling": "إدارة الفوترة",

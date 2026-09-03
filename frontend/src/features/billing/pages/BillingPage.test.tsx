@@ -6,6 +6,7 @@ import { MemoryRouter } from 'react-router-dom'
 import { describe, expect, it, vi } from 'vitest'
 import { BillingPage } from '@/features/billing/pages/BillingPage'
 import { server } from '@/test/server'
+import type { BillingData } from '@/types'
 
 const API_URL = 'http://localhost:8000'
 
@@ -21,10 +22,18 @@ const workspace = {
   updated_at: '2026-01-01T00:00:00.000000Z',
 }
 
-function billingResponse(overrides: Record<string, unknown> = {}) {
+function billingResponse(overrides: Partial<BillingData> = {}) {
   return {
     data: {
-      plan: 'starter',
+      // A trialing workspace's `plan` is always 'business' — see
+      // Workspace::booted() on the backend, which grants every new
+      // workspace a 14-day trial at full Business-tier limits. Typing
+      // `overrides` loosely used to let a scenario below combine
+      // `plan: 'starter'` with `subscription_status: 'trialing'`, a
+      // combination the real backend can never produce, and that's exactly
+      // what hid the BillingPage bug this test file now also covers
+      // (a trialing workspace being unable to check out into Business).
+      plan: 'business',
       subscription_status: 'trialing',
       trial_ends_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
       billing_interval: null,
@@ -143,5 +152,88 @@ describe('BillingPage', () => {
     await user.click(await screen.findByRole('button', { name: /choose a plan/i }))
 
     expect(scrollIntoView).toHaveBeenCalledWith({ behavior: 'smooth' })
+  })
+
+  it('shows no current-plan badge and offers an upgrade CTA on all three tiers (including Business) while trialing', async () => {
+    mockWorkspace()
+    // Default billingResponse() is plan: 'business', subscription_status:
+    // 'trialing' — the real shape of a never-subscribed workspace. Before
+    // the fix, isCurrent was computed from `plan` alone, so this exact
+    // state made the Business card show "Current plan" with no way to
+    // actually check out into it.
+    server.use(http.get(`${API_URL}/api/workspaces/:id/billing`, () => HttpResponse.json(billingResponse())))
+
+    renderBillingPage()
+
+    await screen.findByText('Business')
+    expect(screen.queryByText('Current plan')).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /upgrade to starter/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /upgrade to pro/i })).toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /upgrade to business/i })).toBeInTheDocument()
+  })
+
+  it('shows a current-plan badge and hides upgrade CTAs on tiers at or below the actually-subscribed plan', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ plan: 'pro', subscription_status: 'active', trial_ends_at: null }))
+      )
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText('Current plan')).toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /upgrade to starter/i })).not.toBeInTheDocument()
+    expect(screen.queryByRole('button', { name: /upgrade to pro/i })).not.toBeInTheDocument()
+    expect(screen.getByRole('button', { name: /upgrade to business/i })).toBeInTheDocument()
+  })
+
+  it('describes the workspace as on a free trial (not "on the Business plan") in the header while trialing', async () => {
+    mockWorkspace()
+    server.use(http.get(`${API_URL}/api/workspaces/:id/billing`, () => HttpResponse.json(billingResponse())))
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/free trial/i)).toBeInTheDocument()
+    expect(screen.queryByText(/is on the business plan/i)).not.toBeInTheDocument()
+  })
+
+  it('names the actual subscribed plan in the header once out of trial', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ plan: 'pro', subscription_status: 'active', trial_ends_at: null }))
+      )
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/is on the pro plan/i)).toBeInTheDocument()
+  })
+
+  it('shows a persistent locked-out banner for a canceled subscription', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ subscription_status: 'canceled', trial_ends_at: null }))
+      )
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/choose a plan to keep using this workspace/i)).toBeInTheDocument()
+  })
+
+  it('shows a persistent locked-out banner once the trial has expired', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ trial_ends_at: new Date(Date.now() - 60 * 1000).toISOString() }))
+      )
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/choose a plan to keep using this workspace/i)).toBeInTheDocument()
   })
 })

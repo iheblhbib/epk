@@ -503,6 +503,7 @@
     "teamMemberCount_other": "{{count}} membres d'équipe",
     "storage": "de stockage",
     "pageDescription": "{{workspace}} est au forfait {{plan}}.",
+    "pageDescriptionTrialing": "{{workspace}} est en période d'essai gratuite.",
     "plans": "Forfaits",
     "upgradeTo": "Passer au forfait {{plan}}",
     "manageBilling": "Gérer la facturation",

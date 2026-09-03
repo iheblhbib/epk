@@ -32,7 +32,7 @@ function PlanCard({
   plan,
   interval,
   isCurrent,
-  canManage,
+  showUpgrade,
   onUpgrade,
   isUpgrading,
   t,
@@ -40,7 +40,7 @@ function PlanCard({
   plan: PlanDetails
   interval: BillingInterval
   isCurrent: boolean
-  canManage: boolean
+  showUpgrade: boolean
   onUpgrade: () => void
   isUpgrading: boolean
   t: TFunction
@@ -93,7 +93,7 @@ function PlanCard({
             </li>
           ))}
         </ul>
-        {canManage && !isCurrent && (
+        {showUpgrade && (
           <Button size="sm" className="w-full" disabled={isUpgrading} onClick={onUpgrade}>
             {isUpgrading && <Loader2 className="size-4 animate-spin" />}
             {t('billing.upgradeTo', { plan: plan.label })}
@@ -105,6 +105,23 @@ function PlanCard({
 }
 
 function SubscriptionStatusBanner({ billing, t }: { billing: BillingData; t: TFunction }) {
+  // Both of these are hard lockouts (the access-gate middleware rejects
+  // every request except the billing routes themselves) — a toast fired
+  // just before the redirect that landed the user here can't be relied on
+  // to survive the navigation, so this banner is the durable explanation.
+  const isCanceled = billing.subscription_status === 'canceled'
+  const isExpiredTrial =
+    billing.subscription_status === 'trialing' && !!billing.trial_ends_at && new Date(billing.trial_ends_at) <= new Date()
+
+  if (isCanceled || isExpiredTrial) {
+    return (
+      <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+        <AlertTriangle className="size-4 shrink-0" />
+        {t('billing.lockedOut')}
+      </div>
+    )
+  }
+
   if (billing.subscription_status === 'past_due') {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
@@ -180,6 +197,15 @@ export function BillingPage() {
 
   const canManage = isAdminLevel(currentWorkspace.my_role)
 
+  // `billing.plan` is the tier the workspace's limits are computed at —
+  // during a trial that's always 'business' (see Workspace::booted()), not
+  // a plan anyone is actually paying for. "Currently subscribed" has to be
+  // derived from subscription_status instead, or a trialing workspace would
+  // show Business as its "current plan" with no way to actually check out
+  // into it.
+  const isSubscribed = billing.subscription_status === 'active' || billing.subscription_status === 'past_due'
+  const currentPlanIndex = isSubscribed ? PLAN_ORDER.indexOf(billing.plan) : -1
+
   const startCheckout = (plan: SubscriptionPlan) => {
     checkout.mutate(
       { plan, interval },
@@ -207,7 +233,9 @@ export function BillingPage() {
         <div>
           <h1 className="font-heading text-2xl font-semibold text-foreground">{t('nav.billing')}</h1>
           <p className="text-sm text-muted-foreground">
-            {t('billing.pageDescription', { workspace: currentWorkspace.name, plan: billing.plans[billing.plan].label })}
+            {isSubscribed
+              ? t('billing.pageDescription', { workspace: currentWorkspace.name, plan: billing.plans[billing.plan].label })
+              : t('billing.pageDescriptionTrialing', { workspace: currentWorkspace.name })}
           </p>
         </div>
         {canManage && billing.has_stripe_customer && (
@@ -255,18 +283,26 @@ export function BillingPage() {
           </div>
         </div>
         <div className="grid gap-4 pt-3 md:grid-cols-3">
-          {PLAN_ORDER.map((plan) => (
-            <PlanCard
-              key={plan}
-              plan={billing.plans[plan]}
-              interval={interval}
-              isCurrent={plan === billing.plan}
-              canManage={canManage}
-              isUpgrading={checkout.isPending && checkout.variables?.plan === plan}
-              onUpgrade={() => startCheckout(plan)}
-              t={t}
-            />
-          ))}
+          {PLAN_ORDER.map((plan, index) => {
+            const isCurrent = isSubscribed && plan === billing.plan
+            // Never offer an "upgrade" to a tier below the one already
+            // being paid for — that's a downgrade, and this page doesn't
+            // handle those (the Stripe Customer Portal does).
+            const showUpgrade = canManage && !isCurrent && index >= currentPlanIndex
+
+            return (
+              <PlanCard
+                key={plan}
+                plan={billing.plans[plan]}
+                interval={interval}
+                isCurrent={isCurrent}
+                showUpgrade={showUpgrade}
+                isUpgrading={checkout.isPending && checkout.variables?.plan === plan}
+                onUpgrade={() => startCheckout(plan)}
+                t={t}
+              />
+            )
+          })}
         </div>
       </div>
     </div>

@@ -503,6 +503,7 @@
     "teamMemberCount_other": "{{count}} team members",
     "storage": "storage",
     "pageDescription": "{{workspace}} is on the {{plan}} plan.",
+    "pageDescriptionTrialing": "{{workspace}} is on a free trial.",
     "plans": "Plans",
     "upgradeTo": "Upgrade to {{plan}}",
     "manageBilling": "Manage billing",

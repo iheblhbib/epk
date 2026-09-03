@@ -503,6 +503,7 @@
     "teamMemberCount_other": "{{count}} Teammitglieder",
     "storage": "Speicher",
     "pageDescription": "{{workspace}} nutzt den Tarif {{plan}}.",
+    "pageDescriptionTrialing": "{{workspace}} befindet sich in der kostenlosen Testphase.",
     "plans": "Tarife",
     "upgradeTo": "Auf {{plan}} upgraden",
     "manageBilling": "Abrechnung verwalten",
