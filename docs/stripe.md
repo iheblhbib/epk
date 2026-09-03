@@ -70,7 +70,7 @@ With `STRIPE_KEY`/`STRIPE_SECRET` still in **test mode**:
 2. On Stripe's Checkout page, use a [test card](https://docs.stripe.com/testing#cards) — `4242 4242 4242 4242`, any future expiry, any CVC, any postal code.
 3. After paying, you're redirected back to `/billing?checkout=success`. The plan itself updates a moment later once the webhook lands — refresh if it hasn't shown up within a few seconds.
 4. Click **Manage billing** to confirm the Stripe Customer Portal opens and shows the subscription.
-5. To test cancellation syncing: cancel the subscription from the portal, then check the workspace's plan reverts to the trial status.
+5. To test cancellation syncing: cancel the subscription from the portal, then check the workspace's subscription status becomes `canceled`. There's no reverting to a trial — a canceled workspace is hard-locked out (same as an expired trial) until someone subscribes again through Checkout.
 
 If you have the [Stripe CLI](https://docs.stripe.com/stripe-cli) installed, `stripe listen --forward-to localhost:8000/api/stripe/webhook` lets you test the whole flow against your local dev server before deploying anywhere — it prints its own webhook signing secret when it starts, which you'd use as `STRIPE_WEBHOOK_SECRET` for that local session only (don't confuse it with your real Dashboard-created endpoint's secret).
 
@@ -80,4 +80,4 @@ Once you're happy in test mode: flip the Dashboard to **Live mode**, redo steps 
 
 ## What an admin plan override still does
 
-Manually setting a workspace's plan via `/admin/workspaces/{workspace}/subscription` (the admin panel) never touches Stripe at all — it's a direct database write, meant for comps, manual grants, or fixing a support issue. It doesn't create a Stripe customer or subscription, so a workspace an admin bumped to Pro this way won't show a **Manage billing** button until it actually has a real Stripe subscription (i.e., someone has gone through Checkout at least once).
+Manually setting a workspace's plan via `/admin/workspaces/{workspace}/subscription` (the admin panel) never touches Stripe at all — it's a direct database write, meant for comps, manual grants, or fixing a support issue. Any of the three packs (Starter, Pro, or Business) is a valid override target. Alongside `plan`, it also sets the subscription's status to `active` and clears `trial_ends_at` — that's what actually unlocks a workspace that was locked out (an expired trial or a canceled subscription): the access-gate middleware keys off status/trial_ends_at, not plan, so writing plan alone wouldn't have unlocked anything. It doesn't create a Stripe customer or subscription, so a workspace an admin bumped this way won't show a **Manage billing** button until it actually has a real Stripe subscription (i.e., someone has gone through Checkout at least once).
