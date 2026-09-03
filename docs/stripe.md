@@ -18,14 +18,15 @@ Dashboard → **Developers → API keys**:
 - **Publishable key** (`pk_test_...` / `pk_live_...`) → `STRIPE_KEY` (the backend doesn't currently render anything client-side with this, but it's conventional to have it set)
 - **Secret key** (`sk_test_...` / `sk_live_...`) → `STRIPE_SECRET` — never commit this or share it; treat it like a password
 
-## 3. Create a Product and a Price for each paid plan
+## 3. Create a Product with two Prices for each pack
 
-Dashboard → **Product catalog → Add product**. KORAX has two paid tiers (`config/plans.php`) — create one Product per tier:
+Dashboard → **Product catalog → Add product**. KORAX has three packs (`config/plans.php`) — create one Product per pack, each with **two** recurring Prices attached (monthly and yearly):
 
-1. **Pro** — set a recurring monthly price (whatever you want to charge). Save, then open the price you just created and copy its id — it looks like `price_1AbCdEfGhIjKlMnO`.
-2. **Business** — same steps, its own price.
+1. **Starter** — €6.66/month recurring, plus a second price: €66.60/year recurring (yearly interval, billed as one annual charge — not a monthly price with a discount).
+2. **Pro** — €26.66/month, plus €266.64/year.
+3. **Business** — €99.99/month, plus €999.96/year.
 
-(Free has no Stripe price — there's nothing to check out for it.)
+For each price you create, copy its id (`price_1AbCdEfGhIjKlMnO`) — you'll need all six.
 
 ## 4. Set the environment variables
 
@@ -34,9 +35,13 @@ In `backend/.env`:
 ```bash
 STRIPE_KEY=pk_test_...
 STRIPE_SECRET=sk_test_...
-STRIPE_WEBHOOK_SECRET=whsec_...        # from step 5 below
-STRIPE_PRICE_PRO=price_...             # the Pro price id from step 3
-STRIPE_PRICE_BUSINESS=price_...        # the Business price id from step 3
+STRIPE_WEBHOOK_SECRET=whsec_...
+STRIPE_PRICE_STARTER_MONTHLY=price_...
+STRIPE_PRICE_STARTER_YEARLY=price_...
+STRIPE_PRICE_PRO_MONTHLY=price_...
+STRIPE_PRICE_PRO_YEARLY=price_...
+STRIPE_PRICE_BUSINESS_MONTHLY=price_...
+STRIPE_PRICE_BUSINESS_YEARLY=price_...
 ```
 
 If `APP_ENV=production` and you've run `php artisan optimize` (which caches config), re-run `php artisan config:cache` after changing any of these — a cached config won't pick up a `.env` edit otherwise.
@@ -65,7 +70,7 @@ With `STRIPE_KEY`/`STRIPE_SECRET` still in **test mode**:
 2. On Stripe's Checkout page, use a [test card](https://docs.stripe.com/testing#cards) — `4242 4242 4242 4242`, any future expiry, any CVC, any postal code.
 3. After paying, you're redirected back to `/billing?checkout=success`. The plan itself updates a moment later once the webhook lands — refresh if it hasn't shown up within a few seconds.
 4. Click **Manage billing** to confirm the Stripe Customer Portal opens and shows the subscription.
-5. To test cancellation syncing back down to Free: cancel the subscription from the portal, then check the workspace's plan reverts.
+5. To test cancellation syncing: cancel the subscription from the portal, then check the workspace's plan reverts to the trial status.
 
 If you have the [Stripe CLI](https://docs.stripe.com/stripe-cli) installed, `stripe listen --forward-to localhost:8000/api/stripe/webhook` lets you test the whole flow against your local dev server before deploying anywhere — it prints its own webhook signing secret when it starts, which you'd use as `STRIPE_WEBHOOK_SECRET` for that local session only (don't confuse it with your real Dashboard-created endpoint's secret).
 
