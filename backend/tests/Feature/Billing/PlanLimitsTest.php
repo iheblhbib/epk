@@ -120,6 +120,26 @@ it('lets an admin change a workspace plan, unlocking that workspace\'s limits', 
     $this->assertDatabaseHas('audit_logs', ['action' => 'workspace.plan_changed_by_admin', 'subject_id' => $workspace->id]);
 });
 
+it('unlocks a previously locked-out workspace when an admin overrides its plan', function () {
+    $admin = User::factory()->admin()->create();
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
+    $workspace->subscription()->update(['status' => SubscriptionStatus::Canceled, 'trial_ends_at' => now()->subDay()]);
+
+    // Confirm the workspace is genuinely locked out before the override.
+    $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}")->assertStatus(402);
+
+    $this->actingAs($admin)->patchJson("/api/admin/workspaces/{$workspace->id}/subscription", [
+        'plan' => SubscriptionPlan::Pro->value,
+    ])->assertOk();
+
+    $subscription = $workspace->subscription->fresh();
+    expect($subscription->status)->toBe(SubscriptionStatus::Active)
+        ->and($subscription->trial_ends_at)->toBeNull();
+
+    // The access-gate middleware now lets the workspace through.
+    $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}")->assertOk();
+});
+
 it('returns plan, usage, and the plan comparison table from the billing endpoint', function () {
     [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
 
