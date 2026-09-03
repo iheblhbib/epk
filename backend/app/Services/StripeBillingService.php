@@ -6,6 +6,7 @@ use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use App\Models\Subscription;
 use App\Models\Workspace;
+use Illuminate\Support\Facades\Log;
 use RuntimeException;
 use Stripe\Event;
 use Stripe\Exception\SignatureVerificationException;
@@ -114,26 +115,34 @@ class StripeBillingService
         // 2026-08-26.dahlia, well past that change.
         $periodEnd = $firstItem?->current_period_end ?? null;
 
-        [$plan, $interval] = $this->planAndIntervalFromPriceId($priceId);
+        [$plan, $interval] = $this->planAndIntervalFromPriceId($priceId, (int) $workspaceId);
 
-        Subscription::updateOrCreate(
-            ['workspace_id' => $workspaceId],
-            [
-                'plan' => $plan,
-                'billing_interval' => $interval,
-                'status' => $this->mapStatus($stripeSubscription->status),
-                'stripe_customer_id' => is_string($stripeSubscription->customer)
-                    ? $stripeSubscription->customer
-                    : $stripeSubscription->customer->id,
-                'stripe_subscription_id' => $stripeSubscription->id,
-                'current_period_ends_at' => $periodEnd !== null
-                    ? now()->createFromTimestamp($periodEnd)
-                    : null,
-                'canceled_at' => $stripeSubscription->canceled_at !== null
-                    ? now()->createFromTimestamp($stripeSubscription->canceled_at)
-                    : null,
-            ]
-        );
+        $attributes = [
+            'plan' => $plan,
+            'billing_interval' => $interval,
+            'stripe_customer_id' => is_string($stripeSubscription->customer)
+                ? $stripeSubscription->customer
+                : $stripeSubscription->customer->id,
+            'stripe_subscription_id' => $stripeSubscription->id,
+            'current_period_ends_at' => $periodEnd !== null
+                ? now()->createFromTimestamp($periodEnd)
+                : null,
+            'canceled_at' => $stripeSubscription->canceled_at !== null
+                ? now()->createFromTimestamp($stripeSubscription->canceled_at)
+                : null,
+        ];
+
+        // 'incomplete' is a transient, non-final Stripe state (a
+        // subscription mid-checkout, awaiting 3DS/SCA confirmation) — not
+        // the same thing as a failed payment. Leaving the local `status`
+        // untouched here avoids briefly showing a user who just paid as
+        // locked-out-as-if-they-failed-to-pay before the follow-up webhook
+        // resolves it to 'active'.
+        if ($stripeSubscription->status !== 'incomplete') {
+            $attributes['status'] = $this->mapStatus($stripeSubscription->status);
+        }
+
+        Subscription::updateOrCreate(['workspace_id' => $workspaceId], $attributes);
     }
 
     /**
@@ -155,6 +164,7 @@ class StripeBillingService
         Subscription::where('workspace_id', $workspaceId)->update([
             'status' => SubscriptionStatus::Canceled,
             'stripe_subscription_id' => null,
+            'billing_interval' => null,
             'canceled_at' => now(),
         ]);
     }
@@ -162,7 +172,7 @@ class StripeBillingService
     /**
      * @return array{0: SubscriptionPlan, 1: string|null}
      */
-    private function planAndIntervalFromPriceId(?string $priceId): array
+    private function planAndIntervalFromPriceId(?string $priceId, int $workspaceId): array
     {
         if ($priceId !== null) {
             foreach (SubscriptionPlan::cases() as $plan) {
@@ -174,7 +184,21 @@ class StripeBillingService
             }
         }
 
-        return [SubscriptionPlan::Starter, null];
+        // No configured price id matches the one on the incoming webhook —
+        // most likely a misconfigured/rotated Stripe price id. Falling back
+        // to a hardcoded plan here would silently downgrade (or upgrade) a
+        // subscriber with no record of why; keep whatever plan the
+        // workspace already has instead, and log so the mismatch gets
+        // noticed and fixed.
+        Log::warning("Stripe webhook: no configured plan/interval matches price id {$priceId}", [
+            'workspace_id' => $workspaceId,
+        ]);
+
+        // ->first()?->plan (not ->value('plan')): value() reads the raw
+        // column via the query builder, bypassing Eloquent's enum cast.
+        $existingPlan = Subscription::where('workspace_id', $workspaceId)->first()?->plan;
+
+        return [$existingPlan ?? SubscriptionPlan::Starter, null];
     }
 
     private function mapStatus(string $stripeStatus): SubscriptionStatus
