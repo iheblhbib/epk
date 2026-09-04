@@ -49,58 +49,67 @@ function PlanCard({
   const displayedPrice = interval === 'yearly' ? pricing.yearlyEffectiveMonthly : pricing.monthly
 
   return (
-    <Card className={isCurrent ? 'relative border-primary ring-1 ring-primary' : 'relative'}>
+    // The "Most popular" badge floats half above the card's own top edge by
+    // design (straddling the border, not tucked inside it) -- shadcn's Card
+    // has `overflow-hidden` baked into its base styles (for rounded-corner
+    // image/footer clipping elsewhere), which would clip off the top half of
+    // an absolutely-positioned child poking past that boundary. Positioning
+    // the badge against this outer wrapper instead of the Card itself keeps
+    // it out of Card's own clipping box.
+    <div className="relative">
       {plan.plan === 'pro' && (
-        <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2">{t('billing.mostPopular')}</Badge>
+        <Badge className="absolute -top-2.5 left-1/2 z-10 -translate-x-1/2">{t('billing.mostPopular')}</Badge>
       )}
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <CardTitle>{plan.label}</CardTitle>
-          {isCurrent && <Badge variant="secondary">{t('billing.currentPlan')}</Badge>}
-        </div>
-        <div className="pt-2">
-          {interval === 'yearly' && (
-            <p className="text-sm text-muted-foreground line-through">{formatEuro(pricing.monthly)}/{t('billing.perMonth')}</p>
-          )}
-          <p className="text-3xl font-bold text-foreground">
-            {formatEuro(displayedPrice)}
-            <span className="text-sm font-normal text-muted-foreground">/{t('billing.perMonth')}</span>
-          </p>
-          {interval === 'yearly' && (
-            <p className="text-xs text-muted-foreground">
-              {t('billing.billedAnnually', { amount: formatEuro(yearlyTotal(plan.plan)) })}
+      <Card className={isCurrent ? 'border-primary ring-1 ring-primary' : undefined}>
+        <CardHeader>
+          <div className="flex items-center justify-between">
+            <CardTitle>{plan.label}</CardTitle>
+            {isCurrent && <Badge variant="secondary">{t('billing.currentPlan')}</Badge>}
+          </div>
+          <div className="pt-2">
+            {interval === 'yearly' && (
+              <p className="text-sm text-muted-foreground line-through">{formatEuro(pricing.monthly)}/{t('billing.perMonth')}</p>
+            )}
+            <p className="text-3xl font-bold text-foreground">
+              {formatEuro(displayedPrice)}
+              <span className="text-sm font-normal text-muted-foreground">/{t('billing.perMonth')}</span>
             </p>
+            {interval === 'yearly' && (
+              <p className="text-xs text-muted-foreground">
+                {t('billing.billedAnnually', { amount: formatEuro(yearlyTotal(plan.plan)) })}
+              </p>
+            )}
+          </div>
+          <CardDescription>
+            {plan.max_epks === null ? t('billing.unlimitedEpks') : t('billing.epkCount', { count: plan.max_epks })} ·{' '}
+            {plan.max_team_members === null
+              ? t('billing.unlimitedTeamMembers')
+              : t('billing.teamMemberCount', { count: plan.max_team_members })}{' '}
+            · {formatBytes(plan.max_storage_bytes ?? 0)} {t('billing.storage')}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-3">
+          <ul className="space-y-2 text-sm">
+            {FEATURE_ROW_KEYS.map((row) => (
+              <li key={row.key} className="flex items-center gap-2">
+                {plan[row.key] ? (
+                  <Check className="size-4 shrink-0 text-success" />
+                ) : (
+                  <Minus className="size-4 shrink-0 text-muted-foreground" />
+                )}
+                <span className={plan[row.key] ? 'text-foreground' : 'text-muted-foreground'}>{t(row.labelKey)}</span>
+              </li>
+            ))}
+          </ul>
+          {showUpgrade && (
+            <Button size="sm" className="w-full" disabled={isUpgrading} onClick={onUpgrade}>
+              {isUpgrading && <Loader2 className="size-4 animate-spin" />}
+              {t('billing.upgradeTo', { plan: plan.label })}
+            </Button>
           )}
-        </div>
-        <CardDescription>
-          {plan.max_epks === null ? t('billing.unlimitedEpks') : t('billing.epkCount', { count: plan.max_epks })} ·{' '}
-          {plan.max_team_members === null
-            ? t('billing.unlimitedTeamMembers')
-            : t('billing.teamMemberCount', { count: plan.max_team_members })}{' '}
-          · {formatBytes(plan.max_storage_bytes ?? 0)} {t('billing.storage')}
-        </CardDescription>
-      </CardHeader>
-      <CardContent className="space-y-3">
-        <ul className="space-y-2 text-sm">
-          {FEATURE_ROW_KEYS.map((row) => (
-            <li key={row.key} className="flex items-center gap-2">
-              {plan[row.key] ? (
-                <Check className="size-4 shrink-0 text-success" />
-              ) : (
-                <Minus className="size-4 shrink-0 text-muted-foreground" />
-              )}
-              <span className={plan[row.key] ? 'text-foreground' : 'text-muted-foreground'}>{t(row.labelKey)}</span>
-            </li>
-          ))}
-        </ul>
-        {showUpgrade && (
-          <Button size="sm" className="w-full" disabled={isUpgrading} onClick={onUpgrade}>
-            {isUpgrading && <Loader2 className="size-4 animate-spin" />}
-            {t('billing.upgradeTo', { plan: plan.label })}
-          </Button>
-        )}
-      </CardContent>
-    </Card>
+        </CardContent>
+      </Card>
+    </div>
   )
 }
 
