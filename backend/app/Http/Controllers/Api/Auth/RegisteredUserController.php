@@ -12,6 +12,8 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class RegisteredUserController extends Controller
 {
@@ -33,7 +35,23 @@ class RegisteredUserController extends Controller
             'locale' => Locale::from(app()->getLocale()),
         ]);
 
-        event(new Registered($user));
+        // Sending the verification email happens synchronously (see
+        // WorkspaceInvitationNotification's docblock -- no queue worker is
+        // assumed to be running), so a mail-server outage would otherwise
+        // bubble an uncaught transport exception all the way up and 500 the
+        // whole registration -- even though the account itself was already
+        // created successfully above. The user can always hit "resend"
+        // once mail is working again; they shouldn't be locked out of an
+        // account that demonstrably exists because of an unrelated SMTP
+        // hiccup.
+        try {
+            event(new Registered($user));
+        } catch (Throwable $e) {
+            Log::error('Failed to send the verification email during registration.', [
+                'user_id' => $user->id,
+                'exception' => $e,
+            ]);
+        }
 
         Auth::guard('web')->login($user);
 

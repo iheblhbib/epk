@@ -55,6 +55,24 @@ it('rejects a tampered or expired signature', function () {
     expect($user->fresh()->hasVerifiedEmail())->toBeFalse();
 });
 
+it('returns a friendly 503 instead of crashing when resending the verification email fails to send', function () {
+    // Same real-transport-failure technique as RegistrationTest -- port 1
+    // on localhost refuses the connection immediately, giving a genuine
+    // TransportException without a slow DNS-timeout wait.
+    config([
+        'mail.default' => 'smtp',
+        'mail.mailers.smtp.host' => '127.0.0.1',
+        'mail.mailers.smtp.port' => 1,
+    ]);
+
+    $user = User::factory()->unverified()->create();
+
+    $this->actingAs($user)
+        ->postJson('/api/email/verification-notification')
+        ->assertStatus(503)
+        ->assertJsonPath('message', 'We could not send the verification email right now — please try again in a moment.');
+});
+
 it('throttles resending the verification email', function () {
     Notification::fake();
 
