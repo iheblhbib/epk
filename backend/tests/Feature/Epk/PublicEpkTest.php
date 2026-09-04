@@ -211,6 +211,30 @@ it('resolves music tracks to audio urls, falling back to the filename when untit
     $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
 });
 
+it('resolves music tracks whose title key is entirely absent, not just empty', function () {
+    // Distinct from the "falling back to filename when untitled" test above
+    // (title: '' -- key present, empty string). The builder can save a
+    // track with no 'title' key in the array at all (confirmed via a real
+    // EPK's stored config), which crashes differently: `$track['title'] ?:
+    // ...` dereferences the key before checking truthiness, so a genuinely
+    // missing key throws "Undefined array key" -- `??` doesn't.
+    $epk = makePublishedEpk();
+    $audio = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'live-take.mp3']);
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [['provider' => 'upload', 'audio_media_id' => $audio->id]]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.tracks.0.title', 'live-take.mp3');
+    $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
+});
+
 it('resolves spotify/soundcloud embed tracks alongside uploaded audio', function () {
     $epk = makePublishedEpk();
     $upload = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'live-take.mp3']);

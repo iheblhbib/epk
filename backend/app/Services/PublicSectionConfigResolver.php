@@ -133,7 +133,13 @@ class PublicSectionConfigResolver
                             }
 
                             return [
-                                'title' => $track['title'] ?: $media->original_filename,
+                                // ?? before ?: -- a track saved with no 'title'
+                                // key at all (not just an empty one) would
+                                // otherwise throw "Undefined array key" on
+                                // the bare array access, since ?: still
+                                // dereferences the key before checking
+                                // truthiness.
+                                'title' => ($track['title'] ?? null) ?: $media->original_filename,
                                 'provider' => 'upload',
                                 'audio_url' => $media->url(),
                                 'mime_type' => $media->mime_type,
