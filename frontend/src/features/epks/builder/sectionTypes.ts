@@ -50,4 +50,8 @@ export const ADDABLE_SECTION_ORDER: SectionType[] = [
   'custom',
 ]
 
-export const SINGLETON_SECTION_TYPES: SectionType[] = ['hero']
+// Every section type is single-use -- an EPK can only have one of each, same
+// as Hero always was. Kept as its own list (rather than inlining the check
+// against ADDABLE_SECTION_ORDER) so a future section type could opt back
+// out of this rule without disturbing the add-menu's display order.
+export const SINGLETON_SECTION_TYPES: SectionType[] = [...ADDABLE_SECTION_ORDER]
