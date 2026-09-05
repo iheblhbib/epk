@@ -1002,7 +1002,19 @@
       "description": "Pode ter sido despublicado ou o link pode estar incorreto."
     },
     "readThePiece": "Ler o artigo",
-    "downloadPdf": "Transferir PDF"
+    "downloadPdf": "Transferir PDF",
+    "music": {
+      "download": "Transferir",
+      "downloadAll": "Transferir tudo",
+      "details": "Detalhes",
+      "detailsDialog": {
+        "title": "Detalhes do ficheiro",
+        "filename": "Nome do ficheiro",
+        "size": "Tamanho",
+        "format": "Formato",
+        "duration": "Duração"
+      }
+    }
   },
   "privateEpk": {
     "passwordGate": {

@@ -1,7 +1,9 @@
-import { AtSign, Camera, Download, ExternalLink, Globe, Mail, MapPin, MessageCircle, Music2, Music4, Phone, Quote, Video } from 'lucide-react'
+import { AtSign, Camera, Download, ExternalLink, Globe, Info, Mail, MapPin, MessageCircle, MoreHorizontal, Music2, Music4, Phone, Quote, Video } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { buttonRadiusClass, resolveTheme, type HeaderStyle } from '@/lib/epkThemes'
 import { cn } from '@/lib/utils'
 import type {
@@ -18,6 +20,7 @@ import type {
   PublicPressConfig,
   PublicReleasesConfig,
   PublicSocialNetworksConfig,
+  PublicTrackItem,
   PublicVideosConfig,
   ReleaseLinks,
 } from '@/types'
@@ -77,6 +80,12 @@ function formatBytes(bytes: number): string {
   const exponent = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)), units.length - 1)
   const value = bytes / 1024 ** exponent
   return `${exponent === 0 ? value : value.toFixed(1)} ${units[exponent]}`
+}
+
+function formatDuration(seconds: number): string {
+  const mins = Math.floor(seconds / 60)
+  const secs = Math.floor(seconds % 60)
+  return `${mins}:${secs.toString().padStart(2, '0')}`
 }
 
 function HeroSection({
@@ -337,7 +346,15 @@ function PhotosSection({ title, headerStyle, config }: { title: string; headerSt
 }
 
 /** Fires its play event at most once, no matter how many times the visitor pauses/resumes. */
-function TrackAudio({ src, onFirstPlay }: { src?: string; onFirstPlay: () => void }) {
+function TrackAudio({
+  src,
+  onFirstPlay,
+  onDuration,
+}: {
+  src?: string
+  onFirstPlay: () => void
+  onDuration?: (seconds: number) => void
+}) {
   const hasPlayed = useRef(false)
 
   return (
@@ -350,7 +367,56 @@ function TrackAudio({ src, onFirstPlay }: { src?: string; onFirstPlay: () => voi
         hasPlayed.current = true
         onFirstPlay()
       }}
+      onLoadedMetadata={(event) => onDuration?.(event.currentTarget.duration)}
     />
+  )
+}
+
+function TrackDetailsDialog({
+  open,
+  onOpenChange,
+  track,
+  duration,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  track: PublicTrackItem
+  duration?: number
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{t('publicEpk.music.detailsDialog.title')}</DialogTitle>
+        </DialogHeader>
+        <dl className="space-y-2 text-sm">
+          <div className="flex justify-between gap-4">
+            <dt className="text-muted-foreground">{t('publicEpk.music.detailsDialog.filename')}</dt>
+            <dd className="truncate font-medium text-foreground">{track.filename}</dd>
+          </div>
+          {typeof track.size === 'number' && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">{t('publicEpk.music.detailsDialog.size')}</dt>
+              <dd className="font-medium text-foreground">{formatBytes(track.size)}</dd>
+            </div>
+          )}
+          {track.mime_type && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">{t('publicEpk.music.detailsDialog.format')}</dt>
+              <dd className="font-medium text-foreground">{track.mime_type}</dd>
+            </div>
+          )}
+          {typeof duration === 'number' && (
+            <div className="flex justify-between gap-4">
+              <dt className="text-muted-foreground">{t('publicEpk.music.detailsDialog.duration')}</dt>
+              <dd className="font-medium text-foreground">{formatDuration(duration)}</dd>
+            </div>
+          )}
+        </dl>
+      </DialogContent>
+    </Dialog>
   )
 }
 
@@ -365,16 +431,73 @@ function MusicSection({
   config: PublicMusicConfig
   onTrack: TrackFn
 }) {
+  const { t } = useTranslation()
+  // Keyed by track index -- read client-side from each <audio> element's
+  // loadedmetadata event, since the backend has no reason to probe media
+  // duration server-side just for this detail panel.
+  const [durations, setDurations] = useState<Record<number, number>>({})
+  const [detailsIndex, setDetailsIndex] = useState<number | null>(null)
+
   if (!config.tracks || config.tracks.length === 0) return null
+
+  const detailsTrack = detailsIndex !== null ? config.tracks[detailsIndex] : undefined
 
   return (
     <SectionContainer title={title} headerStyle={headerStyle}>
+      {config.download_all_url && (
+        <a
+          href={config.download_all_url}
+          className="mb-4 inline-flex items-center gap-2 border border-[var(--epk-border)] px-4 py-2 text-sm font-medium text-[var(--epk-fg)] transition-colors hover:border-[var(--epk-accent)]"
+          style={{ borderRadius: 'var(--epk-radius)' }}
+        >
+          <Download className="size-4" />
+          {t('publicEpk.music.downloadAll')}
+        </a>
+      )}
       <ul className="space-y-4">
         {config.tracks.map((track, index) => (
           <li key={index}>
-            {track.title && <p className="mb-1.5 text-sm font-medium text-[var(--epk-fg)]">{track.title}</p>}
+            <div className="mb-1.5 flex items-center justify-between gap-2">
+              {track.title ? (
+                <p className="truncate text-sm font-medium text-[var(--epk-fg)]">{track.title}</p>
+              ) : (
+                <span />
+              )}
+              {track.provider === 'upload' && track.download_url && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger
+                    render={
+                      <button
+                        type="button"
+                        className="shrink-0 rounded-full p-1 text-[var(--epk-muted)] transition-colors hover:text-[var(--epk-fg)]"
+                        aria-label={t('publicEpk.music.details')}
+                      />
+                    }
+                  >
+                    <MoreHorizontal className="size-4" />
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <DropdownMenuItem
+                      render={<a href={track.download_url} />}
+                      onClick={() => onTrack('download', { filename: track.filename })}
+                    >
+                      <Download className="size-4" />
+                      {t('publicEpk.music.download')}
+                    </DropdownMenuItem>
+                    <DropdownMenuItem onClick={() => setDetailsIndex(index)}>
+                      <Info className="size-4" />
+                      {t('publicEpk.music.details')}
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
             {track.provider === 'upload' || !track.provider ? (
-              <TrackAudio src={track.audio_url} onFirstPlay={() => onTrack('audio_play')} />
+              <TrackAudio
+                src={track.audio_url}
+                onFirstPlay={() => onTrack('audio_play')}
+                onDuration={(seconds) => setDurations((prev) => ({ ...prev, [index]: seconds }))}
+              />
             ) : (
               <iframe
                 src={track.embed_url}
@@ -389,6 +512,16 @@ function MusicSection({
           </li>
         ))}
       </ul>
+      {detailsTrack && (
+        <TrackDetailsDialog
+          open={detailsIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setDetailsIndex(null)
+          }}
+          track={detailsTrack}
+          duration={detailsIndex !== null ? durations[detailsIndex] : undefined}
+        />
+      )}
     </SectionContainer>
   )
 }

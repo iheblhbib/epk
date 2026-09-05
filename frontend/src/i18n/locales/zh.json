@@ -1002,7 +1002,19 @@
       "description": "它可能已取消发布，或链接不正确。"
     },
     "readThePiece": "阅读全文",
-    "downloadPdf": "下载 PDF"
+    "downloadPdf": "下载 PDF",
+    "music": {
+      "download": "下载",
+      "downloadAll": "全部下载",
+      "details": "详情",
+      "detailsDialog": {
+        "title": "文件详情",
+        "filename": "文件名",
+        "size": "大小",
+        "format": "格式",
+        "duration": "时长"
+      }
+    }
   },
   "privateEpk": {
     "passwordGate": {

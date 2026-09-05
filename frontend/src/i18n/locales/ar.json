@@ -1002,7 +1002,19 @@
       "description": "ربما تم إلغاء نشره أو أن الرابط غير صحيح."
     },
     "readThePiece": "قراءة المقال",
-    "downloadPdf": "تنزيل PDF"
+    "downloadPdf": "تنزيل PDF",
+    "music": {
+      "download": "تنزيل",
+      "downloadAll": "تنزيل الكل",
+      "details": "التفاصيل",
+      "detailsDialog": {
+        "title": "تفاصيل الملف",
+        "filename": "اسم الملف",
+        "size": "الحجم",
+        "format": "الصيغة",
+        "duration": "المدة"
+      }
+    }
   },
   "privateEpk": {
     "passwordGate": {

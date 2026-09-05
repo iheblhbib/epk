@@ -72,6 +72,9 @@ Route::get('/public/epks/{slug}/pdf', [EpkPdfController::class, 'downloadPublic'
     ->middleware('throttle:20,1');
 Route::get('/public/epks/{slug}/downloads/{media}', [PublicEpkController::class, 'downloadFile'])
     ->name('public.epk.download');
+Route::get('/public/epks/{slug}/music/download-all', [PublicEpkController::class, 'downloadAllMusic'])
+    ->name('public.epk.music.download-all')
+    ->middleware('throttle:10,1');
 Route::post('/public/epks/{slug}/events', [PublicAnalyticsEventController::class, 'store'])
     ->middleware('throttle:120,1');
 
@@ -85,6 +88,9 @@ Route::post('/private/{token}/verify', [PrivatePageController::class, 'verify'])
 Route::get('/private/{token}/downloads/{media}', [PrivatePageController::class, 'downloadFile'])
     ->name('private.download')
     ->middleware('throttle:60,1');
+Route::get('/private/{token}/music/download-all', [PrivatePageController::class, 'downloadAllMusic'])
+    ->name('private.music.download-all')
+    ->middleware('throttle:10,1');
 Route::post('/private/{token}/events', [PrivatePageController::class, 'storeEvent'])
     ->middleware('throttle:120,1');
 

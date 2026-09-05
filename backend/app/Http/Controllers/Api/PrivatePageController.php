@@ -8,12 +8,15 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAnalyticsEventRequest;
 use App\Http\Resources\PublicEpkResource;
 use App\Models\Epk;
+use App\Models\EpkSection;
 use App\Models\Media;
 use App\Models\PrivateLink;
 use App\Services\AnalyticsEventLogger;
+use App\Services\MusicZipBuilder;
 use App\Services\PublicSectionConfigResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -30,6 +33,7 @@ class PrivatePageController extends Controller
     public function __construct(
         private readonly PublicSectionConfigResolver $resolver,
         private readonly AnalyticsEventLogger $logger,
+        private readonly MusicZipBuilder $zipBuilder,
     ) {}
 
     public function show(Request $request, string $token): JsonResponse
@@ -79,16 +83,56 @@ class PrivatePageController extends Controller
         $link = $this->findActiveLink($token);
         abort_if($link->requiresPassword() && ! $this->isVerified($request, $link), 401);
 
-        $allowedMediaIds = $link->epk->sections()
-            ->where('type', SectionType::Downloads->value)
+        $sections = $link->epk->sections()
+            ->whereIn('type', [SectionType::Downloads->value, SectionType::Music->value])
             ->where('is_enabled', true)
-            ->get()
-            ->flatMap(fn ($section) => $section->config['media_ids'] ?? [])
-            ->map(fn ($id) => (int) $id);
+            ->get();
 
-        abort_unless($allowedMediaIds->contains($media->id), 404);
+        abort_unless($this->allowedMediaIds($sections)->contains($media->id), 404);
 
         return Storage::disk($media->disk)->download($media->path, $media->original_filename);
+    }
+
+    public function downloadAllMusic(Request $request, string $token): StreamedResponse
+    {
+        $link = $this->findActiveLink($token);
+        abort_if($link->requiresPassword() && ! $this->isVerified($request, $link), 401);
+
+        $sections = $link->epk->sections()
+            ->where('type', SectionType::Music->value)
+            ->where('is_enabled', true)
+            ->get();
+
+        $mediaIds = $this->allowedMediaIds($sections);
+        abort_if($mediaIds->isEmpty(), 404);
+
+        $mediaItems = Media::whereIn('id', $mediaIds)->get();
+
+        return $this->zipBuilder->stream($mediaItems, 'music.zip');
+    }
+
+    /**
+     * Same "which media ids are actually attached to an enabled
+     * Downloads/Music section" logic as PublicEpkController::downloadFile()
+     * -- not extracted to a shared helper since the two controllers query
+     * sections differently (an already-loaded relation here vs. eager-loaded
+     * there), and this is the entire method.
+     *
+     * @param  \Illuminate\Database\Eloquent\Collection<int, EpkSection>  $sections
+     * @return Collection<int, int>
+     */
+    private function allowedMediaIds($sections): Collection
+    {
+        return $sections->flatMap(function ($section) {
+            if ($section->type === SectionType::Downloads) {
+                return $section->config['media_ids'] ?? [];
+            }
+
+            return collect($section->config['tracks'] ?? [])
+                ->filter(fn ($track) => ($track['provider'] ?? 'upload') === 'upload')
+                ->pluck('audio_media_id')
+                ->filter();
+        })->map(fn ($id) => (int) $id);
     }
 
     /**

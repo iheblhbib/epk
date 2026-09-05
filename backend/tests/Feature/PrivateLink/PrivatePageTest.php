@@ -101,6 +101,76 @@ it('streams a downloads-section file through the private link', function () {
     expect($response->headers->get('Content-Disposition'))->toContain('attachment');
 });
 
+it('streams a music track file through the private link, not just downloads-section files', function () {
+    Storage::fake('public');
+    $link = draftEpkWithLink();
+    $media = Media::factory()->create([
+        'workspace_id' => $link->epk->workspace_id,
+        'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/live-take.mp3',
+        'original_filename' => 'live-take.mp3',
+    ]);
+    Storage::disk('public')->put($media->path, 'fake mp3 bytes');
+    $link->epk->sections()->create([
+        'type' => SectionType::Music, 'is_enabled' => true, 'position' => 0,
+        'config' => ['tracks' => [['title' => 'Live Take', 'provider' => 'upload', 'audio_media_id' => $media->id]]],
+    ]);
+
+    $response = $this->get("/api/private/{$link->token}/downloads/{$media->id}");
+
+    $response->assertOk();
+    expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+    expect($response->headers->get('Content-Disposition'))->toContain('live-take.mp3');
+});
+
+it('downloads all uploaded music tracks as a single zip through the private link', function () {
+    Storage::fake('public');
+    $link = draftEpkWithLink();
+    $trackOne = Media::factory()->create([
+        'workspace_id' => $link->epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/one.mp3', 'original_filename' => 'one.mp3',
+    ]);
+    $trackTwo = Media::factory()->create([
+        'workspace_id' => $link->epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/two.mp3', 'original_filename' => 'two.mp3',
+    ]);
+    Storage::disk('public')->put($trackOne->path, 'fake bytes one');
+    Storage::disk('public')->put($trackTwo->path, 'fake bytes two');
+
+    $link->epk->sections()->create([
+        'type' => SectionType::Music, 'is_enabled' => true, 'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'One', 'provider' => 'upload', 'audio_media_id' => $trackOne->id],
+            ['title' => 'Two', 'provider' => 'upload', 'audio_media_id' => $trackTwo->id],
+        ]],
+    ]);
+
+    $response = $this->get(route('private.music.download-all', ['token' => $link->token]));
+
+    $response->assertOk();
+    expect($response->headers->get('Content-Type'))->toBe('application/zip');
+
+    $zipPath = storage_path('framework/testing/downloaded-private.zip');
+    file_put_contents($zipPath, $response->streamedContent());
+    $zip = new ZipArchive;
+    $zip->open($zipPath);
+    expect($zip->numFiles)->toBe(2);
+    $zip->close();
+    unlink($zipPath);
+});
+
+it('requires the password before allowing the download-all zip on a password-protected link', function () {
+    $link = draftEpkWithLink();
+    $link->setPassword('correct-horse');
+    $link->save();
+    $link->epk->sections()->create([
+        'type' => SectionType::Music, 'is_enabled' => true, 'position' => 0,
+        'config' => ['tracks' => [['title' => 'One', 'provider' => 'upload', 'audio_media_id' => 999999]]],
+    ]);
+
+    $this->get(route('private.music.download-all', ['token' => $link->token]))->assertUnauthorized();
+});
+
 it('records an analytics event scoped to the private link', function () {
     $link = draftEpkWithLink();
 

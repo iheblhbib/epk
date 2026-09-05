@@ -429,10 +429,18 @@ export interface PublicTrackItem {
   audio_url?: string
   mime_type?: string
   embed_url?: string
+  // Only present for uploaded tracks (provider: 'upload') -- an embedded
+  // Spotify/SoundCloud track has no real file to download or detail.
+  download_url?: string
+  filename?: string
+  size?: number
 }
 
 export interface PublicMusicConfig {
   tracks: PublicTrackItem[]
+  // Only present when at least one track is an uploaded file -- an
+  // all-embeds section has nothing to bundle into a zip.
+  download_all_url?: string
 }
 
 export interface PublicReleaseItem {

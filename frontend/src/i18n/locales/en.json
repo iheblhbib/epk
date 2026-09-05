@@ -1002,7 +1002,19 @@
       "description": "It may have been unpublished or the link may be incorrect."
     },
     "readThePiece": "Read the piece",
-    "downloadPdf": "Download PDF"
+    "downloadPdf": "Download PDF",
+    "music": {
+      "download": "Download",
+      "downloadAll": "Download all",
+      "details": "Details",
+      "detailsDialog": {
+        "title": "File details",
+        "filename": "Filename",
+        "size": "Size",
+        "format": "Format",
+        "duration": "Duration"
+      }
+    }
   },
   "privateEpk": {
     "passwordGate": {

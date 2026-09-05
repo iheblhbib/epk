@@ -148,6 +148,116 @@ it('streams a downloads-section file with a Content-Disposition header forcing a
     expect($response->headers->get('Content-Disposition'))->toContain('presskit.pdf');
 });
 
+it('streams a music track file with a Content-Disposition header, not just downloads-section files', function () {
+    Storage::fake('public');
+    $epk = makePublishedEpk();
+    $media = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id,
+        'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/live-take.mp3',
+        'original_filename' => 'live-take.mp3',
+    ]);
+    Storage::disk('public')->put($media->path, 'fake mp3 bytes');
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [['title' => 'Live Take', 'provider' => 'upload', 'audio_media_id' => $media->id]]],
+    ]);
+
+    $response = $this->get(route('public.epk.download', ['slug' => $epk->slug, 'media' => $media->id]));
+
+    $response->assertOk();
+    expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+    expect($response->headers->get('Content-Disposition'))->toContain('live-take.mp3');
+});
+
+it('downloads all uploaded music tracks as a single zip', function () {
+    Storage::fake('public');
+    $epk = makePublishedEpk();
+    $trackOne = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/one.mp3', 'original_filename' => 'one.mp3',
+    ]);
+    $trackTwo = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/two.mp3', 'original_filename' => 'two.mp3',
+    ]);
+    Storage::disk('public')->put($trackOne->path, 'fake bytes one');
+    Storage::disk('public')->put($trackTwo->path, 'fake bytes two');
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'One', 'provider' => 'upload', 'audio_media_id' => $trackOne->id],
+            ['title' => 'Two', 'provider' => 'upload', 'audio_media_id' => $trackTwo->id],
+            ['title' => 'On Spotify', 'provider' => 'spotify', 'url' => 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC'],
+        ]],
+    ]);
+
+    $response = $this->get(route('public.epk.music.download-all', ['slug' => $epk->slug]));
+
+    $response->assertOk();
+    expect($response->headers->get('Content-Type'))->toBe('application/zip');
+    expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+
+    $zipPath = storage_path('framework/testing/downloaded.zip');
+    file_put_contents($zipPath, $response->streamedContent());
+    $zip = new ZipArchive;
+    $zip->open($zipPath);
+    expect($zip->numFiles)->toBe(2);
+    expect($zip->getNameIndex(0))->toBe('one.mp3');
+    expect($zip->getNameIndex(1))->toBe('two.mp3');
+    $zip->close();
+    unlink($zipPath);
+});
+
+it('disambiguates two tracks that share the same original filename inside the zip', function () {
+    Storage::fake('public');
+    $epk = makePublishedEpk();
+    $trackOne = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/one.mp3', 'original_filename' => 'take.mp3',
+    ]);
+    $trackTwo = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/audio/two.mp3', 'original_filename' => 'take.mp3',
+    ]);
+    Storage::disk('public')->put($trackOne->path, 'fake bytes one');
+    Storage::disk('public')->put($trackTwo->path, 'fake bytes two');
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'One', 'provider' => 'upload', 'audio_media_id' => $trackOne->id],
+            ['title' => 'Two', 'provider' => 'upload', 'audio_media_id' => $trackTwo->id],
+        ]],
+    ]);
+
+    $response = $this->get(route('public.epk.music.download-all', ['slug' => $epk->slug]));
+
+    $zipPath = storage_path('framework/testing/downloaded-dupes.zip');
+    file_put_contents($zipPath, $response->streamedContent());
+    $zip = new ZipArchive;
+    $zip->open($zipPath);
+    expect($zip->numFiles)->toBe(2);
+    expect($zip->getNameIndex(0))->toBe('take.mp3');
+    expect($zip->getNameIndex(1))->toBe('take (2).mp3');
+    $zip->close();
+    unlink($zipPath);
+});
+
+it('404s the download-all endpoint when the epk has no uploaded music tracks', function () {
+    $epk = makePublishedEpk();
+
+    $this->get(route('public.epk.music.download-all', ['slug' => $epk->slug]))->assertNotFound();
+});
+
 it('404s downloading a media id that is not in an enabled downloads section on that epk', function () {
     $epk = makePublishedEpk();
     $unrelatedMedia = Media::factory()->create(['workspace_id' => $epk->workspace_id]);
@@ -211,6 +321,53 @@ it('resolves music tracks to audio urls, falling back to the filename when untit
     $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
 });
 
+it('exposes a download url, filename, and size for uploaded music tracks, routed through the download endpoint', function () {
+    $epk = makePublishedEpk();
+    $audio = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id,
+        'original_filename' => 'live-take.mp3',
+        'size' => 4_200_000,
+    ]);
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [['title' => 'Live Take', 'provider' => 'upload', 'audio_media_id' => $audio->id]]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    // Not the plain storage URL -- routed through downloadFile() so it
+    // actually downloads instead of opening inline, same as Downloads-section
+    // files.
+    $response->assertJsonPath(
+        'data.sections.0.config.tracks.0.download_url',
+        route('public.epk.download', ['slug' => $epk->slug, 'media' => $audio->id])
+    );
+    $response->assertJsonPath('data.sections.0.config.tracks.0.filename', 'live-take.mp3');
+    $response->assertJsonPath('data.sections.0.config.tracks.0.size', 4_200_000);
+});
+
+it('does not expose a download url for embedded (spotify/soundcloud) tracks', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'On Spotify', 'provider' => 'spotify', 'url' => 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC'],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    expect($response->json('data.sections.0.config.tracks.0'))->not->toHaveKey('download_url');
+});
+
 it('resolves music tracks whose title key is entirely absent, not just empty', function () {
     // Distinct from the "falling back to filename when untitled" test above
     // (title: '' -- key present, empty string). The builder can save a
@@ -233,6 +390,44 @@ it('resolves music tracks whose title key is entirely absent, not just empty', f
     $response->assertOk();
     $response->assertJsonPath('data.sections.0.config.tracks.0.title', 'live-take.mp3');
     $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
+});
+
+it('exposes a section-level download-all-as-zip url when the music section has at least one uploaded track', function () {
+    $epk = makePublishedEpk();
+    $audio = Media::factory()->create(['workspace_id' => $epk->workspace_id]);
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [['title' => 'One', 'provider' => 'upload', 'audio_media_id' => $audio->id]]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath(
+        'data.sections.0.config.download_all_url',
+        route('public.epk.music.download-all', ['slug' => $epk->slug])
+    );
+});
+
+it('omits the download-all url when the music section has no uploaded tracks', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'On Spotify', 'provider' => 'spotify', 'url' => 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC'],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    expect($response->json('data.sections.0.config'))->not->toHaveKey('download_all_url');
 });
 
 it('resolves spotify/soundcloud embed tracks alongside uploaded audio', function () {

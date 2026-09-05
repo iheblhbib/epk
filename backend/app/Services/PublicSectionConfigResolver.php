@@ -121,42 +121,7 @@ class PublicSectionConfigResolver
                     ->values()
                     ->all(),
             ],
-            SectionType::Music => [
-                'tracks' => collect($config['tracks'] ?? [])
-                    ->map(function ($track) {
-                        $provider = $track['provider'] ?? 'upload';
-
-                        if ($provider === 'upload') {
-                            $media = $this->mediaFor($track['audio_media_id'] ?? null);
-                            if (! $media) {
-                                return null;
-                            }
-
-                            return [
-                                // ?? before ?: -- a track saved with no 'title'
-                                // key at all (not just an empty one) would
-                                // otherwise throw "Undefined array key" on
-                                // the bare array access, since ?: still
-                                // dereferences the key before checking
-                                // truthiness.
-                                'title' => ($track['title'] ?? null) ?: $media->original_filename,
-                                'provider' => 'upload',
-                                'audio_url' => $media->url(),
-                                'mime_type' => $media->mime_type,
-                            ];
-                        }
-
-                        $embedUrl = $this->embedUrlFor($provider, $track['url'] ?? null);
-                        if (! $embedUrl) {
-                            return null;
-                        }
-
-                        return ['title' => $track['title'] ?? '', 'provider' => $provider, 'embed_url' => $embedUrl];
-                    })
-                    ->filter()
-                    ->values()
-                    ->all(),
-            ],
+            SectionType::Music => $this->resolveMusicConfig($config, $section),
             SectionType::Releases => [
                 'releases' => collect($config['releases'] ?? [])
                     ->map(fn ($release) => [
@@ -275,6 +240,71 @@ class PublicSectionConfigResolver
         }
 
         return null;
+    }
+
+    /**
+     * Extracted out of the match arm above -- a `match` arm must be a single
+     * expression, and this case needs to conditionally add a sibling
+     * 'download_all_url' key alongside 'tracks' (only when at least one
+     * track is an uploaded file; an all-embeds section has nothing to zip).
+     *
+     * @return array<string, mixed>
+     */
+    private function resolveMusicConfig(array $config, EpkSection $section): array
+    {
+        $tracks = collect($config['tracks'] ?? [])
+            ->map(function ($track) use ($section) {
+                $provider = $track['provider'] ?? 'upload';
+
+                if ($provider === 'upload') {
+                    $media = $this->mediaFor($track['audio_media_id'] ?? null);
+                    if (! $media) {
+                        return null;
+                    }
+
+                    return [
+                        // ?? before ?: -- a track saved with no 'title'
+                        // key at all (not just an empty one) would
+                        // otherwise throw "Undefined array key" on
+                        // the bare array access, since ?: still
+                        // dereferences the key before checking
+                        // truthiness.
+                        'title' => ($track['title'] ?? null) ?: $media->original_filename,
+                        'provider' => 'upload',
+                        'audio_url' => $media->url(),
+                        'mime_type' => $media->mime_type,
+                        // Same routed-through-downloadFile() pattern as
+                        // Downloads-section files -- an <a href> to the
+                        // plain storage URL would open inline instead
+                        // of downloading.
+                        'download_url' => $this->privateLink
+                            ? route('private.download', ['token' => $this->privateLink->token, 'media' => $media->id])
+                            : route('public.epk.download', ['slug' => $section->epk->slug, 'media' => $media->id]),
+                        'filename' => $media->original_filename,
+                        'size' => $media->size,
+                    ];
+                }
+
+                $embedUrl = $this->embedUrlFor($provider, $track['url'] ?? null);
+                if (! $embedUrl) {
+                    return null;
+                }
+
+                return ['title' => $track['title'] ?? '', 'provider' => $provider, 'embed_url' => $embedUrl];
+            })
+            ->filter()
+            ->values()
+            ->all();
+
+        $result = ['tracks' => $tracks];
+
+        if (collect($tracks)->contains(fn ($track) => $track['provider'] === 'upload')) {
+            $result['download_all_url'] = $this->privateLink
+                ? route('private.music.download-all', ['token' => $this->privateLink->token])
+                : route('public.epk.music.download-all', ['slug' => $section->epk->slug]);
+        }
+
+        return $result;
     }
 
     private function mediaFor(?int $mediaId): ?Media

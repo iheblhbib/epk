@@ -7,14 +7,18 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\PublicEpkResource;
 use App\Models\Epk;
 use App\Models\Media;
+use App\Services\MusicZipBuilder;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PublicEpkController extends Controller
 {
+    public function __construct(private readonly MusicZipBuilder $zipBuilder) {}
+
     /**
      * Unauthenticated lookup by slug. Scoping to `published` here — rather
      * than loading first and checking status — means a draft/archived EPK
@@ -66,25 +70,63 @@ class PublicEpkController extends Controller
      * Streams a file with `Content-Disposition: attachment` so it actually
      * downloads instead of opening inline in a new tab (the browser's
      * default for PDFs/images/etc. served as a plain URL). Scoped tightly:
-     * the media must actually be attached to an *enabled* Downloads section
-     * on this *published* EPK — not just "any media in the workspace" —
-     * otherwise this would double as an open file-download oracle for any
-     * media row in the app.
+     * the media must actually be attached to an *enabled* Downloads or Music
+     * section on this *published* EPK — not just "any media in the
+     * workspace" — otherwise this would double as an open file-download
+     * oracle for any media row in the app.
      */
     public function downloadFile(string $slug, Media $media): StreamedResponse
     {
         $epk = Epk::query()
             ->published()
             ->where('slug', $slug)
-            ->with(['sections' => fn ($query) => $query->where('type', SectionType::Downloads->value)->where('is_enabled', true)])
+            ->with(['sections' => fn ($query) => $query->whereIn('type', [SectionType::Downloads->value, SectionType::Music->value])->where('is_enabled', true)])
             ->firstOrFail();
 
-        $allowedMediaIds = $epk->sections
-            ->flatMap(fn ($section) => $section->config['media_ids'] ?? [])
-            ->map(fn ($id) => (int) $id);
-
-        abort_unless($allowedMediaIds->contains($media->id), 404);
+        abort_unless($this->allowedMediaIds($epk)->contains($media->id), 404);
 
         return Storage::disk($media->disk)->download($media->path, $media->original_filename);
+    }
+
+    /**
+     * Bundles every uploaded (not embedded) track from this EPK's enabled
+     * Music sections into a single .zip -- "download all" on the public
+     * page, so a press contact doesn't have to click each track's download
+     * individually.
+     */
+    public function downloadAllMusic(string $slug): StreamedResponse
+    {
+        $epk = Epk::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['sections' => fn ($query) => $query->where('type', SectionType::Music->value)->where('is_enabled', true)])
+            ->firstOrFail();
+
+        $mediaIds = $this->allowedMediaIds($epk);
+        abort_if($mediaIds->isEmpty(), 404);
+
+        $mediaItems = Media::whereIn('id', $mediaIds)->get();
+
+        return $this->zipBuilder->stream($mediaItems, "{$slug}-music.zip");
+    }
+
+    /**
+     * @return Collection<int, int>
+     */
+    private function allowedMediaIds(Epk $epk): Collection
+    {
+        return $epk->sections->flatMap(function ($section) {
+            if ($section->type === SectionType::Downloads) {
+                return $section->config['media_ids'] ?? [];
+            }
+
+            // Music: only tracks that actually reference an uploaded file --
+            // an embedded Spotify/SoundCloud track's 'url' is never a media
+            // id and must never accidentally satisfy this check.
+            return collect($section->config['tracks'] ?? [])
+                ->filter(fn ($track) => ($track['provider'] ?? 'upload') === 'upload')
+                ->pluck('audio_media_id')
+                ->filter();
+        })->map(fn ($id) => (int) $id);
     }
 }

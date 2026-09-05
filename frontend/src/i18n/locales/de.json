@@ -1002,7 +1002,19 @@
       "description": "Sie wurde möglicherweise nicht mehr veröffentlicht oder der Link ist falsch."
     },
     "readThePiece": "Artikel lesen",
-    "downloadPdf": "PDF herunterladen"
+    "downloadPdf": "PDF herunterladen",
+    "music": {
+      "download": "Herunterladen",
+      "downloadAll": "Alle herunterladen",
+      "details": "Details",
+      "detailsDialog": {
+        "title": "Dateidetails",
+        "filename": "Dateiname",
+        "size": "Größe",
+        "format": "Format",
+        "duration": "Dauer"
+      }
+    }
   },
   "privateEpk": {
     "passwordGate": {
