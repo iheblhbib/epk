@@ -30,13 +30,17 @@ it('lets an editor upload an image and generates a thumbnail', function () {
     ]);
 
     $response->assertCreated();
-    $response->assertJsonPath('data.0.original_filename', 'cover.jpg');
+    // Every image is normalized to WebP -- both the stored file and the
+    // client-facing name get the .webp extension, so a downloaded file's
+    // name always matches its real content.
+    $response->assertJsonPath('data.0.original_filename', 'cover.webp');
+    $response->assertJsonPath('data.0.mime_type', 'image/webp');
     $response->assertJsonPath('data.0.type', 'image');
     expect($response->json('data.0.thumbnail_url'))->not->toBeNull();
 
     $this->assertDatabaseHas('media', [
         'workspace_id' => $workspace->id,
-        'original_filename' => 'cover.jpg',
+        'original_filename' => 'cover.webp',
         'type' => 'image',
     ]);
 
@@ -44,7 +48,8 @@ it('lets an editor upload an image and generates a thumbnail', function () {
     Storage::disk('public')->assertExists($media->path);
     Storage::disk('public')->assertExists($media->thumbnail_path);
     // The stored filename must never be the client-supplied name.
-    expect($media->filename)->not->toBe('cover.jpg');
+    expect($media->filename)->not->toBe('cover.webp');
+    expect($media->extension())->toBe('webp');
 });
 
 it('downscales an oversized image before storing it, to cap storage usage', function () {
@@ -83,6 +88,23 @@ it('leaves an image already within the size cap untouched', function () {
     [$storedWidth, $storedHeight] = getimagesize(Storage::disk('public')->path($media->path));
     expect($storedWidth)->toBe(800);
     expect($storedHeight)->toBe(600);
+});
+
+it('converts uploaded images to webp regardless of original format', function () {
+    [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
+
+    $response = $this->actingAs($editor)->postJson("/api/workspaces/{$workspace->id}/media", [
+        'files' => [UploadedFile::fake()->image('logo.png', 500, 500)],
+    ]);
+
+    $response->assertCreated();
+    $media = Media::first();
+    expect($media->original_filename)->toBe('logo.webp');
+    expect($media->mime_type)->toBe('image/webp');
+    expect(pathinfo($media->path, PATHINFO_EXTENSION))->toBe('webp');
+
+    $imageInfo = getimagesize(Storage::disk('public')->path($media->path));
+    expect($imageInfo['mime'])->toBe('image/webp');
 });
 
 it('uploads multiple files in one request', function () {
@@ -203,7 +225,9 @@ it('still downloads with the correct extension after being renamed without one',
     $response = $this->actingAs($editor)->get("/api/media/{$media->id}/download");
 
     $response->assertOk();
-    expect($response->headers->get('content-disposition'))->toContain('vacation-photos.jpg');
+    // .webp, not .jpg -- the upload was normalized to WebP, so that's the
+    // real extension the rename must fall back to.
+    expect($response->headers->get('content-disposition'))->toContain('vacation-photos.webp');
 });
 
 it('deletes a media file and removes it from disk', function () {

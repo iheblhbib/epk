@@ -8,7 +8,6 @@ use App\Models\Workspace;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
-use Intervention\Image\Encoders\FileExtensionEncoder;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\Laravel\Facades\Image;
 
@@ -26,21 +25,29 @@ class MediaUploadService
     {
         $extension = strtolower($file->getClientOriginalExtension());
         $type = MediaType::fromExtension($extension);
-
-        $filename = Str::random(40).'.'.$extension;
         $directory = "workspaces/{$workspace->id}/media/{$type->value}";
-
-        $path = $file->storeAs($directory, $filename, 'public');
 
         $thumbnailPath = null;
         $metadata = [];
-        $size = $file->getSize();
+        $mimeType = $file->getMimeType();
+        $originalFilename = $file->getClientOriginalName();
 
         if ($type === MediaType::Image) {
-            [$thumbnailPath, $metadata] = $this->processImage($path, $directory, $filename, $extension);
-            // The resize above overwrites $path in place, so the original
-            // upload size no longer matches what's actually on disk.
-            $size = Storage::disk('public')->size($path);
+            // Every image is normalized to WebP, at a reduced quality --
+            // it beats JPEG/PNG at matching visual quality for meaningfully
+            // less storage, which matters on shared-hosting quotas. Both the
+            // securely-random stored filename and the client-facing name get
+            // the .webp extension, so a downloaded file's name always
+            // matches its real content -- never a ".jpg" that's actually
+            // WebP bytes.
+            $filename = Str::random(40).'.webp';
+            $path = "{$directory}/{$filename}";
+            [$metadata, $thumbnailPath] = $this->processImage($file, $path, $directory, $filename);
+            $mimeType = 'image/webp';
+            $originalFilename = pathinfo($originalFilename, PATHINFO_FILENAME).'.webp';
+        } else {
+            $filename = Str::random(40).'.'.$extension;
+            $path = $file->storeAs($directory, $filename, 'public');
         }
 
         return Media::create([
@@ -48,12 +55,12 @@ class MediaUploadService
             'uploaded_by' => $uploadedById,
             'disk' => 'public',
             'filename' => $filename,
-            'original_filename' => $file->getClientOriginalName(),
+            'original_filename' => $originalFilename,
             'path' => $path,
             'thumbnail_path' => $thumbnailPath,
-            'mime_type' => $file->getMimeType(),
+            'mime_type' => $mimeType,
             'type' => $type,
-            'size' => $size,
+            'size' => Storage::disk('public')->size($path),
             'metadata' => $metadata ?: null,
         ]);
     }
@@ -69,22 +76,26 @@ class MediaUploadService
     }
 
     /**
-     * Caps the stored original's dimensions (downscale only, never upscale —
-     * scaleDown() is a no-op below the cap) before generating its thumbnail,
-     * so an oversized phone photo doesn't sit at full resolution on disk for
-     * no benefit on a web page. Both steps reuse the same decoded $image
-     * rather than decoding the file twice.
+     * Decodes straight from the upload's temp path (never writing the
+     * pre-conversion original to disk at all, since every image is
+     * converted below) and caps its dimensions (downscale only, never
+     * upscale — scaleDown() is a no-op below the cap) before generating its
+     * thumbnail, so an oversized phone photo doesn't sit at full resolution
+     * on disk for no benefit on a web page. Both steps reuse the same
+     * decoded $image rather than decoding twice.
      *
-     * @return array{0: string, 1: array<string, int>}
+     * @return array{0: array<string, int>, 1: string}
      */
-    private function processImage(string $path, string $directory, string $filename, string $extension): array
+    private function processImage(UploadedFile $file, string $path, string $directory, string $filename): array
     {
         $disk = Storage::disk('public');
-        $image = Image::decodePath($disk->path($path));
+        $image = Image::decodePath($file->getRealPath());
 
         $maxDimension = (int) config('media.max_image_dimension', 2500);
         $image->scaleDown(width: $maxDimension, height: $maxDimension);
-        $disk->put($path, (string) $image->encode(new FileExtensionEncoder($extension, quality: 85)));
+
+        $quality = (int) config('media.image_quality', 75);
+        $disk->put($path, (string) $image->encode(new WebpEncoder(quality: $quality)));
 
         $metadata = ['width' => $image->width(), 'height' => $image->height()];
 
@@ -96,6 +107,6 @@ class MediaUploadService
 
         $disk->put($thumbnailPath, (string) $thumbnail->encode(new WebpEncoder(quality: 80)));
 
-        return [$thumbnailPath, $metadata];
+        return [$metadata, $thumbnailPath];
     }
 }

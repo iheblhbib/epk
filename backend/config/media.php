@@ -62,4 +62,17 @@ return [
 
     'max_image_dimension' => 2500,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Image Quality
+    |--------------------------------------------------------------------------
+    |
+    | Every uploaded image is normalized to WebP (regardless of its original
+    | format) at this quality, for meaningfully less storage than a
+    | format-preserving re-encode at negligible visual cost.
+    |
+    */
+
+    'image_quality' => 75,
+
 ];
