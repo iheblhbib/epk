@@ -8,7 +8,7 @@ import {
 } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
-import { Copy, GripVertical, MoreHorizontal, Trash2 } from 'lucide-react'
+import { GripVertical, MoreHorizontal, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -22,13 +22,8 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
 import { Switch } from '@/components/ui/switch'
-import { SECTION_TYPE_META, SINGLETON_SECTION_TYPES } from '@/features/epks/builder/sectionTypes'
-import {
-  useDeleteSection,
-  useDuplicateSection,
-  useReorderSections,
-  useUpdateSection,
-} from '@/features/epks/hooks/useEpkSections'
+import { SECTION_TYPE_META } from '@/features/epks/builder/sectionTypes'
+import { useDeleteSection, useReorderSections, useUpdateSection } from '@/features/epks/hooks/useEpkSections'
 import { cn } from '@/lib/utils'
 import type { EpkSection } from '@/types'
 
@@ -36,7 +31,6 @@ function SortableSectionRow({
   section,
   selected,
   onSelect,
-  onDuplicate,
   onDelete,
   onToggleEnabled,
   isTogglePending,
@@ -45,7 +39,6 @@ function SortableSectionRow({
   section: EpkSection
   selected: boolean
   onSelect: () => void
-  onDuplicate: () => void
   onDelete: () => void
   onToggleEnabled: (checked: boolean) => void
   isTogglePending: boolean
@@ -57,7 +50,6 @@ function SortableSectionRow({
     disabled: !canEdit,
   })
   const Icon = SECTION_TYPE_META[section.type].icon
-  const canDuplicate = !SINGLETON_SECTION_TYPES.includes(section.type)
 
   return (
     <div
@@ -96,10 +88,6 @@ function SortableSectionRow({
               <MoreHorizontal className="size-4" />
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem disabled={!canDuplicate} onClick={onDuplicate}>
-                <Copy className="size-4" />
-                {t('epks.duplicate')}
-              </DropdownMenuItem>
               <DropdownMenuItem onClick={onDelete} className="text-destructive">
                 <Trash2 className="size-4" />
                 {t('common.delete')}
@@ -136,7 +124,6 @@ export function SectionList({
   const { t } = useTranslation()
   const [pendingDeleteId, setPendingDeleteId] = useState<number | null>(null)
   const updateSection = useUpdateSection(epkId)
-  const duplicateSection = useDuplicateSection(epkId)
   const deleteSection = useDeleteSection(epkId)
   const reorderSections = useReorderSections(epkId)
   const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }))
@@ -172,12 +159,6 @@ export function SectionList({
               isTogglePending={updateSection.isPending}
               onToggleEnabled={(checked) =>
                 updateSection.mutate({ sectionId: section.id, payload: { is_enabled: checked } })
-              }
-              onDuplicate={() =>
-                duplicateSection.mutate(section.id, {
-                  onSuccess: () => toast.success(t('epkBuilder.toasts.sectionDuplicated')),
-                  onError: () => toast.error(t('epkBuilder.toasts.sectionDuplicateError')),
-                })
               }
               onDelete={() => setPendingDeleteId(section.id)}
               canEdit={canEdit}

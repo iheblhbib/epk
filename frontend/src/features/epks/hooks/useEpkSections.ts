@@ -2,7 +2,6 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   addSection,
   deleteSection,
-  duplicateSection,
   listSections,
   reorderSections,
   updateSection,
@@ -44,15 +43,6 @@ export function useDeleteSection(epkId: number) {
 
   return useMutation({
     mutationFn: (sectionId: number) => deleteSection(epkId, sectionId),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: sectionsKey(epkId) }),
-  })
-}
-
-export function useDuplicateSection(epkId: number) {
-  const queryClient = useQueryClient()
-
-  return useMutation({
-    mutationFn: (sectionId: number) => duplicateSection(epkId, sectionId),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: sectionsKey(epkId) }),
   })
 }

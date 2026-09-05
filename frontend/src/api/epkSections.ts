@@ -36,13 +36,6 @@ export async function deleteSection(epkId: number, sectionId: number): Promise<v
   await apiClient.delete(`/api/epks/${epkId}/sections/${sectionId}`)
 }
 
-export async function duplicateSection(epkId: number, sectionId: number): Promise<EpkSection> {
-  const { data } = await apiClient.post<ApiResource<EpkSection>>(
-    `/api/epks/${epkId}/sections/${sectionId}/duplicate`
-  )
-  return data.data
-}
-
 export async function reorderSections(epkId: number, sectionIds: number[]): Promise<EpkSection[]> {
   const { data } = await apiClient.put<ApiCollection<EpkSection>>(`/api/epks/${epkId}/sections/reorder`, {
     section_ids: sectionIds,
