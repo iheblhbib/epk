@@ -80,6 +80,54 @@ it('404s the public PDF route for an unpublished EPK', function () {
     $this->get("/api/public/epks/{$epk->slug}/pdf")->assertNotFound();
 });
 
+it('includes a link to download all music as a zip when the section has one', function () {
+    $epk = Epk::factory()->published()->make(['title' => 'Nova Ray EPK']);
+    $artist = Artist::factory()->make(['name' => 'Nova Ray']);
+
+    $html = view('pdf.epk', [
+        'epk' => $epk,
+        'artist' => $artist,
+        'sections' => collect([
+            [
+                'type' => SectionType::Music,
+                'title' => 'Music',
+                'config' => [
+                    'tracks' => [['title' => 'Night Drive', 'provider' => 'upload']],
+                    'download_all_url' => 'https://example.test/music/download-all',
+                ],
+            ],
+        ]),
+    ])->render();
+
+    expect($html)->toContain('https://example.test/music/download-all');
+});
+
+it('omits the download-all link for a draft EPK\'s pdf, even if the resolved config has one', function () {
+    // The link is always resolved through the public route (EpkPdfService
+    // never scopes it to a private link), which 404s for a non-published
+    // EPK -- so an owner previewing a draft's PDF shouldn't get a link
+    // that's guaranteed to be broken until they publish.
+    $epk = Epk::factory()->make(['title' => 'Nova Ray EPK']);
+    $artist = Artist::factory()->make(['name' => 'Nova Ray']);
+
+    $html = view('pdf.epk', [
+        'epk' => $epk,
+        'artist' => $artist,
+        'sections' => collect([
+            [
+                'type' => SectionType::Music,
+                'title' => 'Music',
+                'config' => [
+                    'tracks' => [['title' => 'Night Drive', 'provider' => 'upload']],
+                    'download_all_url' => 'https://example.test/music/download-all',
+                ],
+            ],
+        ]),
+    ])->render();
+
+    expect($html)->not->toContain('https://example.test/music/download-all');
+});
+
 it('renders fine for an EPK with no hero section, an unheaded custom section, and a link missing its platform', function () {
     // Regression test: found live (not by any prior automated test, whose
     // fixture always included a fully-populated Hero section) — a bare

@@ -18,9 +18,13 @@ use Mpdf\Output\Destination;
  * on-screen theme colors: a theme tuned for a dark hero banner on a monitor
  * often prints badly (wasted ink, poor contrast on paper), and a press kit
  * PDF is conventionally plain and readable regardless of the web page's
- * branding. Downloads and uploaded-video sections are skipped — a "here are
- * more files to download" link inside a PDF someone already downloaded, or
- * a video that can't actually play on paper, isn't useful there.
+ * branding. Downloads and video sections are skipped — a "here are more
+ * files to download" link inside a PDF someone already downloaded isn't
+ * useful there, and a video can't actually play on paper. The Music
+ * section is the one exception: since the PDF can't embed audio either,
+ * it links out to the same "download the discography as a zip" endpoint
+ * the web page uses, gated to published EPKs in the template itself (see
+ * pdf.epk's Music case) since that endpoint 404s otherwise.
  */
 class EpkPdfService
 {

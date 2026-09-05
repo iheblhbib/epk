@@ -93,6 +93,13 @@
             @if(!empty($config['tracks']))
                 <div class="section">
                     <h2>{{ $section['title'] }}</h2>
+                    {{-- download_all_url is always resolved through the public route
+                         (EpkPdfService never scopes it to a private link), which 404s
+                         for a non-published EPK -- so a draft's owner-preview PDF
+                         doesn't get a link that's guaranteed broken until publish. --}}
+                    @if(!empty($config['download_all_url']) && $epk->status === \App\Enums\EpkStatus::Published)
+                        <p><a href="{{ $config['download_all_url'] }}">Download the discography as a ZIP</a></p>
+                    @endif
                     <ol>
                         @foreach($config['tracks'] as $track)
                             <li>{{ $track['title'] }}</li>
