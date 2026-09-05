@@ -243,7 +243,7 @@ function CreditsPreview({ config, headerStyle, t }: { config: CreditsConfig; hea
       ) : (
         <ul className="space-y-1 text-sm">
           {items.map((item, index) => (
-            <li key={index} className="flex justify-between gap-4">
+            <li key={index} className="flex items-baseline gap-2">
               <span className="text-[var(--epk-muted)]">{item.role || '—'}</span>
               <span className="text-[var(--epk-fg)]">{item.name || '—'}</span>
             </li>

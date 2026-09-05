@@ -737,8 +737,6 @@
       "description": "“{{title}}”将从此 EPK 中永久删除。"
     },
     "toasts": {
-      "sectionDuplicated": "版块已复制",
-      "sectionDuplicateError": "无法复制该版块",
       "sectionDeleted": "版块已删除",
       "sectionDeleteError": "无法删除该版块"
     },
@@ -1010,6 +1008,9 @@
         "format": "格式",
         "duration": "时长"
       }
+    },
+    "downloads": {
+      "downloadAll": "全部下载"
     }
   },
   "privateEpk": {

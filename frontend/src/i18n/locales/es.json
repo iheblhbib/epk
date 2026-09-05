@@ -737,8 +737,6 @@
       "description": "\"{{title}}\" se eliminará permanentemente de este EPK."
     },
     "toasts": {
-      "sectionDuplicated": "Sección duplicada",
-      "sectionDuplicateError": "No se pudo duplicar esta sección",
       "sectionDeleted": "Sección eliminada",
       "sectionDeleteError": "No se pudo eliminar esta sección"
     },
@@ -1010,6 +1008,9 @@
         "format": "Formato",
         "duration": "Duración"
       }
+    },
+    "downloads": {
+      "downloadAll": "Descargar todo"
     }
   },
   "privateEpk": {

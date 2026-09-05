@@ -737,8 +737,6 @@
       "description": "\"{{title}}\" will be permanently removed from this EPK."
     },
     "toasts": {
-      "sectionDuplicated": "Section duplicated",
-      "sectionDuplicateError": "Could not duplicate this section",
       "sectionDeleted": "Section deleted",
       "sectionDeleteError": "Could not delete this section"
     },
@@ -1010,6 +1008,9 @@
         "format": "Format",
         "duration": "Duration"
       }
+    },
+    "downloads": {
+      "downloadAll": "Download all"
     }
   },
   "privateEpk": {

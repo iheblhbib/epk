@@ -400,6 +400,8 @@ export interface PublicDownloadFile {
 
 export interface PublicDownloadsConfig {
   files: PublicDownloadFile[]
+  // Only present when there's at least one file to bundle.
+  download_all_url?: string
 }
 
 export interface PublicCreditsConfig {

@@ -248,10 +248,21 @@ function DownloadsSection({
   config: PublicDownloadsConfig
   onTrack: TrackFn
 }) {
+  const { t } = useTranslation()
   if (!config.files || config.files.length === 0) return null
 
   return (
     <SectionContainer title={title} headerStyle={headerStyle}>
+      {config.download_all_url && (
+        <a
+          href={config.download_all_url}
+          className="mb-4 inline-flex items-center gap-2 border border-[var(--epk-border)] px-4 py-2 text-sm font-medium text-[var(--epk-fg)] transition-colors hover:border-[var(--epk-accent)]"
+          style={{ borderRadius: 'var(--epk-radius)' }}
+        >
+          <Download className="size-4" />
+          {t('publicEpk.downloads.downloadAll')}
+        </a>
+      )}
       <ul className="space-y-2">
         {config.files.map((file) => (
           <li key={file.id}>
@@ -285,7 +296,7 @@ function CreditsSection({ title, headerStyle, config }: { title: string; headerS
     <SectionContainer title={title} headerStyle={headerStyle}>
       <ul className="divide-y divide-[var(--epk-border)]">
         {items.map((item, index) => (
-          <li key={index} className="flex justify-between gap-4 py-2 text-sm">
+          <li key={index} className="flex items-baseline gap-2 py-2 text-sm">
             <span className="text-[var(--epk-muted)]">{item.role}</span>
             <span className="font-medium text-[var(--epk-fg)]">{item.name}</span>
           </li>

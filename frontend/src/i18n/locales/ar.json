@@ -737,8 +737,6 @@
       "description": "سيتم حذف \"{{title}}\" نهائيًا من هذا الملف الصحفي."
     },
     "toasts": {
-      "sectionDuplicated": "تم تكرار القسم",
-      "sectionDuplicateError": "تعذّر تكرار هذا القسم",
       "sectionDeleted": "تم حذف القسم",
       "sectionDeleteError": "تعذّر حذف هذا القسم"
     },
@@ -1010,6 +1008,9 @@
         "format": "الصيغة",
         "duration": "المدة"
       }
+    },
+    "downloads": {
+      "downloadAll": "تنزيل الكل"
     }
   },
   "privateEpk": {
