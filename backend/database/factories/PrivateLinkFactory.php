@@ -17,7 +17,7 @@ class PrivateLinkFactory extends Factory
     {
         return [
             'epk_id' => Epk::factory(),
-            'token' => Str::random(40),
+            'token' => Str::random(12),
             'label' => fake()->words(2, true),
             // Matches the column's DB-level default explicitly — Eloquent
             // doesn't sync that back into the in-memory model after

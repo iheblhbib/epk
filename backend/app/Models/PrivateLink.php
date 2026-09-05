@@ -29,7 +29,10 @@ class PrivateLink extends Model
     protected static function booted(): void
     {
         static::creating(function (PrivateLink $link) {
-            $link->token ??= Str::random(40);
+            // 12 chars (~71 bits of entropy over Str::random's 62-char
+            // alphabet) is still effectively unguessable, but far more
+            // shareable than the original 40-character token.
+            $link->token ??= Str::random(12);
         });
     }
 

@@ -147,6 +147,16 @@ it('deletes a link', function () {
     $this->assertDatabaseMissing('private_links', ['id' => $link->id]);
 });
 
+it('generates a short token, not the old 40-character one', function () {
+    [$workspace, $editor] = linkWorkspaceWithMember(WorkspaceRole::Editor);
+    $epk = epkFor($workspace);
+
+    $response = $this->actingAs($editor)->postJson("/api/epks/{$epk->id}/private-links", []);
+
+    $token = substr($response->json('data.private_url'), strlen('/private/'));
+    expect(strlen($token))->toBe(12);
+});
+
 it('404s updating a link that belongs to a different epk', function () {
     [$workspace, $editor] = linkWorkspaceWithMember(WorkspaceRole::Editor);
     $epk = epkFor($workspace);

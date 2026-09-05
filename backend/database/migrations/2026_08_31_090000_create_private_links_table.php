@@ -15,7 +15,7 @@ return new class extends Migration
             // High-entropy and unguessable by design — unlike an EPK's public
             // slug, this token is the only thing standing between "revealed
             // to nobody" and "revealed to whoever holds the link", so it's
-            // generated with Str::random(40), not a slug of anything human-chosen.
+            // generated with Str::random(12), not a slug of anything human-chosen.
             $table->string('token', 64)->unique();
             $table->string('label')->nullable();
             $table->string('password_hash')->nullable();
