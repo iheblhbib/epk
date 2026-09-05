@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "Cuenta creada — invitación aceptada"
   },
   "media": {
-    "pageDescription": "Fotos, pistas, vídeos y documentos de {{workspace}}.",
+    "pageDescription": "Fotos, pistas y documentos de {{workspace}}.",
     "searchPlaceholder": "Buscar archivos…",
     "rename": "Renombrar",
     "download": "Descargar",
@@ -655,7 +655,7 @@
       "noMatchTitle": "Ningún archivo coincide",
       "noneTitle": "Aún no hay archivos",
       "noMatchDescription": "Prueba con otra búsqueda o filtro.",
-      "canEditDescription": "Sube fotos, pistas, vídeos o documentos para empezar.",
+      "canEditDescription": "Sube fotos, pistas o documentos para empezar.",
       "viewOnlyDescription": "Aún no se han subido archivos a este espacio de trabajo."
     }
   },

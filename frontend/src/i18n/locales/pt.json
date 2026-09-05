@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "Conta criada — convite aceite"
   },
   "media": {
-    "pageDescription": "Fotos, faixas, vídeos e documentos de {{workspace}}.",
+    "pageDescription": "Fotos, faixas e documentos de {{workspace}}.",
     "searchPlaceholder": "Pesquisar ficheiros…",
     "rename": "Renomear",
     "download": "Transferir",
@@ -655,7 +655,7 @@
       "noMatchTitle": "Nenhum ficheiro correspondente",
       "noneTitle": "Ainda sem ficheiros",
       "noMatchDescription": "Experimente outra pesquisa ou filtro.",
-      "canEditDescription": "Envie fotos, faixas, vídeos ou documentos para começar.",
+      "canEditDescription": "Envie fotos, faixas ou documentos para começar.",
       "viewOnlyDescription": "Ainda não foram enviados ficheiros para este espaço de trabalho."
     }
   },

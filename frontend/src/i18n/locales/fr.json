@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "Compte créé — invitation acceptée"
   },
   "media": {
-    "pageDescription": "Photos, morceaux, vidéos et documents pour {{workspace}}.",
+    "pageDescription": "Photos, morceaux et documents pour {{workspace}}.",
     "searchPlaceholder": "Rechercher des fichiers…",
     "rename": "Renommer",
     "download": "Télécharger",
@@ -655,7 +655,7 @@
       "noMatchTitle": "Aucun fichier correspondant",
       "noneTitle": "Aucun fichier pour le moment",
       "noMatchDescription": "Essayez une autre recherche ou un autre filtre.",
-      "canEditDescription": "Envoyez des photos, morceaux, vidéos ou documents pour commencer.",
+      "canEditDescription": "Envoyez des photos, morceaux ou documents pour commencer.",
       "viewOnlyDescription": "Aucun fichier n'a encore été envoyé dans cet espace de travail."
     }
   },

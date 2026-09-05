@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "Account created — invitation accepted"
   },
   "media": {
-    "pageDescription": "Photos, tracks, videos, and documents for {{workspace}}.",
+    "pageDescription": "Photos, tracks, and documents for {{workspace}}.",
     "searchPlaceholder": "Search files…",
     "rename": "Rename",
     "download": "Download",
@@ -655,7 +655,7 @@
       "noMatchTitle": "No files match",
       "noneTitle": "No files yet",
       "noMatchDescription": "Try a different search or filter.",
-      "canEditDescription": "Upload photos, tracks, videos, or documents to get started.",
+      "canEditDescription": "Upload photos, tracks, or documents to get started.",
       "viewOnlyDescription": "No files have been uploaded to this workspace yet."
     }
   },

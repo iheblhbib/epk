@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "账户已创建 — 邀请已接受"
   },
   "media": {
-    "pageDescription": "{{workspace}} 的照片、音轨、视频和文档。",
+    "pageDescription": "{{workspace}} 的照片、音轨和文档。",
     "searchPlaceholder": "搜索文件…",
     "rename": "重命名",
     "download": "下载",
@@ -655,7 +655,7 @@
       "noMatchTitle": "没有匹配的文件",
       "noneTitle": "暂无文件",
       "noMatchDescription": "请尝试其他搜索词或筛选条件。",
-      "canEditDescription": "上传照片、音轨、视频或文档以开始使用。",
+      "canEditDescription": "上传照片、音轨或文档以开始使用。",
       "viewOnlyDescription": "此工作区尚未上传任何文件。"
     }
   },

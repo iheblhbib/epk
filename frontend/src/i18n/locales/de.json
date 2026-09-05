@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "Konto erstellt — Einladung angenommen"
   },
   "media": {
-    "pageDescription": "Fotos, Titel, Videos und Dokumente für {{workspace}}.",
+    "pageDescription": "Fotos, Titel und Dokumente für {{workspace}}.",
     "searchPlaceholder": "Dateien suchen…",
     "rename": "Umbenennen",
     "download": "Herunterladen",
@@ -655,7 +655,7 @@
       "noMatchTitle": "Keine passenden Dateien",
       "noneTitle": "Noch keine Dateien",
       "noMatchDescription": "Versuchen Sie eine andere Suche oder einen anderen Filter.",
-      "canEditDescription": "Laden Sie Fotos, Titel, Videos oder Dokumente hoch, um loszulegen.",
+      "canEditDescription": "Laden Sie Fotos, Titel oder Dokumente hoch, um loszulegen.",
       "viewOnlyDescription": "Diesem Arbeitsbereich wurden noch keine Dateien hinzugefügt."
     }
   },

@@ -598,7 +598,7 @@
     "accountCreatedAccepted": "تم إنشاء الحساب — تم قبول الدعوة"
   },
   "media": {
-    "pageDescription": "صور ومقاطع وفيديوهات ومستندات لـ {{workspace}}.",
+    "pageDescription": "صور ومقاطع ومستندات لـ {{workspace}}.",
     "searchPlaceholder": "ابحث عن ملفات…",
     "rename": "إعادة تسمية",
     "download": "تنزيل",
@@ -655,7 +655,7 @@
       "noMatchTitle": "لا توجد ملفات مطابقة",
       "noneTitle": "لا توجد ملفات بعد",
       "noMatchDescription": "جرّب بحثًا أو تصفية مختلفة.",
-      "canEditDescription": "ارفع صورًا أو مقاطع أو فيديوهات أو مستندات للبدء.",
+      "canEditDescription": "ارفع صورًا أو مقاطع أو مستندات للبدء.",
       "viewOnlyDescription": "لم يتم رفع أي ملفات إلى مساحة العمل هذه بعد."
     }
   },
