@@ -192,7 +192,7 @@
       "logout": "Déconnexion",
       "instructions": "Cliquez sur le lien reçu par e-mail pour activer votre compte. Vous ne l'avez pas reçu ?",
       "resend": "Renvoyer l'e-mail de vérification",
-      "sent": "E-mail envoyé",
+      "resendIn": "Renvoyer dans {{seconds}}s",
       "sentToast": "E-mail de vérification envoyé",
       "sendError": "Impossible d'envoyer l'e-mail pour le moment"
     }

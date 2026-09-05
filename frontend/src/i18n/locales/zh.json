@@ -192,7 +192,7 @@
       "logout": "退出登录",
       "instructions": "点击邮件中的链接以激活您的账户。没有收到？",
       "resend": "重新发送验证邮件",
-      "sent": "邮件已发送",
+      "resendIn": "{{seconds}} 秒后重新发送",
       "sentToast": "验证邮件已发送",
       "sendError": "目前无法发送邮件"
     }

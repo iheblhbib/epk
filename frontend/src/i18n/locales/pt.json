@@ -192,7 +192,7 @@
       "logout": "Terminar sessão",
       "instructions": "Clique no link recebido por e-mail para ativar a sua conta. Não o recebeu?",
       "resend": "Reenviar e-mail de verificação",
-      "sent": "E-mail enviado",
+      "resendIn": "Reenviar em {{seconds}}s",
       "sentToast": "E-mail de verificação enviado",
       "sendError": "Não foi possível enviar o e-mail de momento"
     }

@@ -192,7 +192,7 @@
       "logout": "Cerrar sesión",
       "instructions": "Haz clic en el enlace de ese correo para activar tu cuenta. ¿No lo recibiste?",
       "resend": "Reenviar correo de verificación",
-      "sent": "Correo enviado",
+      "resendIn": "Reenviar en {{seconds}}s",
       "sentToast": "Correo de verificación enviado",
       "sendError": "No se pudo enviar el correo en este momento"
     }
