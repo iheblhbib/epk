@@ -78,26 +78,6 @@ class EpkSectionController extends Controller
         return response()->json(['message' => __('Section removed.')]);
     }
 
-    public function duplicate(Epk $epk, EpkSection $section): JsonResponse
-    {
-        $this->authorize('update', $epk);
-        $this->assertBelongsToEpk($epk, $section);
-
-        if ($section->type->isSingleton()) {
-            throw ValidationException::withMessages([
-                'type' => __('An EPK can only have one :section section.', ['section' => $section->type->label()]),
-            ]);
-        }
-
-        $nextPosition = (int) $epk->sections()->max('position') + 1;
-
-        $copy = $section->replicate();
-        $copy->position = $nextPosition;
-        $copy->save();
-
-        return (new EpkSectionResource($copy))->response()->setStatusCode(201);
-    }
-
     public function reorder(ReorderEpkSectionsRequest $request, Epk $epk): JsonResponse
     {
         foreach ($request->validated('section_ids') as $position => $id) {

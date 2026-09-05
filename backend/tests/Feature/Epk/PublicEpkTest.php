@@ -258,6 +258,87 @@ it('404s the download-all endpoint when the epk has no uploaded music tracks', f
     $this->get(route('public.epk.music.download-all', ['slug' => $epk->slug]))->assertNotFound();
 });
 
+it('downloads all files in a downloads section as a single zip', function () {
+    Storage::fake('public');
+    $epk = makePublishedEpk();
+    $fileOne = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/document/one.pdf', 'original_filename' => 'one.pdf',
+    ]);
+    $fileTwo = Media::factory()->create([
+        'workspace_id' => $epk->workspace_id, 'disk' => 'public',
+        'path' => 'workspaces/1/media/document/two.pdf', 'original_filename' => 'two.pdf',
+    ]);
+    Storage::disk('public')->put($fileOne->path, 'fake bytes one');
+    Storage::disk('public')->put($fileTwo->path, 'fake bytes two');
+
+    $epk->sections()->create([
+        'type' => SectionType::Downloads,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['media_ids' => [$fileOne->id, $fileTwo->id]],
+    ]);
+
+    $response = $this->get(route('public.epk.downloads.download-all', ['slug' => $epk->slug]));
+
+    $response->assertOk();
+    expect($response->headers->get('Content-Type'))->toBe('application/zip');
+    expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+
+    $zipPath = storage_path('framework/testing/downloaded-files.zip');
+    file_put_contents($zipPath, $response->streamedContent());
+    $zip = new ZipArchive;
+    $zip->open($zipPath);
+    expect($zip->numFiles)->toBe(2);
+    expect($zip->getNameIndex(0))->toBe('one.pdf');
+    expect($zip->getNameIndex(1))->toBe('two.pdf');
+    $zip->close();
+    unlink($zipPath);
+});
+
+it('404s the downloads-section download-all endpoint when the epk has no downloadable files', function () {
+    $epk = makePublishedEpk();
+
+    $this->get(route('public.epk.downloads.download-all', ['slug' => $epk->slug]))->assertNotFound();
+});
+
+it('exposes a section-level download-all-as-zip url when the downloads section has files', function () {
+    Storage::fake('public');
+    $epk = makePublishedEpk();
+    $media = Media::factory()->create(['workspace_id' => $epk->workspace_id]);
+
+    $epk->sections()->create([
+        'type' => SectionType::Downloads,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['media_ids' => [$media->id]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath(
+        'data.sections.0.config.download_all_url',
+        route('public.epk.downloads.download-all', ['slug' => $epk->slug])
+    );
+});
+
+it('omits the download-all url when the downloads section has no files', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Downloads,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['media_ids' => []],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    expect($response->json('data.sections.0.config'))->not->toHaveKey('download_all_url');
+});
+
 it('404s downloading a media id that is not in an enabled downloads section on that epk', function () {
     $epk = makePublishedEpk();
     $unrelatedMedia = Media::factory()->create(['workspace_id' => $epk->workspace_id]);

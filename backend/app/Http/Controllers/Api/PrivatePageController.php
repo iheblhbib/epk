@@ -111,6 +111,24 @@ class PrivatePageController extends Controller
         return $this->zipBuilder->stream($mediaItems, 'music.zip');
     }
 
+    public function downloadAllFiles(Request $request, string $token): StreamedResponse
+    {
+        $link = $this->findActiveLink($token);
+        abort_if($link->requiresPassword() && ! $this->isVerified($request, $link), 401);
+
+        $sections = $link->epk->sections()
+            ->where('type', SectionType::Downloads->value)
+            ->where('is_enabled', true)
+            ->get();
+
+        $mediaIds = $this->allowedMediaIds($sections);
+        abort_if($mediaIds->isEmpty(), 404);
+
+        $mediaItems = Media::whereIn('id', $mediaIds)->get();
+
+        return $this->zipBuilder->stream($mediaItems, 'files.zip');
+    }
+
     /**
      * Same "which media ids are actually attached to an enabled
      * Downloads/Music section" logic as PublicEpkController::downloadFile()

@@ -111,6 +111,27 @@ class PublicEpkController extends Controller
     }
 
     /**
+     * Bundles every file in this EPK's enabled Downloads sections into a
+     * single .zip -- "download all" on the public page, mirroring
+     * downloadAllMusic() above.
+     */
+    public function downloadAllFiles(string $slug): StreamedResponse
+    {
+        $epk = Epk::query()
+            ->published()
+            ->where('slug', $slug)
+            ->with(['sections' => fn ($query) => $query->where('type', SectionType::Downloads->value)->where('is_enabled', true)])
+            ->firstOrFail();
+
+        $mediaIds = $this->allowedMediaIds($epk);
+        abort_if($mediaIds->isEmpty(), 404);
+
+        $mediaItems = Media::whereIn('id', $mediaIds)->get();
+
+        return $this->zipBuilder->stream($mediaItems, "{$slug}-files.zip");
+    }
+
+    /**
      * @return Collection<int, int>
      */
     private function allowedMediaIds(Epk $epk): Collection

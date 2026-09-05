@@ -14,10 +14,13 @@ class EpkSectionFactory extends Factory
 {
     public function definition(): array
     {
-        $type = fake()->randomElement(array_filter(
-            SectionType::cases(),
-            fn (SectionType $type) => ! $type->isSingleton()
-        ));
+        // Every type is a singleton now (isSingleton() is unconditionally
+        // true), so there's no meaningful "non-singleton" subset left to
+        // filter down to -- just pick any type. Nothing here relies on
+        // multiple same-type sections coexisting on one Epk; callers that
+        // need a specific type already use hero()/biography() below or set
+        // 'type' explicitly.
+        $type = fake()->randomElement(SectionType::cases());
 
         return [
             'epk_id' => Epk::factory(),

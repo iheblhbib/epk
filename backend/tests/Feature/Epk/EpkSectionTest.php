@@ -81,6 +81,20 @@ it('only allows one hero section per epk', function () {
         ->assertJsonValidationErrors('type');
 });
 
+it('only allows one section of any type per epk, not just hero', function () {
+    [$workspace, $editor] = sectionWorkspaceWithMember(WorkspaceRole::Editor);
+    $epk = makeEpk($workspace);
+
+    $this->actingAs($editor)
+        ->postJson("/api/epks/{$epk->id}/sections", ['type' => SectionType::Biography->value])
+        ->assertCreated();
+
+    $this->actingAs($editor)
+        ->postJson("/api/epks/{$epk->id}/sections", ['type' => SectionType::Biography->value])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('type');
+});
+
 it('appends new sections at the end of the position order', function () {
     [$workspace, $editor] = sectionWorkspaceWithMember(WorkspaceRole::Editor);
     $epk = makeEpk($workspace);
@@ -135,23 +149,6 @@ it('toggles a section enabled/disabled', function () {
         ->putJson("/api/epks/{$epk->id}/sections/{$section->id}", ['is_enabled' => false])
         ->assertOk()
         ->assertJsonPath('data.is_enabled', false);
-});
-
-it('duplicates a non-singleton section but blocks duplicating hero', function () {
-    [$workspace, $editor] = sectionWorkspaceWithMember(WorkspaceRole::Editor);
-    $epk = makeEpk($workspace);
-    $bio = EpkSection::factory()->biography()->create(['epk_id' => $epk->id]);
-    $hero = EpkSection::factory()->hero()->create(['epk_id' => $epk->id]);
-
-    $this->actingAs($editor)
-        ->postJson("/api/epks/{$epk->id}/sections/{$bio->id}/duplicate")
-        ->assertCreated();
-
-    $this->assertDatabaseCount('epk_sections', 3);
-
-    $this->actingAs($editor)
-        ->postJson("/api/epks/{$epk->id}/sections/{$hero->id}/duplicate")
-        ->assertUnprocessable();
 });
 
 it('deletes a section', function () {

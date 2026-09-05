@@ -74,27 +74,7 @@ class PublicSectionConfigResolver
                 'phone' => ($config['show_phone'] ?? false) ? ($config['phone'] ?? '') : '',
                 'address' => ($config['show_address'] ?? false) ? ($config['address'] ?? '') : '',
             ],
-            SectionType::Downloads => [
-                'files' => collect($config['media_ids'] ?? [])
-                    ->map(fn ($id) => $this->mediaFor(is_int($id) ? $id : null))
-                    ->filter()
-                    ->map(fn (Media $media) => [
-                        'id' => $media->id,
-                        'filename' => $media->original_filename,
-                        // Routed through a downloadFile() endpoint rather
-                        // than the plain storage URL, so it actually
-                        // downloads (Content-Disposition: attachment)
-                        // instead of the browser opening the PDF/image
-                        // inline in a new tab.
-                        'url' => $this->privateLink
-                            ? route('private.download', ['token' => $this->privateLink->token, 'media' => $media->id])
-                            : route('public.epk.download', ['slug' => $section->epk->slug, 'media' => $media->id]),
-                        'size' => $media->size,
-                        'mime_type' => $media->mime_type,
-                    ])
-                    ->values()
-                    ->all(),
-            ],
+            SectionType::Downloads => $this->resolveDownloadsConfig($config, $section),
             SectionType::Credits => [
                 'items' => $config['items'] ?? [],
             ],
@@ -235,6 +215,46 @@ class PublicSectionConfigResolver
         }
 
         return null;
+    }
+
+    /**
+     * Same reason as resolveMusicConfig() below -- a `match` arm must be a
+     * single expression, and this case needs a sibling 'download_all_url'
+     * key alongside 'files' (only when there's at least one file to zip).
+     *
+     * @return array<string, mixed>
+     */
+    private function resolveDownloadsConfig(array $config, EpkSection $section): array
+    {
+        $files = collect($config['media_ids'] ?? [])
+            ->map(fn ($id) => $this->mediaFor(is_int($id) ? $id : null))
+            ->filter()
+            ->map(fn (Media $media) => [
+                'id' => $media->id,
+                'filename' => $media->original_filename,
+                // Routed through a downloadFile() endpoint rather
+                // than the plain storage URL, so it actually
+                // downloads (Content-Disposition: attachment)
+                // instead of the browser opening the PDF/image
+                // inline in a new tab.
+                'url' => $this->privateLink
+                    ? route('private.download', ['token' => $this->privateLink->token, 'media' => $media->id])
+                    : route('public.epk.download', ['slug' => $section->epk->slug, 'media' => $media->id]),
+                'size' => $media->size,
+                'mime_type' => $media->mime_type,
+            ])
+            ->values()
+            ->all();
+
+        $result = ['files' => $files];
+
+        if (! empty($files)) {
+            $result['download_all_url'] = $this->privateLink
+                ? route('private.downloads.download-all', ['token' => $this->privateLink->token])
+                : route('public.epk.downloads.download-all', ['slug' => $section->epk->slug]);
+        }
+
+        return $result;
     }
 
     /**

@@ -38,12 +38,11 @@ enum SectionType: string
     }
 
     /**
-     * Only one Hero section makes sense (it's the page's top banner) — every
-     * other type may appear multiple times in one EPK.
+     * Every section type is single-use -- an EPK can only have one of each.
      */
     public function isSingleton(): bool
     {
-        return $this === self::Hero;
+        return true;
     }
 
     /**

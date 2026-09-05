@@ -70,6 +70,13 @@ Route::get('/public/epks/by-domain', [PublicEpkController::class, 'showByDomain'
 Route::get('/public/epks/{slug}', [PublicEpkController::class, 'show']);
 Route::get('/public/epks/{slug}/pdf', [EpkPdfController::class, 'downloadPublic'])
     ->middleware('throttle:20,1');
+// download-all must be registered before the {media} wildcard route below --
+// otherwise "download-all" would itself be matched as a {media} route
+// parameter (and fail to bind, since it's not a real media id) instead of
+// ever reaching this route.
+Route::get('/public/epks/{slug}/downloads/download-all', [PublicEpkController::class, 'downloadAllFiles'])
+    ->name('public.epk.downloads.download-all')
+    ->middleware('throttle:10,1');
 Route::get('/public/epks/{slug}/downloads/{media}', [PublicEpkController::class, 'downloadFile'])
     ->name('public.epk.download');
 Route::get('/public/epks/{slug}/music/download-all', [PublicEpkController::class, 'downloadAllMusic'])
@@ -84,6 +91,11 @@ Route::post('/public/epks/{slug}/events', [PublicAnalyticsEventController::class
 Route::get('/private/{token}', [PrivatePageController::class, 'show'])
     ->middleware('throttle:60,1');
 Route::post('/private/{token}/verify', [PrivatePageController::class, 'verify'])
+    ->middleware('throttle:10,1');
+// Same download-all-before-{media} ordering requirement as the public
+// routes above.
+Route::get('/private/{token}/downloads/download-all', [PrivatePageController::class, 'downloadAllFiles'])
+    ->name('private.downloads.download-all')
     ->middleware('throttle:10,1');
 Route::get('/private/{token}/downloads/{media}', [PrivatePageController::class, 'downloadFile'])
     ->name('private.download')
@@ -183,7 +195,6 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
     Route::put('/epks/{epk}/sections/reorder', [EpkSectionController::class, 'reorder']);
     Route::put('/epks/{epk}/sections/{section}', [EpkSectionController::class, 'update']);
     Route::delete('/epks/{epk}/sections/{section}', [EpkSectionController::class, 'destroy']);
-    Route::post('/epks/{epk}/sections/{section}/duplicate', [EpkSectionController::class, 'duplicate']);
 
     Route::get('/epks/{epk}/sections/{section}/comments', [EpkSectionCommentController::class, 'index']);
     Route::post('/epks/{epk}/sections/{section}/comments', [EpkSectionCommentController::class, 'store']);
