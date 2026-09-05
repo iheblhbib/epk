@@ -923,9 +923,7 @@
       "addRelease": "添加发行作品"
     },
     "videos": {
-      "directUpload": "直接上传",
       "titlePlaceholder": "视频标题（可选）",
-      "selectVideoFile": "选择视频文件",
       "addVideo": "添加视频"
     },
     "richText": {

@@ -331,13 +331,12 @@ export interface ReleasesConfig {
   releases?: ReleaseItem[]
 }
 
-export type VideoProvider = 'youtube' | 'vimeo' | 'upload'
+export type VideoProvider = 'youtube' | 'vimeo'
 
 export interface VideoItem {
   title?: string
   provider?: VideoProvider
   url?: string
-  media_id?: number | null
 }
 
 export interface VideosConfig {
@@ -459,8 +458,6 @@ export interface PublicVideoItem {
   title: string
   provider: VideoProvider
   embed_url?: string
-  video_url?: string
-  mime_type?: string
 }
 
 export interface PublicVideosConfig {

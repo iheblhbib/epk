@@ -481,7 +481,11 @@ it('resolves releases with a cover image and streaming links, dropping untitled 
     expect($releases[0]['links'])->toBe(['spotify' => 'https://open.spotify.com/x']);
 });
 
-it('converts youtube/vimeo urls to embed urls and resolves uploaded videos', function () {
+it('converts youtube/vimeo urls to embed urls, dropping uploaded videos and broken links', function () {
+    // Uploaded videos are no longer a supported provider (removed to avoid
+    // hosting/bandwidth costs of self-hosted video) -- a track saved with
+    // provider: 'upload' from before the change is silently dropped, same
+    // as any other unrecognized/broken provider, rather than resolved.
     $epk = makePublishedEpk();
     $upload = Media::factory()->create(['workspace_id' => $epk->workspace_id]);
 
@@ -501,10 +505,9 @@ it('converts youtube/vimeo urls to embed urls and resolves uploaded videos', fun
 
     $response->assertOk();
     $videos = $response->json('data.sections.0.config.videos');
-    expect($videos)->toHaveCount(3);
+    expect($videos)->toHaveCount(2);
     expect($videos[0]['embed_url'])->toBe('https://www.youtube.com/embed/dQw4w9WgXcQ');
     expect($videos[1]['embed_url'])->toBe('https://player.vimeo.com/video/123456789');
-    expect($videos[2]['video_url'])->toBe($upload->url());
 });
 
 it('resolves press coverage, dropping entries without an outlet', function () {

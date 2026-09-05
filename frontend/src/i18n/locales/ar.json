@@ -923,9 +923,7 @@
       "addRelease": "إضافة إصدار"
     },
     "videos": {
-      "directUpload": "رفع مباشر",
       "titlePlaceholder": "عنوان الفيديو (اختياري)",
-      "selectVideoFile": "اختر ملف فيديو",
       "addVideo": "إضافة فيديو"
     },
     "richText": {

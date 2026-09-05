@@ -923,9 +923,7 @@
       "addRelease": "Add release"
     },
     "videos": {
-      "directUpload": "Direct upload",
       "titlePlaceholder": "Video title (optional)",
-      "selectVideoFile": "Select video file",
       "addVideo": "Add video"
     },
     "richText": {

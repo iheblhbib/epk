@@ -399,8 +399,7 @@ function ReleasesPreview({
   )
 }
 
-function VideosPreview({ config, workspaceId, headerStyle, t }: { config: VideosConfig; workspaceId: number; headerStyle: HeaderStyle; t: TFunction }) {
-  const { data: media } = useMediaList(workspaceId)
+function VideosPreview({ config, headerStyle, t }: { config: VideosConfig; headerStyle: HeaderStyle; t: TFunction }) {
   const videos = config.videos ?? []
 
   return (
@@ -410,30 +409,15 @@ function VideosPreview({ config, workspaceId, headerStyle, t }: { config: Videos
         <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noVideos')}</p>
       ) : (
         <ul className="space-y-2">
-          {videos.map((video, index) => {
-            if (video.provider === 'upload') {
-              const file = media?.find((m) => m.id === video.media_id)
-              return (
-                <li key={index} className="space-y-1">
-                  {video.title && <p className="text-sm font-medium text-[var(--epk-fg)]">{video.title}</p>}
-                  {file ? (
-                    <video src={file.url} controls className="aspect-video w-full rounded-md bg-black" onClick={(event) => event.preventDefault()} />
-                  ) : (
-                    <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noFileSelected')}</p>
-                  )}
-                </li>
-              )
-            }
+          {videos.map((video, index) => (
             // Embed rendering for YouTube/Vimeo is left to the public page
             // (which has the server-resolved embed URL) — the builder just
             // confirms a link was entered.
-            return (
-              <li key={index} className="flex items-center gap-2 rounded-md border border-[var(--epk-border)] px-3 py-2 text-sm">
-                <PlayCircle className="size-4 shrink-0 text-[var(--epk-muted)]" />
-                <span className="truncate text-[var(--epk-fg)]">{video.title || video.url || t('epkBuilder.preview.untitledVideo')}</span>
-              </li>
-            )
-          })}
+            <li key={index} className="flex items-center gap-2 rounded-md border border-[var(--epk-border)] px-3 py-2 text-sm">
+              <PlayCircle className="size-4 shrink-0 text-[var(--epk-muted)]" />
+              <span className="truncate text-[var(--epk-fg)]">{video.title || video.url || t('epkBuilder.preview.untitledVideo')}</span>
+            </li>
+          ))}
         </ul>
       )}
     </div>
@@ -580,9 +564,7 @@ export function LivePreview({
                   />
                 )
               case 'videos':
-                return (
-                  <VideosPreview config={section.config as VideosConfig} workspaceId={workspaceId} headerStyle={theme.headerStyle} t={t} />
-                )
+                return <VideosPreview config={section.config as VideosConfig} headerStyle={theme.headerStyle} t={t} />
               case 'press':
                 return <PressPreview config={section.config as PressConfig} headerStyle={theme.headerStyle} t={t} />
               default:

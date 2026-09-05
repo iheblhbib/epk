@@ -5,12 +5,11 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { GalleryItemRow } from '@/features/epks/builder/components/GalleryItemRow'
-import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
 import { moveItem } from '@/lib/arrayMove'
 import type { EpkSection, VideoItem, VideosConfig } from '@/types'
 
-export function VideosSettings({ epkId, workspaceId, section }: { epkId: number; workspaceId: number; section: EpkSection }) {
+export function VideosSettings({ epkId, section }: { epkId: number; section: EpkSection }) {
   const { t } = useTranslation()
   const config = section.config as VideosConfig
   const setConfig = useDraftSectionConfig<VideosConfig>(epkId, section)
@@ -18,7 +17,6 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
   const providerItems = {
     youtube: 'YouTube',
     vimeo: 'Vimeo',
-    upload: t('epkBuilder.videos.directUpload'),
   }
 
   const updateVideo = (index: number, patch: Partial<VideoItem>) =>
@@ -60,21 +58,11 @@ export function VideosSettings({ epkId, workspaceId, section }: { epkId: number;
               ))}
             </SelectContent>
           </Select>
-          {video.provider === 'upload' ? (
-            <MediaPickerSingle
-              workspaceId={workspaceId}
-              value={video.media_id}
-              onChange={(id) => updateVideo(index, { media_id: id })}
-              type="video"
-              label={t('epkBuilder.videos.selectVideoFile')}
-            />
-          ) : (
-            <Input
-              placeholder={video.provider === 'vimeo' ? 'https://vimeo.com/…' : 'https://youtube.com/watch?v=…'}
-              value={video.url ?? ''}
-              onChange={(event) => updateVideo(index, { url: event.target.value })}
-            />
-          )}
+          <Input
+            placeholder={video.provider === 'vimeo' ? 'https://vimeo.com/…' : 'https://youtube.com/watch?v=…'}
+            value={video.url ?? ''}
+            onChange={(event) => updateVideo(index, { url: event.target.value })}
+          />
         </GalleryItemRow>
       ))}
       <Button

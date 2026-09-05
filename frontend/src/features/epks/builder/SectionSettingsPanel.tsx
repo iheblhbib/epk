@@ -117,7 +117,7 @@ export function SectionSettingsPanel({
               case 'releases':
                 return <ReleasesSettings epkId={epkId} workspaceId={workspaceId} section={section} />
               case 'videos':
-                return <VideosSettings epkId={epkId} workspaceId={workspaceId} section={section} />
+                return <VideosSettings epkId={epkId} section={section} />
               case 'press':
                 return <PressSettings epkId={epkId} section={section} />
               default:

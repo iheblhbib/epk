@@ -143,19 +143,14 @@ class PublicSectionConfigResolver
                     ->all(),
             ],
             SectionType::Videos => [
+                // 'upload' is no longer a supported provider (removed to avoid
+                // self-hosted video's bandwidth/storage cost) -- a track saved
+                // with provider: 'upload' from before the change simply finds
+                // no embed URL below and gets dropped, same as any other
+                // unrecognized or broken provider/link.
                 'videos' => collect($config['videos'] ?? [])
                     ->map(function ($video) {
                         $provider = $video['provider'] ?? 'youtube';
-
-                        if ($provider === 'upload') {
-                            $media = $this->mediaFor($video['media_id'] ?? null);
-                            if (! $media) {
-                                return null;
-                            }
-
-                            return ['title' => $video['title'] ?? '', 'provider' => 'upload', 'video_url' => $media->url(), 'mime_type' => $media->mime_type];
-                        }
-
                         $embedUrl = $this->embedUrlFor($provider, $video['url'] ?? null);
                         if (! $embedUrl) {
                             return null;
