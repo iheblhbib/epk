@@ -8,6 +8,7 @@ use App\Models\Workspace;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Intervention\Image\Encoders\FileExtensionEncoder;
 use Intervention\Image\Encoders\WebpEncoder;
 use Intervention\Image\Laravel\Facades\Image;
 
@@ -33,9 +34,13 @@ class MediaUploadService
 
         $thumbnailPath = null;
         $metadata = [];
+        $size = $file->getSize();
 
         if ($type === MediaType::Image) {
-            [$thumbnailPath, $metadata] = $this->makeImageThumbnail($path, $directory, $filename);
+            [$thumbnailPath, $metadata] = $this->processImage($path, $directory, $filename, $extension);
+            // The resize above overwrites $path in place, so the original
+            // upload size no longer matches what's actually on disk.
+            $size = Storage::disk('public')->size($path);
         }
 
         return Media::create([
@@ -48,7 +53,7 @@ class MediaUploadService
             'thumbnail_path' => $thumbnailPath,
             'mime_type' => $file->getMimeType(),
             'type' => $type,
-            'size' => $file->getSize(),
+            'size' => $size,
             'metadata' => $metadata ?: null,
         ]);
     }
@@ -64,12 +69,22 @@ class MediaUploadService
     }
 
     /**
+     * Caps the stored original's dimensions (downscale only, never upscale —
+     * scaleDown() is a no-op below the cap) before generating its thumbnail,
+     * so an oversized phone photo doesn't sit at full resolution on disk for
+     * no benefit on a web page. Both steps reuse the same decoded $image
+     * rather than decoding the file twice.
+     *
      * @return array{0: string, 1: array<string, int>}
      */
-    private function makeImageThumbnail(string $path, string $directory, string $filename): array
+    private function processImage(string $path, string $directory, string $filename, string $extension): array
     {
         $disk = Storage::disk('public');
         $image = Image::decodePath($disk->path($path));
+
+        $maxDimension = (int) config('media.max_image_dimension', 2500);
+        $image->scaleDown(width: $maxDimension, height: $maxDimension);
+        $disk->put($path, (string) $image->encode(new FileExtensionEncoder($extension, quality: 85)));
 
         $metadata = ['width' => $image->width(), 'height' => $image->height()];
 

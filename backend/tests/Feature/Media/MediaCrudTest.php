@@ -47,6 +47,44 @@ it('lets an editor upload an image and generates a thumbnail', function () {
     expect($media->filename)->not->toBe('cover.jpg');
 });
 
+it('downscales an oversized image before storing it, to cap storage usage', function () {
+    [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
+
+    $file = UploadedFile::fake()->image('huge.jpg', 4000, 3000);
+
+    $response = $this->actingAs($editor)->postJson("/api/workspaces/{$workspace->id}/media", [
+        'files' => [$file],
+    ]);
+
+    $response->assertCreated();
+    $media = Media::first();
+
+    [$storedWidth, $storedHeight] = getimagesize(Storage::disk('public')->path($media->path));
+    expect($storedWidth)->toBeLessThanOrEqual(2500);
+    expect($storedHeight)->toBeLessThanOrEqual(2500);
+    // Aspect ratio (4:3) must survive the resize.
+    expect(round($storedWidth / $storedHeight, 2))->toBe(round(4000 / 3000, 2));
+
+    expect($media->metadata['width'])->toBe($storedWidth);
+    expect($media->metadata['height'])->toBe($storedHeight);
+    // The recorded size must match what's actually on disk after the
+    // resize, not the pre-resize upload size.
+    expect($media->size)->toBe(Storage::disk('public')->size($media->path));
+});
+
+it('leaves an image already within the size cap untouched', function () {
+    [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
+
+    $file = UploadedFile::fake()->image('small.jpg', 800, 600);
+
+    $this->actingAs($editor)->postJson("/api/workspaces/{$workspace->id}/media", ['files' => [$file]])->assertCreated();
+
+    $media = Media::first();
+    [$storedWidth, $storedHeight] = getimagesize(Storage::disk('public')->path($media->path));
+    expect($storedWidth)->toBe(800);
+    expect($storedHeight)->toBe(600);
+});
+
 it('uploads multiple files in one request', function () {
     [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
 

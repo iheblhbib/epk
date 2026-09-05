@@ -48,4 +48,18 @@ return [
 
     'thumbnail_width' => 400,
 
+    /*
+    |--------------------------------------------------------------------------
+    | Max Image Dimension (pixels)
+    |--------------------------------------------------------------------------
+    |
+    | The stored original is downscaled (never upscaled) so neither side
+    | exceeds this, before the thumbnail is generated from it — a phone
+    | photo can otherwise be 4000px+ per side for no benefit on a web page,
+    | at real cost to shared-hosting storage quotas.
+    |
+    */
+
+    'max_image_dimension' => 2500,
+
 ];
