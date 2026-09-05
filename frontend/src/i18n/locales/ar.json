@@ -1011,6 +1011,10 @@
     },
     "downloads": {
       "downloadAll": "تنزيل الكل"
+    },
+    "photos": {
+      "previous": "الصورة السابقة",
+      "next": "الصورة التالية"
     }
   },
   "privateEpk": {

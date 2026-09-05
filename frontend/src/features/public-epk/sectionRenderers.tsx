@@ -1,6 +1,6 @@
-import { Download, ExternalLink, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
@@ -17,6 +17,7 @@ import type {
   PublicEpkSection,
   PublicHeroConfig,
   PublicMusicConfig,
+  PublicPhotoItem,
   PublicPhotosConfig,
   PublicPressConfig,
   PublicReleasesConfig,
@@ -318,7 +319,67 @@ function CustomSection({ headerStyle, config }: { headerStyle: HeaderStyle; conf
   )
 }
 
+function PhotoLightbox({
+  items,
+  index,
+  onClose,
+  onNavigate,
+}: {
+  items: PublicPhotoItem[]
+  index: number
+  onClose: () => void
+  onNavigate: (index: number) => void
+}) {
+  const { t } = useTranslation()
+  const item = items[index]
+
+  useEffect(() => {
+    function handleKeyDown(event: KeyboardEvent) {
+      if (event.key === 'ArrowRight') onNavigate((index + 1) % items.length)
+      if (event.key === 'ArrowLeft') onNavigate((index - 1 + items.length) % items.length)
+    }
+    window.addEventListener('keydown', handleKeyDown)
+    return () => window.removeEventListener('keydown', handleKeyDown)
+  }, [index, items.length, onNavigate])
+
+  return (
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-3xl border-none bg-transparent p-0 shadow-none sm:max-w-3xl" showCloseButton>
+        <img src={item.url} alt={item.caption} className="max-h-[80vh] w-full rounded-lg object-contain" />
+        {(item.caption || item.credit) && (
+          <div className="rounded-b-lg bg-background px-4 py-2 text-center text-sm text-foreground">
+            {item.caption}
+            {item.credit && <span className="block text-xs text-muted-foreground italic">{item.credit}</span>}
+          </div>
+        )}
+        {items.length > 1 && (
+          <>
+            <button
+              type="button"
+              onClick={() => onNavigate((index - 1 + items.length) % items.length)}
+              className="absolute start-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
+              aria-label={t('publicEpk.photos.previous')}
+            >
+              <ChevronLeft className="size-5" />
+            </button>
+            <button
+              type="button"
+              onClick={() => onNavigate((index + 1) % items.length)}
+              className="absolute end-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
+              aria-label={t('publicEpk.photos.next')}
+            >
+              <ChevronRight className="size-5" />
+            </button>
+          </>
+        )}
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function PhotosSection({ title, headerStyle, config }: { title: string; headerStyle: HeaderStyle; config: PublicPhotosConfig }) {
+  const [openIndex, setOpenIndex] = useState<number | null>(null)
+
   if (!config.items || config.items.length === 0) return null
 
   return (
@@ -326,9 +387,14 @@ function PhotosSection({ title, headerStyle, config }: { title: string; headerSt
       <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
         {config.items.map((item, index) => (
           <figure key={index} className="space-y-1.5">
-            <div className="aspect-square overflow-hidden bg-[var(--epk-border)]" style={{ borderRadius: 'var(--epk-radius)' }}>
-              <img src={item.url} alt={item.caption} className="size-full object-cover" loading="lazy" />
-            </div>
+            <button
+              type="button"
+              onClick={() => setOpenIndex(index)}
+              className="block aspect-square w-full overflow-hidden bg-[var(--epk-border)] transition-opacity hover:opacity-90"
+              style={{ borderRadius: 'var(--epk-radius)' }}
+            >
+              <img src={item.thumbnail_url} alt={item.caption} className="size-full object-cover" loading="lazy" />
+            </button>
             {(item.caption || item.credit) && (
               <figcaption className="text-xs text-[var(--epk-muted)]">
                 {item.caption}
@@ -338,6 +404,14 @@ function PhotosSection({ title, headerStyle, config }: { title: string; headerSt
           </figure>
         ))}
       </div>
+      {openIndex !== null && (
+        <PhotoLightbox
+          items={config.items}
+          index={openIndex}
+          onClose={() => setOpenIndex(null)}
+          onNavigate={setOpenIndex}
+        />
+      )}
     </SectionContainer>
   )
 }

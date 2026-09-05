@@ -1011,6 +1011,10 @@
     },
     "downloads": {
       "downloadAll": "全部下载"
+    },
+    "photos": {
+      "previous": "上一张照片",
+      "next": "下一张照片"
     }
   },
   "privateEpk": {

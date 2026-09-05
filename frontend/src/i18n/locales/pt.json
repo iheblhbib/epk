@@ -1011,6 +1011,10 @@
     },
     "downloads": {
       "downloadAll": "Transferir tudo"
+    },
+    "photos": {
+      "previous": "Foto anterior",
+      "next": "Foto seguinte"
     }
   },
   "privateEpk": {
