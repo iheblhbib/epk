@@ -4,6 +4,8 @@ namespace App\Services;
 
 use App\Enums\SectionType;
 use App\Models\Epk;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Mpdf\Mpdf;
 use Mpdf\Output\Destination;
 
@@ -32,27 +34,6 @@ class EpkPdfService
 
     public function render(Epk $epk): string
     {
-        $epk->loadMissing(['artist', 'sections' => fn ($query) => $query->where('is_enabled', true)->orderBy('position')]);
-
-        $sections = $epk->sections
-            ->reject(fn ($section) => in_array($section->type, [SectionType::Downloads, SectionType::Videos], true))
-            ->map(fn ($section) => [
-                'type' => $section->type,
-                'title' => $section->title ?: $section->type->label(),
-                'config' => $this->resolver->resolve($section),
-            ]);
-
-        $html = view('pdf.epk', [
-            'epk' => $epk,
-            'artist' => $epk->artist,
-            'sections' => $sections,
-        ])->render();
-
-        // Images in the view are the same storage/ URLs the public web page
-        // uses (from PublicSectionConfigResolver) — mPDF fetches them over
-        // HTTP, which needs allow_url_fopen enabled (on by default on
-        // virtually every host, cPanel included) since this is a
-        // self-referential request back to this same server.
         $mpdf = new Mpdf([
             'format' => 'A4',
             'margin_top' => 20,
@@ -64,8 +45,88 @@ class EpkPdfService
         ]);
 
         $mpdf->SetTitle($epk->seo_title ?: $epk->title);
-        $mpdf->WriteHTML($html);
+        $mpdf->WriteHTML($this->buildHtml($epk));
 
         return $mpdf->Output('', Destination::STRING_RETURN);
+    }
+
+    /**
+     * Split out from render() so the image-inlining below is directly
+     * testable against the generated HTML — mPDF's own PDF output is
+     * compressed, so a test can't just search it for a marker string.
+     */
+    public function buildHtml(Epk $epk): string
+    {
+        $epk->loadMissing(['artist', 'sections' => fn ($query) => $query->where('is_enabled', true)->orderBy('position')]);
+
+        $sections = $epk->sections
+            ->reject(fn ($section) => in_array($section->type, [SectionType::Downloads, SectionType::Videos], true))
+            ->map(fn ($section) => [
+                'type' => $section->type,
+                'title' => $section->title ?: $section->type->label(),
+                'config' => $this->inlineImages($section->type, $this->resolver->resolve($section)),
+            ]);
+
+        return view('pdf.epk', [
+            'epk' => $epk,
+            'artist' => $epk->artist,
+            'sections' => $sections,
+        ])->render();
+    }
+
+    /**
+     * mPDF fetches any http(s) <img src> over a real HTTP connection, even
+     * one pointing back at this same server. On a single-worker dev server
+     * (php artisan serve's default) that self-fetch can never complete,
+     * since the one worker is already busy handling this very request — it
+     * hangs indefinitely rather than erroring. Reading each image's bytes
+     * directly off the 'public' disk and inlining them as data: URIs avoids
+     * that request entirely, in dev and production alike.
+     *
+     * @return array<string, mixed>
+     */
+    private function inlineImages(SectionType $type, array $config): array
+    {
+        return match ($type) {
+            SectionType::Hero => [
+                ...$config,
+                'profile_image_url' => $this->inlineImage($config['profile_image_url'] ?? null),
+                'background_image_url' => $this->inlineImage($config['background_image_url'] ?? null),
+            ],
+            SectionType::Photos => [
+                ...$config,
+                'items' => collect($config['items'] ?? [])->map(fn ($item) => [
+                    ...$item,
+                    'url' => $this->inlineImage($item['url'] ?? null),
+                    'thumbnail_url' => $this->inlineImage($item['thumbnail_url'] ?? null),
+                ])->all(),
+            ],
+            SectionType::Releases => [
+                ...$config,
+                'releases' => collect($config['releases'] ?? [])->map(fn ($release) => [
+                    ...$release,
+                    'cover_image_url' => $this->inlineImage($release['cover_image_url'] ?? null),
+                ])->all(),
+            ],
+            default => $config,
+        };
+    }
+
+    private function inlineImage(?string $url): ?string
+    {
+        if (! $url) {
+            return $url;
+        }
+
+        $disk = Storage::disk('public');
+        $path = Str::after($url, $disk->url(''));
+
+        if (! $disk->exists($path)) {
+            return $url;
+        }
+
+        $mimeType = $disk->mimeType($path) ?: 'application/octet-stream';
+
+        return 'data:'.$mimeType.';base64,'.base64_encode($disk->get($path));
     }
 }

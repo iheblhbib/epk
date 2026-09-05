@@ -4,8 +4,11 @@ use App\Enums\SectionType;
 use App\Enums\WorkspaceRole;
 use App\Models\Artist;
 use App\Models\Epk;
+use App\Models\Media;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Services\EpkPdfService;
+use Illuminate\Support\Facades\Storage;
 
 function makeEpkForPdf(bool $published = false): Epk
 {
@@ -126,6 +129,43 @@ it('omits the download-all link for a draft EPK\'s pdf, even if the resolved con
     ])->render();
 
     expect($html)->not->toContain('https://example.test/music/download-all');
+});
+
+it('embeds a hero image as a base64 data URI instead of a self-referential HTTP url', function () {
+    // mPDF fetches any http(s) <img src> over a real HTTP connection, even
+    // one pointing back at this same server -- on a single-worker dev server
+    // (php artisan serve's default) that self-fetch can never complete,
+    // since the one worker is already busy handling this very request. It
+    // hangs indefinitely instead of erroring. Embedding the image's actual
+    // bytes as a data: URI up front means mPDF never makes that request.
+    Storage::fake('public');
+    $workspace = Workspace::factory()->create();
+    $artist = Artist::factory()->create(['workspace_id' => $workspace->id, 'name' => 'Nova Ray']);
+    $epk = Epk::factory()->published()->create([
+        'workspace_id' => $workspace->id,
+        'artist_id' => $artist->id,
+        'title' => 'Nova Ray EPK',
+    ]);
+    $media = Media::factory()->create([
+        'workspace_id' => $workspace->id,
+        'disk' => 'public',
+        'path' => 'workspaces/1/media/image/hero.webp',
+        'type' => 'image',
+    ]);
+    Storage::disk('public')->put($media->path, 'fake webp bytes');
+
+    $epk->sections()->create([
+        'type' => SectionType::Hero,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['headline' => 'Nova Ray', 'profile_media_id' => $media->id],
+    ]);
+
+    $html = app(EpkPdfService::class)->buildHtml($epk);
+
+    expect($html)->toContain('data:');
+    expect($html)->not->toContain('http://');
+    expect($html)->not->toContain('https://');
 });
 
 it('renders fine for an EPK with no hero section, an unheaded custom section, and a link missing its platform', function () {
