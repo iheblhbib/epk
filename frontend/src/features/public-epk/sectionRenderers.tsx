@@ -1,10 +1,11 @@
-import { AtSign, Camera, Download, ExternalLink, Globe, Info, Mail, MapPin, MessageCircle, MoreHorizontal, Music2, Music4, Phone, Quote, Video } from 'lucide-react'
+import { Download, ExternalLink, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog'
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from '@/components/ui/dropdown-menu'
 import { buttonRadiusClass, resolveTheme, type HeaderStyle } from '@/lib/epkThemes'
+import { SOCIAL_ICON } from '@/lib/socialIcons'
 import { cn } from '@/lib/utils'
 import type {
   AnalyticsEventType,
@@ -41,19 +42,6 @@ const RELEASE_LINK_LABELS: Record<keyof ReleaseLinks, string> = {
   soundcloud: 'SoundCloud',
   deezer: 'Deezer',
   bandcamp: 'Bandcamp',
-}
-
-// Same generic stand-ins used in the builder (this lucide-react version
-// doesn't ship dedicated brand icons).
-const SOCIAL_ICON: Record<string, LucideIcon> = {
-  instagram: Camera,
-  facebook: MessageCircle,
-  tiktok: Music2,
-  youtube: Video,
-  x: AtSign,
-  spotify: Music4,
-  soundcloud: Music2,
-  website: Globe,
 }
 
 const HEIGHT_CLASS: Record<string, string> = {
@@ -577,38 +565,14 @@ function ReleasesSection({ title, headerStyle, buttonStyle, config }: {
   )
 }
 
-/**
- * Fires its play event at most once. YouTube/Vimeo embeds don't get this —
- * observing play state cross-origin would mean loading each platform's JS
- * SDK, which this page deliberately keeps out of for speed/SEO.
- */
-function UploadedVideo({ src, onFirstPlay }: { src?: string; onFirstPlay: () => void }) {
-  const hasPlayed = useRef(false)
-
-  return (
-    <video
-      src={src}
-      controls
-      className="size-full"
-      onPlay={() => {
-        if (hasPlayed.current) return
-        hasPlayed.current = true
-        onFirstPlay()
-      }}
-    />
-  )
-}
-
 function VideosSection({
   title,
   headerStyle,
   config,
-  onTrack,
 }: {
   title: string
   headerStyle: HeaderStyle
   config: PublicVideosConfig
-  onTrack: TrackFn
 }) {
   if (!config.videos || config.videos.length === 0) return null
 
@@ -619,17 +583,13 @@ function VideosSection({
           <div key={index} className="space-y-2">
             {video.title && <p className="text-sm font-medium text-[var(--epk-fg)]">{video.title}</p>}
             <div className="aspect-video overflow-hidden bg-black" style={{ borderRadius: 'var(--epk-radius)' }}>
-              {video.provider === 'upload' ? (
-                <UploadedVideo src={video.video_url} onFirstPlay={() => onTrack('video_play')} />
-              ) : (
-                <iframe
-                  src={video.embed_url}
-                  title={video.title || `Video ${index + 1}`}
-                  className="size-full"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              )}
+              <iframe
+                src={video.embed_url}
+                title={video.title || `Video ${index + 1}`}
+                className="size-full"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
             </div>
           </div>
         ))}
@@ -774,7 +734,6 @@ export function renderSection(
           title={section.title}
           headerStyle={theme.headerStyle}
           config={section.config as unknown as PublicVideosConfig}
-          onTrack={onTrack}
         />
       )
     case 'press':
