@@ -22,11 +22,9 @@ return [
         'pdf', 'docx',                  // document
         // No video extensions -- self-hosted video is not offered anywhere
         // in the app (see the Video section, which only takes YouTube/Vimeo
-        // links), and allowing it into the media library would just open a
-        // back door to the same unbounded storage/bandwidth cost that was
-        // removed there. MediaType::Video and its fromExtension() mapping
-        // stay defined so any video Media row already on disk from before
-        // this change keeps casting/rendering correctly.
+        // links). MediaType::Video has been removed entirely, not just
+        // blocked here -- there is no supported way to have a video Media
+        // row in this app anymore.
     ],
 
     /*
@@ -42,7 +40,6 @@ return [
     'max_size_kb' => [
         'image' => 10 * 1024,
         'audio' => 50 * 1024,
-        'video' => 200 * 1024,
         'document' => 20 * 1024,
     ],
 

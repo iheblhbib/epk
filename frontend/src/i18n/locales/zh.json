@@ -609,14 +609,12 @@
     "typeBadge": {
       "image": "图片",
       "audio": "音频",
-      "video": "视频",
       "document": "文档"
     },
     "types": {
       "all": "所有类型",
       "image": "图片",
       "audio": "音频",
-      "video": "视频",
       "document": "文档"
     },
     "sort": {

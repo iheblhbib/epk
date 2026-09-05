@@ -173,7 +173,7 @@ export interface Epk {
   updated_at: string
 }
 
-export type MediaType = 'image' | 'audio' | 'video' | 'document'
+export type MediaType = 'image' | 'audio' | 'document'
 
 export interface Media {
   id: number

@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\MediaType;
 use App\Enums\WorkspaceRole;
 use App\Models\Media;
 use App\Models\User;
@@ -154,6 +155,12 @@ it('rejects a video upload -- no longer an allowed media library extension', fun
         ->assertJsonValidationErrors('files.0');
 
     $this->assertDatabaseCount('media', 0);
+});
+
+it('no longer recognizes mp4/mov as any media type -- video support is fully removed', function () {
+    expect(fn () => MediaType::fromExtension('mp4'))->toThrow(InvalidArgumentException::class);
+    expect(fn () => MediaType::fromExtension('mov'))->toThrow(InvalidArgumentException::class);
+    expect(MediaType::cases())->toHaveCount(3);
 });
 
 it('rejects a file that exceeds its type\'s size limit', function () {

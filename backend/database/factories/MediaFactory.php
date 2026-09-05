@@ -19,7 +19,6 @@ class MediaFactory extends Factory
         $extension = match ($type) {
             MediaType::Image => 'jpg',
             MediaType::Audio => 'mp3',
-            MediaType::Video => 'mp4',
             MediaType::Document => 'pdf',
         };
         $filename = Str::random(40).'.'.$extension;
@@ -33,7 +32,6 @@ class MediaFactory extends Factory
             'mime_type' => match ($type) {
                 MediaType::Image => 'image/jpeg',
                 MediaType::Audio => 'audio/mpeg',
-                MediaType::Video => 'video/mp4',
                 MediaType::Document => 'application/pdf',
             },
             'type' => $type,

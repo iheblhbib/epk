@@ -1,4 +1,4 @@
-import { FileText, Film, FolderOpen, ImageIcon, Music, Search } from 'lucide-react'
+import { FileText, FolderOpen, ImageIcon, Music, Search } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { EmptyState } from '@/components/common/EmptyState'
@@ -15,24 +15,22 @@ import type { MediaListParams } from '@/api/media'
 import type { Media, MediaType } from '@/types'
 import type { TFunction } from 'i18next'
 
-const TYPE_VALUES: (MediaType | 'all')[] = ['all', 'image', 'audio', 'video', 'document']
+const TYPE_VALUES: (MediaType | 'all')[] = ['all', 'image', 'audio', 'document']
 const TYPE_LABEL_KEYS: Record<MediaType | 'all', string> = {
   all: 'media.types.all',
   image: 'media.types.image',
   audio: 'media.types.audio',
-  video: 'media.types.video',
   document: 'media.types.document',
 }
 
-// Fixed display order for the "All types" view — music, then video, then
-// images, then documents, per how the user wants to scan the library. Only
-// relevant when nothing narrows it to a single type already (the type
-// filter already gives a flat, single-type list, where grouping would just
-// be a redundant single heading).
-const GROUP_ORDER: MediaType[] = ['audio', 'video', 'image', 'document']
+// Fixed display order for the "All types" view — music, then images, then
+// documents, per how the user wants to scan the library. Only relevant when
+// nothing narrows it to a single type already (the type filter already
+// gives a flat, single-type list, where grouping would just be a redundant
+// single heading).
+const GROUP_ORDER: MediaType[] = ['audio', 'image', 'document']
 const GROUP_ICON: Record<MediaType, typeof Music> = {
   audio: Music,
-  video: Film,
   image: ImageIcon,
   document: FileText,
 }

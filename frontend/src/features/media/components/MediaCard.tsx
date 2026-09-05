@@ -35,7 +35,6 @@ import type { Media, WorkspaceRole } from '@/types'
 const TYPE_LABEL_KEYS: Record<Media['type'], string> = {
   image: 'media.typeBadge.image',
   audio: 'media.typeBadge.audio',
-  video: 'media.typeBadge.video',
   document: 'media.typeBadge.document',
 }
 

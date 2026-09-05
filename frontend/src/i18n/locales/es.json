@@ -609,14 +609,12 @@
     "typeBadge": {
       "image": "Imagen",
       "audio": "Audio",
-      "video": "Vídeo",
       "document": "Documento"
     },
     "types": {
       "all": "Todos los tipos",
       "image": "Imágenes",
       "audio": "Audio",
-      "video": "Vídeo",
       "document": "Documentos"
     },
     "sort": {
