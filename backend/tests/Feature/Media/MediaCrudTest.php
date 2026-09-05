@@ -143,6 +143,19 @@ it('rejects a disallowed file extension, e.g. a php file', function () {
     $this->assertDatabaseCount('media', 0);
 });
 
+it('rejects a video upload -- no longer an allowed media library extension', function () {
+    [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
+
+    $file = UploadedFile::fake()->create('clip.mp4', 10, 'video/mp4');
+
+    $this->actingAs($editor)
+        ->postJson("/api/workspaces/{$workspace->id}/media", ['files' => [$file]])
+        ->assertUnprocessable()
+        ->assertJsonValidationErrors('files.0');
+
+    $this->assertDatabaseCount('media', 0);
+});
+
 it('rejects a file that exceeds its type\'s size limit', function () {
     [$workspace, $editor] = mediaWorkspaceWithRole(WorkspaceRole::Editor);
 

@@ -650,7 +650,7 @@
       "uploadingPercent": "Wird hochgeladen — {{percent}} %",
       "clickToUpload": "Zum Hochladen klicken",
       "orDragAndDrop": "oder per Drag & Drop",
-      "acceptedTypes": "Bilder, Audio, Video und Dokumente"
+      "acceptedTypes": "Bilder, Audio und Dokumente"
     },
     "emptyState": {
       "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, bevor Sie Medien hochladen.",

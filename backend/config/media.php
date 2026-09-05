@@ -19,8 +19,14 @@ return [
     'allowed_extensions' => [
         'jpg', 'jpeg', 'png', 'webp',   // image
         'mp3', 'wav', 'flac',           // audio
-        'mp4', 'mov',                   // video
         'pdf', 'docx',                  // document
+        // No video extensions -- self-hosted video is not offered anywhere
+        // in the app (see the Video section, which only takes YouTube/Vimeo
+        // links), and allowing it into the media library would just open a
+        // back door to the same unbounded storage/bandwidth cost that was
+        // removed there. MediaType::Video and its fromExtension() mapping
+        // stay defined so any video Media row already on disk from before
+        // this change keeps casting/rendering correctly.
     ],
 
     /*

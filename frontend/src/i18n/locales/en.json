@@ -650,7 +650,7 @@
       "uploadingPercent": "Uploading — {{percent}}%",
       "clickToUpload": "Click to upload",
       "orDragAndDrop": "or drag and drop",
-      "acceptedTypes": "Images, audio, video, and documents"
+      "acceptedTypes": "Images, audio, and documents"
     },
     "emptyState": {
       "noWorkspaceDescription": "Create a workspace from the dashboard before uploading media.",

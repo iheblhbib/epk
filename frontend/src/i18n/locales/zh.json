@@ -650,7 +650,7 @@
       "uploadingPercent": "正在上传 — {{percent}}%",
       "clickToUpload": "点击上传",
       "orDragAndDrop": "或拖放文件",
-      "acceptedTypes": "图片、音频、视频和文档"
+      "acceptedTypes": "图片、音频和文档"
     },
     "emptyState": {
       "noWorkspaceDescription": "请先在仪表盘中创建工作区，再上传媒体文件。",

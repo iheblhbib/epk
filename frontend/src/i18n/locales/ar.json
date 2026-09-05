@@ -650,7 +650,7 @@
       "uploadingPercent": "جارٍ الرفع — {{percent}}٪",
       "clickToUpload": "انقر للرفع",
       "orDragAndDrop": "أو اسحب وأفلت",
-      "acceptedTypes": "صور وصوت وفيديو ومستندات"
+      "acceptedTypes": "صور وصوت ومستندات"
     },
     "emptyState": {
       "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل رفع الوسائط.",

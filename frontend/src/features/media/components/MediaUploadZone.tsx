@@ -5,7 +5,7 @@ import { toast } from 'sonner'
 import { useUploadMedia } from '@/features/media/hooks/useMedia'
 import { cn } from '@/lib/utils'
 
-const ACCEPTED_EXTENSIONS = '.jpg,.jpeg,.png,.webp,.mp3,.wav,.flac,.mp4,.mov,.pdf,.docx'
+const ACCEPTED_EXTENSIONS = '.jpg,.jpeg,.png,.webp,.mp3,.wav,.flac,.pdf,.docx'
 
 export function MediaUploadZone({ workspaceId }: { workspaceId: number }) {
   const { t } = useTranslation()

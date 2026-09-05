@@ -650,7 +650,7 @@
       "uploadingPercent": "Envoi en cours — {{percent}} %",
       "clickToUpload": "Cliquez pour envoyer",
       "orDragAndDrop": "ou glissez-déposez",
-      "acceptedTypes": "Images, audio, vidéo et documents"
+      "acceptedTypes": "Images, audio et documents"
     },
     "emptyState": {
       "noWorkspaceDescription": "Créez un espace de travail depuis le tableau de bord avant d'envoyer des médias.",

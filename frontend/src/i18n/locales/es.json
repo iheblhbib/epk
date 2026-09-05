@@ -650,7 +650,7 @@
       "uploadingPercent": "Subiendo — {{percent}}%",
       "clickToUpload": "Haz clic para subir",
       "orDragAndDrop": "o arrastra y suelta",
-      "acceptedTypes": "Imágenes, audio, vídeo y documentos"
+      "acceptedTypes": "Imágenes, audio y documentos"
     },
     "emptyState": {
       "noWorkspaceDescription": "Crea un espacio de trabajo desde el panel antes de subir medios.",
