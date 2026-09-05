@@ -103,7 +103,9 @@ function HeroPreview({
         style={background ? { color: '#ffffff' } : undefined}
       >
         {profile && (
-          <img src={profile} alt="" className="size-20 rounded-full border-2 border-white/80 object-cover" />
+          <div className="rounded-full border-2 border-white/80 p-1">
+            <img src={profile} alt="" className="size-20 rounded-full object-cover" />
+          </div>
         )}
         <h1 className="text-3xl font-semibold sm:text-4xl">{config.headline || epk.artist?.name || epk.title}</h1>
         {config.subtitle && <p className="text-lg opacity-90">{config.subtitle}</p>}

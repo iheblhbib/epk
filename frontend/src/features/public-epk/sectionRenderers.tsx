@@ -104,11 +104,9 @@ function HeroSection({
         style={config.background_image_url ? { color: '#ffffff' } : undefined}
       >
         {config.profile_image_url && (
-          <img
-            src={config.profile_image_url}
-            alt=""
-            className="size-24 rounded-full border-2 border-white/80 object-cover shadow-lg"
-          />
+          <div className="rounded-full border-2 border-white/80 p-1 shadow-lg">
+            <img src={config.profile_image_url} alt="" className="size-24 rounded-full object-cover" />
+          </div>
         )}
         <h1 className="text-4xl font-semibold sm:text-5xl">{config.headline || fallbackTitle}</h1>
         {config.subtitle && <p className="text-xl opacity-90">{config.subtitle}</p>}
