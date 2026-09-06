@@ -1,10 +1,9 @@
-import { FileText, Film, ImageIcon, Music } from 'lucide-react'
+import { FileText, ImageIcon, Music } from 'lucide-react'
 import type { Media, MediaType } from '@/types'
 
 const TYPE_ICON: Record<MediaType, typeof Music> = {
   image: ImageIcon,
   audio: Music,
-  video: Film,
   document: FileText,
 }
 

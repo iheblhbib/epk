@@ -17,7 +17,6 @@ import type { Media, MediaType } from '@/types'
 const TYPE_ACCEPT: Record<MediaType, string> = {
   image: '.jpg,.jpeg,.png,.webp',
   audio: '.mp3,.wav,.flac',
-  video: '.mp4,.mov',
   document: '.pdf,.docx',
 }
 const ALL_ACCEPT = Object.values(TYPE_ACCEPT).join(',')
