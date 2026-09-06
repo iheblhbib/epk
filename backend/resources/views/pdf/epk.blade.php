@@ -98,7 +98,15 @@
                          for a non-published EPK -- so a draft's owner-preview PDF
                          doesn't get a link that's guaranteed broken until publish. --}}
                     @if(!empty($config['download_all_url']) && $epk->status === \App\Enums\EpkStatus::Published)
-                        <p><a href="{{ $config['download_all_url'] }}">Download the discography as a ZIP</a></p>
+                        {{-- The "#discography.zip" fragment is inert for the actual
+                             request (a browser strips everything from "#" onward
+                             before it ever reaches the server) -- it exists purely
+                             so mPDF's own link resolver, which treats any href with
+                             no literal "." as an internal document anchor rather
+                             than an external URL, doesn't misclassify a dotless dev
+                             host like "http://localhost:8000/..." and silently turn
+                             this into a dead link that just jumps to page 1. --}}
+                        <p><a href="{{ $config['download_all_url'] }}#discography.zip">Download the discography as a ZIP</a></p>
                     @endif
                     <ol>
                         @foreach($config['tracks'] as $track)

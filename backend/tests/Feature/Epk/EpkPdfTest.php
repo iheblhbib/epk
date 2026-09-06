@@ -131,6 +131,48 @@ it('omits the download-all link for a draft EPK\'s pdf, even if the resolved con
     expect($html)->not->toContain('https://example.test/music/download-all');
 });
 
+it('keeps the music download-all link recognizable as an external URL to mPDF, even on a dotless dev host', function () {
+    // mPDF's own HTML-to-PDF link resolver (Mpdf.php: "assuming every
+    // external link has a dot indicating extension") treats any <a href>
+    // with no literal "." anywhere in it as an internal document anchor
+    // instead of an external URL -- silently turning "Download the
+    // discography as a ZIP" into a dead link that just jumps to page 1.
+    // A real production domain always has a dot (e.g. api.korax.app), so
+    // this never surfaces there, but a local dev URL like
+    // "http://localhost:8000/api/public/epks/nova-ray/music/download-all"
+    // has none at all, which is exactly the environment this link most
+    // needs to work in.
+    $epk = Epk::factory()->published()->make(['title' => 'Nova Ray EPK']);
+    $artist = Artist::factory()->make(['name' => 'Nova Ray']);
+    $dotlessUrl = 'http://localhost:8000/api/public/epks/nova-ray/music/download-all';
+
+    $html = view('pdf.epk', [
+        'epk' => $epk,
+        'artist' => $artist,
+        'sections' => collect([
+            [
+                'type' => SectionType::Music,
+                'title' => 'Music',
+                'config' => [
+                    'tracks' => [['title' => 'Night Drive', 'provider' => 'upload']],
+                    'download_all_url' => $dotlessUrl,
+                ],
+            ],
+        ]),
+    ])->render();
+
+    preg_match('/<a href="([^"]+)">Download the discography as a ZIP<\/a>/', $html, $matches);
+    expect($matches)->toHaveCount(2);
+    [, $renderedHref] = $matches;
+
+    // A browser strips everything from "#" onward before sending the
+    // request, so the actual endpoint hit must be unchanged...
+    expect(strtok($renderedHref, '#'))->toBe($dotlessUrl);
+    // ...while the full string mPDF sees must contain a literal "." so its
+    // dot-heuristic classifies it as external, not an internal anchor.
+    expect($renderedHref)->toContain('.');
+});
+
 it('embeds a hero image as a base64 data URI instead of a self-referential HTTP url', function () {
     // mPDF fetches any http(s) <img src> over a real HTTP connection, even
     // one pointing back at this same server -- on a single-worker dev server
