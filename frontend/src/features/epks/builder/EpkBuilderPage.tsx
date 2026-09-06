@@ -23,6 +23,11 @@ import { isAdminLevel, isEditorLevel } from '@/lib/permissions'
 import type { DeviceWidth } from '@/lib/responsiveValue'
 import { cn } from '@/lib/utils'
 
+// These preview-frame widths are narrower than the real sm:/lg: breakpoints they
+// represent. That's harmless for most of this page (real CSS media queries don't
+// fire based on this frame's width anyway), but it's now semantically load-bearing
+// for Hero's height/alignment, which is resolved in JS from this same `deviceWidth`
+// switcher state (see LivePreview.tsx's HeroPreview) rather than from real CSS.
 const DEVICE_WIDTH_CLASS: Record<DeviceWidth, string> = {
   desktop: 'max-w-4xl',
   tablet: 'max-w-xl',

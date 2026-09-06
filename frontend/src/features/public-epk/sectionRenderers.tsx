@@ -116,12 +116,12 @@ function HeroSection({
     <div
       className={cn(
         'relative flex flex-col justify-center gap-4 overflow-hidden px-6 py-16 sm:px-12',
-        HEIGHT_CLASS_MOBILE[config.height.mobile],
-        HEIGHT_CLASS_TABLET[config.height.tablet],
-        HEIGHT_CLASS_DESKTOP[config.height.desktop],
-        ALIGN_CLASS_MOBILE[config.alignment.mobile],
-        ALIGN_CLASS_TABLET[config.alignment.tablet],
-        ALIGN_CLASS_DESKTOP[config.alignment.desktop]
+        HEIGHT_CLASS_MOBILE[config.height.mobile] ?? HEIGHT_CLASS_MOBILE.large,
+        HEIGHT_CLASS_TABLET[config.height.tablet] ?? HEIGHT_CLASS_TABLET.large,
+        HEIGHT_CLASS_DESKTOP[config.height.desktop] ?? HEIGHT_CLASS_DESKTOP.large,
+        ALIGN_CLASS_MOBILE[config.alignment.mobile] ?? ALIGN_CLASS_MOBILE.center,
+        ALIGN_CLASS_TABLET[config.alignment.tablet] ?? ALIGN_CLASS_TABLET.center,
+        ALIGN_CLASS_DESKTOP[config.alignment.desktop] ?? ALIGN_CLASS_DESKTOP.center
       )}
       style={
         config.background_image_url
@@ -133,9 +133,9 @@ function HeroSection({
       <div
         className={cn(
           'relative z-10 mx-auto flex max-w-3xl flex-col gap-4',
-          ALIGN_CLASS_MOBILE[config.alignment.mobile],
-          ALIGN_CLASS_TABLET[config.alignment.tablet],
-          ALIGN_CLASS_DESKTOP[config.alignment.desktop]
+          ALIGN_CLASS_MOBILE[config.alignment.mobile] ?? ALIGN_CLASS_MOBILE.center,
+          ALIGN_CLASS_TABLET[config.alignment.tablet] ?? ALIGN_CLASS_TABLET.center,
+          ALIGN_CLASS_DESKTOP[config.alignment.desktop] ?? ALIGN_CLASS_DESKTOP.center
         )}
         style={config.background_image_url ? { color: '#ffffff' } : undefined}
       >

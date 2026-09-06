@@ -11,7 +11,7 @@ export interface ResolvedResponsiveValue<T> {
 }
 
 function asResponsiveObject<T>(raw: T | ResponsiveValue<T> | undefined): ResponsiveValue<T> | undefined {
-  return raw !== null && typeof raw === 'object' && 'desktop' in raw ? (raw as ResponsiveValue<T>) : undefined
+  return raw !== null && typeof raw === 'object' && !Array.isArray(raw) ? (raw as ResponsiveValue<T>) : undefined
 }
 
 /**

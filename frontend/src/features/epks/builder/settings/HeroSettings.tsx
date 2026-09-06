@@ -9,6 +9,13 @@ import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSec
 import { isInherited, normalizeResponsive, withDeviceOverride, type DeviceWidth } from '@/lib/responsiveValue'
 import type { AlignValue, EpkSection, HeightValue, HeroConfig } from '@/types'
 
+// Literal (rather than dynamically-templated) i18n keys so static
+// key-checking tools can see both possible keys directly in source.
+const INHERITS_FROM_LABEL_KEY = {
+  tablet: 'epkBuilder.device.tabletShort',
+  desktop: 'epkBuilder.device.desktopShort',
+} as const
+
 export function HeroSettings({
   epkId,
   workspaceId,
@@ -51,7 +58,7 @@ export function HeroSettings({
   // itself be inheriting from desktop) -- always name the *immediate*
   // parent breakpoint, matching normalizeResponsive()'s own fallback chain.
   const inheritsFromDevice = deviceWidth === 'mobile' ? 'tablet' : 'desktop'
-  const inheritsFromLabel = t(`epkBuilder.device.${inheritsFromDevice}Short`)
+  const inheritsFromLabel = t(INHERITS_FROM_LABEL_KEY[inheritsFromDevice])
 
   return (
     <div className="space-y-5">

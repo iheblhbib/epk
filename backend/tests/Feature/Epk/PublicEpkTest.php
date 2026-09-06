@@ -150,6 +150,21 @@ it('keeps every explicit per-device hero height/alignment value when all three a
     $response->assertJsonPath('data.sections.0.config.alignment', ['desktop' => 'center', 'tablet' => 'left', 'mobile' => 'right']);
 });
 
+it('treats an explicit null hero tablet height the same as an absent tablet key', function () {
+    $epk = makePublishedEpk();
+    $epk->sections()->create([
+        'type' => SectionType::Hero,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['headline' => 'Test', 'height' => ['desktop' => 'large', 'tablet' => null, 'mobile' => 'small']],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.height', ['desktop' => 'large', 'tablet' => 'large', 'mobile' => 'small']);
+});
+
 it('resolves downloads media ids to file objects, routed through the download endpoint', function () {
     $epk = makePublishedEpk();
     $file = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'presskit.pdf']);

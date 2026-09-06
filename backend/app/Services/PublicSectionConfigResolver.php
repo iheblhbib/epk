@@ -52,8 +52,8 @@ class PublicSectionConfigResolver
                 'description' => $config['description'] ?? '',
                 'profile_image_url' => $this->urlFor($config['profile_media_id'] ?? null),
                 'background_image_url' => $this->urlFor($config['background_media_id'] ?? null),
-                'alignment' => $this->resolveResponsive($config['alignment'] ?? null, 'center'),
-                'height' => $this->resolveResponsive($config['height'] ?? null, 'large'),
+                'alignment' => $this->resolveResponsive($config['alignment'] ?? null, 'center', ['left', 'center', 'right']),
+                'height' => $this->resolveResponsive($config['height'] ?? null, 'large', ['small', 'medium', 'large']),
                 'overlay' => $config['overlay'] ?? true,
                 'cta_label' => $config['cta_label'] ?? '',
                 'cta_url' => $config['cta_url'] ?? '',
@@ -332,15 +332,27 @@ class PublicSectionConfigResolver
      *
      * @return array{desktop: string, tablet: string, mobile: string}
      */
-    private function resolveResponsive(mixed $raw, string $default): array
+    private function resolveResponsive(mixed $raw, string $default, array $allowed): array
     {
         $value = is_array($raw) ? $raw : ['desktop' => $raw ?? $default];
 
-        $desktop = $value['desktop'] ?? $default;
-        $tablet = $value['tablet'] ?? $desktop;
-        $mobile = $value['mobile'] ?? $tablet;
+        $desktop = $this->clampResponsiveValue($value['desktop'] ?? null, $default, $allowed);
+        $tablet = $this->clampResponsiveValue($value['tablet'] ?? null, $desktop, $allowed);
+        $mobile = $this->clampResponsiveValue($value['mobile'] ?? null, $tablet, $allowed);
 
         return ['desktop' => $desktop, 'tablet' => $tablet, 'mobile' => $mobile];
+    }
+
+    /**
+     * Guards resolveResponsive()'s documented array{desktop: string, tablet:
+     * string, mobile: string} return shape against a garbage/out-of-enum
+     * value stored in the DB -- anything not in $allowed clamps to
+     * $fallback instead of passing through unvalidated into the public JSON
+     * response.
+     */
+    private function clampResponsiveValue(mixed $value, string $fallback, array $allowed): string
+    {
+        return is_string($value) && in_array($value, $allowed, true) ? $value : $fallback;
     }
 
     private function mediaFor(?int $mediaId): ?Media
