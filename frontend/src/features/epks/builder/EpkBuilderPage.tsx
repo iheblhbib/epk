@@ -20,9 +20,8 @@ import { useSections } from '@/features/epks/hooks/useEpkSections'
 import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorkspace'
 import { downloadAuthenticatedFile } from '@/lib/downloadFile'
 import { isAdminLevel, isEditorLevel } from '@/lib/permissions'
+import type { DeviceWidth } from '@/lib/responsiveValue'
 import { cn } from '@/lib/utils'
-
-type DeviceWidth = 'desktop' | 'tablet' | 'mobile'
 
 const DEVICE_WIDTH_CLASS: Record<DeviceWidth, string> = {
   desktop: 'max-w-4xl',
@@ -198,6 +197,7 @@ export function EpkBuilderPage() {
                 workspaceId={epk.workspace_id}
                 section={selectedSection}
                 canEdit={canEdit}
+                deviceWidth={deviceWidth}
               />
             </TabsContent>
             <TabsContent value="comments" className="min-h-0 flex-1 overflow-y-auto">

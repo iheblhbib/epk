@@ -682,7 +682,9 @@
     "device": {
       "desktop": "Desktop-Vorschau",
       "tablet": "Tablet-Vorschau",
-      "mobile": "Mobil-Vorschau"
+      "mobile": "Mobil-Vorschau",
+      "desktopShort": "Desktop",
+      "tabletShort": "Tablet"
     },
     "notFound": {
       "title": "EPK nicht gefunden",
@@ -854,6 +856,7 @@
       "heightSmall": "Klein",
       "heightMedium": "Mittel",
       "heightLarge": "Groß",
+      "inheritsFrom": "Übernimmt von {{device}}: {{value}}",
       "darkOverlay": "Dunkle Überlagerung",
       "ctaLabel": "Beschriftung des CTA-Buttons",
       "ctaLabelPlaceholder": "Jetzt anhören",

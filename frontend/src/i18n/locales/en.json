@@ -682,7 +682,9 @@
     "device": {
       "desktop": "Desktop preview",
       "tablet": "Tablet preview",
-      "mobile": "Mobile preview"
+      "mobile": "Mobile preview",
+      "desktopShort": "Desktop",
+      "tabletShort": "Tablet"
     },
     "notFound": {
       "title": "EPK not found",
@@ -854,6 +856,7 @@
       "heightSmall": "Small",
       "heightMedium": "Medium",
       "heightLarge": "Large",
+      "inheritsFrom": "Inherits from {{device}}: {{value}}",
       "darkOverlay": "Dark overlay",
       "ctaLabel": "CTA button label",
       "ctaLabelPlaceholder": "Listen now",

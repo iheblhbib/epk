@@ -6,16 +6,19 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
-import type { EpkSection, HeroConfig } from '@/types'
+import { isInherited, normalizeResponsive, type DeviceWidth } from '@/lib/responsiveValue'
+import type { AlignValue, EpkSection, HeightValue, HeroConfig } from '@/types'
 
 export function HeroSettings({
   epkId,
   workspaceId,
   section,
+  deviceWidth,
 }: {
   epkId: number
   workspaceId: number
   section: EpkSection
+  deviceWidth: DeviceWidth
 }) {
   const { t } = useTranslation()
   const config = section.config as HeroConfig
@@ -30,6 +33,31 @@ export function HeroSettings({
     medium: t('epkBuilder.hero.heightMedium'),
     large: t('epkBuilder.hero.heightLarge'),
   }
+
+  const alignmentValues = normalizeResponsive<AlignValue>(config.alignment, 'center')
+  const heightValues = normalizeResponsive<HeightValue>(config.height, 'large')
+  const alignmentInherited = isInherited(config.alignment, deviceWidth)
+  const heightInherited = isInherited(config.height, deviceWidth)
+
+  function setAlignment(value: AlignValue) {
+    setConfig((prev) => ({
+      ...prev,
+      alignment: { ...normalizeResponsive<AlignValue>(prev.alignment, 'center'), [deviceWidth]: value },
+    }))
+  }
+
+  function setHeight(value: HeightValue) {
+    setConfig((prev) => ({
+      ...prev,
+      height: { ...normalizeResponsive<HeightValue>(prev.height, 'large'), [deviceWidth]: value },
+    }))
+  }
+
+  // Tablet inherits from desktop; mobile inherits from tablet (which may
+  // itself be inheriting from desktop) -- always name the *immediate*
+  // parent breakpoint, matching normalizeResponsive()'s own fallback chain.
+  const inheritsFromDevice = deviceWidth === 'mobile' ? 'tablet' : 'desktop'
+  const inheritsFromLabel = t(`epkBuilder.device.${inheritsFromDevice}Short`)
 
   return (
     <div className="space-y-5">
@@ -80,8 +108,8 @@ export function HeroSettings({
           <Label>{t('epkBuilder.hero.alignment')}</Label>
           <Select
             items={alignmentItems}
-            value={config.alignment ?? 'center'}
-            onValueChange={(value) => setConfig((prev) => ({ ...prev, alignment: value as HeroConfig['alignment'] }))}
+            value={alignmentValues[deviceWidth]}
+            onValueChange={(value) => setAlignment(value as AlignValue)}
           >
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -94,13 +122,18 @@ export function HeroSettings({
               ))}
             </SelectContent>
           </Select>
+          {alignmentInherited && (
+            <p className="text-xs text-muted-foreground">
+              {t('epkBuilder.hero.inheritsFrom', { device: inheritsFromLabel, value: alignmentItems[alignmentValues[deviceWidth]] })}
+            </p>
+          )}
         </div>
         <div className="space-y-1.5">
           <Label>{t('epkBuilder.hero.height')}</Label>
           <Select
             items={heightItems}
-            value={config.height ?? 'large'}
-            onValueChange={(value) => setConfig((prev) => ({ ...prev, height: value as HeroConfig['height'] }))}
+            value={heightValues[deviceWidth]}
+            onValueChange={(value) => setHeight(value as HeightValue)}
           >
             <SelectTrigger className="w-full">
               <SelectValue />
@@ -113,6 +146,11 @@ export function HeroSettings({
               ))}
             </SelectContent>
           </Select>
+          {heightInherited && (
+            <p className="text-xs text-muted-foreground">
+              {t('epkBuilder.hero.inheritsFrom', { device: inheritsFromLabel, value: heightItems[heightValues[deviceWidth]] })}
+            </p>
+          )}
         </div>
       </div>
 

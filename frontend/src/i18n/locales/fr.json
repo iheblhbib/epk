@@ -682,7 +682,9 @@
     "device": {
       "desktop": "Aperçu bureau",
       "tablet": "Aperçu tablette",
-      "mobile": "Aperçu mobile"
+      "mobile": "Aperçu mobile",
+      "desktopShort": "Bureau",
+      "tabletShort": "Tablette"
     },
     "notFound": {
       "title": "EPK introuvable",
@@ -854,6 +856,7 @@
       "heightSmall": "Petite",
       "heightMedium": "Moyenne",
       "heightLarge": "Grande",
+      "inheritsFrom": "Hérite du {{device}} : {{value}}",
       "darkOverlay": "Filtre sombre",
       "ctaLabel": "Libellé du bouton d'action",
       "ctaLabelPlaceholder": "Écouter maintenant",

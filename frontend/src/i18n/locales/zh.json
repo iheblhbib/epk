@@ -682,7 +682,9 @@
     "device": {
       "desktop": "桌面预览",
       "tablet": "平板预览",
-      "mobile": "移动端预览"
+      "mobile": "移动端预览",
+      "desktopShort": "桌面",
+      "tabletShort": "平板"
     },
     "notFound": {
       "title": "未找到该 EPK",
@@ -854,6 +856,7 @@
       "heightSmall": "小",
       "heightMedium": "中",
       "heightLarge": "大",
+      "inheritsFrom": "继承自 {{device}}：{{value}}",
       "darkOverlay": "深色遮罩",
       "ctaLabel": "行动号召按钮文字",
       "ctaLabelPlaceholder": "立即收听",

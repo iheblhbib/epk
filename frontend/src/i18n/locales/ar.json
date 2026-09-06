@@ -682,7 +682,9 @@
     "device": {
       "desktop": "معاينة سطح المكتب",
       "tablet": "معاينة الجهاز اللوحي",
-      "mobile": "معاينة الجوال"
+      "mobile": "معاينة الجوال",
+      "desktopShort": "سطح المكتب",
+      "tabletShort": "الجهاز اللوحي"
     },
     "notFound": {
       "title": "الملف الصحفي غير موجود",
@@ -854,6 +856,7 @@
       "heightSmall": "صغير",
       "heightMedium": "متوسط",
       "heightLarge": "كبير",
+      "inheritsFrom": "موروث من {{device}}: {{value}}",
       "darkOverlay": "طبقة تعتيم داكنة",
       "ctaLabel": "نص زر الدعوة لاتخاذ إجراء",
       "ctaLabelPlaceholder": "استمع الآن",

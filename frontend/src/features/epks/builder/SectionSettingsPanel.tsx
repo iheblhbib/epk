@@ -18,6 +18,7 @@ import { ReleasesSettings } from '@/features/epks/builder/settings/ReleasesSetti
 import { SocialNetworksSettings } from '@/features/epks/builder/settings/SocialNetworksSettings'
 import { VideosSettings } from '@/features/epks/builder/settings/VideosSettings'
 import { useUpdateSection } from '@/features/epks/hooks/useEpkSections'
+import type { DeviceWidth } from '@/lib/responsiveValue'
 import type { EpkSection } from '@/types'
 
 /**
@@ -53,11 +54,13 @@ export function SectionSettingsPanel({
   workspaceId,
   section,
   canEdit,
+  deviceWidth,
 }: {
   epkId: number
   workspaceId: number
   section: EpkSection | null
   canEdit: boolean
+  deviceWidth: DeviceWidth
 }) {
   const { t } = useTranslation()
 
@@ -97,7 +100,7 @@ export function SectionSettingsPanel({
           {(() => {
             switch (section.type) {
               case 'hero':
-                return <HeroSettings epkId={epkId} workspaceId={workspaceId} section={section} />
+                return <HeroSettings epkId={epkId} workspaceId={workspaceId} section={section} deviceWidth={deviceWidth} />
               case 'biography':
                 return <BiographySettings epkId={epkId} section={section} />
               case 'social_networks':
