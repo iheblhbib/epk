@@ -8,7 +8,9 @@ import { buttonRadiusClass, resolveTheme, type HeaderStyle } from '@/lib/epkThem
 import { SOCIAL_ICON } from '@/lib/socialIcons'
 import { cn } from '@/lib/utils'
 import type {
+  AlignValue,
   AnalyticsEventType,
+  HeightValue,
   PublicBiographyConfig,
   PublicContactConfig,
   PublicCreditsConfig,
@@ -45,16 +47,40 @@ const RELEASE_LINK_LABELS: Record<keyof ReleaseLinks, string> = {
   bandcamp: 'Bandcamp',
 }
 
-const HEIGHT_CLASS: Record<string, string> = {
+// Tailwind's JIT scanner only picks up classes that appear as complete
+// literal strings in source -- `sm:${cls}` built at runtime would never be
+// seen at build time, so each breakpoint needs its own explicit table
+// rather than one table plus a dynamically-added prefix.
+const HEIGHT_CLASS_MOBILE: Record<HeightValue, string> = {
   small: 'min-h-[20rem]',
   medium: 'min-h-[28rem]',
   large: 'min-h-[38rem]',
 }
+const HEIGHT_CLASS_TABLET: Record<HeightValue, string> = {
+  small: 'sm:min-h-[20rem]',
+  medium: 'sm:min-h-[28rem]',
+  large: 'sm:min-h-[38rem]',
+}
+const HEIGHT_CLASS_DESKTOP: Record<HeightValue, string> = {
+  small: 'lg:min-h-[20rem]',
+  medium: 'lg:min-h-[28rem]',
+  large: 'lg:min-h-[38rem]',
+}
 
-const ALIGN_CLASS: Record<string, string> = {
+const ALIGN_CLASS_MOBILE: Record<AlignValue, string> = {
   left: 'items-start text-start',
   center: 'items-center text-center',
   right: 'items-end text-end',
+}
+const ALIGN_CLASS_TABLET: Record<AlignValue, string> = {
+  left: 'sm:items-start sm:text-start',
+  center: 'sm:items-center sm:text-center',
+  right: 'sm:items-end sm:text-end',
+}
+const ALIGN_CLASS_DESKTOP: Record<AlignValue, string> = {
+  left: 'lg:items-start lg:text-start',
+  center: 'lg:items-center lg:text-center',
+  right: 'lg:items-end lg:text-end',
 }
 
 // Overrides Tailwind Typography's own default palette with the EPK's theme
@@ -90,8 +116,12 @@ function HeroSection({
     <div
       className={cn(
         'relative flex flex-col justify-center gap-4 overflow-hidden px-6 py-16 sm:px-12',
-        HEIGHT_CLASS[config.height] ?? HEIGHT_CLASS.large,
-        ALIGN_CLASS[config.alignment] ?? ALIGN_CLASS.center
+        HEIGHT_CLASS_MOBILE[config.height.mobile],
+        HEIGHT_CLASS_TABLET[config.height.tablet],
+        HEIGHT_CLASS_DESKTOP[config.height.desktop],
+        ALIGN_CLASS_MOBILE[config.alignment.mobile],
+        ALIGN_CLASS_TABLET[config.alignment.tablet],
+        ALIGN_CLASS_DESKTOP[config.alignment.desktop]
       )}
       style={
         config.background_image_url
@@ -101,7 +131,12 @@ function HeroSection({
     >
       {config.background_image_url && config.overlay && <div className="absolute inset-0 bg-black/55" />}
       <div
-        className={cn('relative z-10 mx-auto flex max-w-3xl flex-col gap-4', ALIGN_CLASS[config.alignment] ?? ALIGN_CLASS.center)}
+        className={cn(
+          'relative z-10 mx-auto flex max-w-3xl flex-col gap-4',
+          ALIGN_CLASS_MOBILE[config.alignment.mobile],
+          ALIGN_CLASS_TABLET[config.alignment.tablet],
+          ALIGN_CLASS_DESKTOP[config.alignment.desktop]
+        )}
         style={config.background_image_url ? { color: '#ffffff' } : undefined}
       >
         {config.profile_image_url && (
