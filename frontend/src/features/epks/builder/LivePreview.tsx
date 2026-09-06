@@ -5,6 +5,7 @@ import type { TFunction } from 'i18next'
 import { SOCIAL_PLATFORM_ICON } from '@/features/epks/builder/socialPlatforms'
 import { useMediaList } from '@/features/media/hooks/useMedia'
 import { buttonRadiusClass, resolveTheme, themeToCssVars, type EpkCustomSettings, type HeaderStyle } from '@/lib/epkThemes'
+import { normalizeResponsive, type DeviceWidth } from '@/lib/responsiveValue'
 import { cn } from '@/lib/utils'
 import type {
   BiographyConfig,
@@ -74,22 +75,26 @@ function HeroPreview({
   epk,
   workspaceId,
   buttonStyle,
+  deviceWidth,
 }: {
   config: HeroConfig
   epk: Epk
   workspaceId: number
   buttonStyle: ReturnType<typeof resolveTheme>['buttonStyle']
+  deviceWidth: DeviceWidth
 }) {
   const { data: media } = useMediaList(workspaceId)
   const background = findMediaUrl(media, config.background_media_id)
   const profile = findMediaUrl(media, config.profile_media_id)
+  const height = normalizeResponsive(config.height, 'large')[deviceWidth]
+  const alignment = normalizeResponsive(config.alignment, 'center')[deviceWidth]
 
   return (
     <div
       className={cn(
         'relative flex flex-col justify-center gap-3 overflow-hidden px-8 py-12',
-        HEIGHT_CLASS[config.height ?? 'large'],
-        ALIGN_CLASS[config.alignment ?? 'center']
+        HEIGHT_CLASS[height],
+        ALIGN_CLASS[alignment]
       )}
       style={
         background
@@ -99,7 +104,7 @@ function HeroPreview({
     >
       {background && (config.overlay ?? true) && <div className="absolute inset-0 bg-black/50" />}
       <div
-        className={cn('relative z-10 flex flex-col gap-3', ALIGN_CLASS[config.alignment ?? 'center'])}
+        className={cn('relative z-10 flex flex-col gap-3', ALIGN_CLASS[alignment])}
         style={background ? { color: '#ffffff' } : undefined}
       >
         {profile && (
@@ -482,12 +487,14 @@ export function LivePreview({
   sections,
   selectedSectionId,
   onSelectSection,
+  deviceWidth,
 }: {
   epk: Epk
   workspaceId: number
   sections: EpkSection[]
   selectedSectionId: number | null
   onSelectSection: (id: number) => void
+  deviceWidth: DeviceWidth
 }) {
   const { t } = useTranslation()
   const enabled = sections.filter((section) => section.is_enabled)
@@ -526,6 +533,7 @@ export function LivePreview({
                     epk={epk}
                     workspaceId={workspaceId}
                     buttonStyle={theme.buttonStyle}
+                    deviceWidth={deviceWidth}
                   />
                 )
               case 'biography':

@@ -180,6 +180,7 @@ export function EpkBuilderPage() {
               sections={sections}
               selectedSectionId={effectiveSelectedId}
               onSelectSection={setSelectedSectionId}
+              deviceWidth={deviceWidth}
             />
           </div>
         </div>
