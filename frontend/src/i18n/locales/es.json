@@ -857,6 +857,7 @@
       "heightMedium": "Media",
       "heightLarge": "Grande",
       "inheritsFrom": "Hereda de {{device}}: {{value}}",
+      "resetToInherited": "Restablecer herencia",
       "darkOverlay": "Superposición oscura",
       "ctaLabel": "Texto del botón de acción",
       "ctaLabelPlaceholder": "Escuchar ahora",

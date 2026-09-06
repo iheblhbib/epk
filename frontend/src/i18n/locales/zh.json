@@ -857,6 +857,7 @@
       "heightMedium": "中",
       "heightLarge": "大",
       "inheritsFrom": "继承自 {{device}}：{{value}}",
+      "resetToInherited": "重置为继承值",
       "darkOverlay": "深色遮罩",
       "ctaLabel": "行动号召按钮文字",
       "ctaLabelPlaceholder": "立即收听",

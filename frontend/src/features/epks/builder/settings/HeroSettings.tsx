@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
-import { isInherited, normalizeResponsive, withDeviceOverride, type DeviceWidth } from '@/lib/responsiveValue'
+import { clearDeviceOverride, isInherited, normalizeResponsive, withDeviceOverride, type DeviceWidth } from '@/lib/responsiveValue'
 import type { AlignValue, EpkSection, HeightValue, HeroConfig } from '@/types'
 
 // Literal (rather than dynamically-templated) i18n keys so static
@@ -52,6 +52,20 @@ export function HeroSettings({
 
   function setHeight(value: HeightValue) {
     setConfig((prev) => ({ ...prev, height: withDeviceOverride(prev.height, deviceWidth, value, 'large') }))
+  }
+
+  // Desktop has no parent breakpoint to inherit from, so there's nothing to
+  // reset it to -- both clear functions are only ever rendered/reachable for
+  // tablet/mobile, but guard here too so the narrowed deviceWidth type flows
+  // cleanly into clearDeviceOverride without a cast.
+  function clearAlignment() {
+    if (deviceWidth === 'desktop') return
+    setConfig((prev) => ({ ...prev, alignment: clearDeviceOverride(prev.alignment, deviceWidth) }))
+  }
+
+  function clearHeight() {
+    if (deviceWidth === 'desktop') return
+    setConfig((prev) => ({ ...prev, height: clearDeviceOverride(prev.height, deviceWidth) }))
   }
 
   // Tablet inherits from desktop; mobile inherits from tablet (which may
@@ -106,7 +120,18 @@ export function HeroSettings({
 
       <div className="grid grid-cols-2 gap-3">
         <div className="space-y-1.5">
-          <Label>{t('epkBuilder.hero.alignment')}</Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label>{t('epkBuilder.hero.alignment')}</Label>
+            {deviceWidth !== 'desktop' && !alignmentInherited && (
+              <button
+                type="button"
+                onClick={clearAlignment}
+                className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                {t('epkBuilder.hero.resetToInherited')}
+              </button>
+            )}
+          </div>
           <Select
             items={alignmentItems}
             value={alignmentValues[deviceWidth]}
@@ -130,7 +155,18 @@ export function HeroSettings({
           )}
         </div>
         <div className="space-y-1.5">
-          <Label>{t('epkBuilder.hero.height')}</Label>
+          <div className="flex items-center justify-between gap-2">
+            <Label>{t('epkBuilder.hero.height')}</Label>
+            {deviceWidth !== 'desktop' && !heightInherited && (
+              <button
+                type="button"
+                onClick={clearHeight}
+                className="text-xs text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                {t('epkBuilder.hero.resetToInherited')}
+              </button>
+            )}
+          </div>
           <Select
             items={heightItems}
             value={heightValues[deviceWidth]}

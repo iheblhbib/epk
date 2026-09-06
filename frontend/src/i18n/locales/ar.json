@@ -857,6 +857,7 @@
       "heightMedium": "متوسط",
       "heightLarge": "كبير",
       "inheritsFrom": "موروث من {{device}}: {{value}}",
+      "resetToInherited": "إعادة التعيين إلى الموروث",
       "darkOverlay": "طبقة تعتيم داكنة",
       "ctaLabel": "نص زر الدعوة لاتخاذ إجراء",
       "ctaLabelPlaceholder": "استمع الآن",

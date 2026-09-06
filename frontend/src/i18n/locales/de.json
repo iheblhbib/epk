@@ -857,6 +857,7 @@
       "heightMedium": "Mittel",
       "heightLarge": "Groß",
       "inheritsFrom": "Übernimmt von {{device}}: {{value}}",
+      "resetToInherited": "Vererbung zurücksetzen",
       "darkOverlay": "Dunkle Überlagerung",
       "ctaLabel": "Beschriftung des CTA-Buttons",
       "ctaLabelPlaceholder": "Jetzt anhören",

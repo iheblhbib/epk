@@ -67,3 +67,23 @@ export function withDeviceOverride<T>(
   const base: ResponsiveValue<T> = asObject ?? { desktop: (raw as T | undefined) ?? fallback }
   return { ...base, [device]: value }
 }
+
+/**
+ * Removes exactly one device's explicit override, letting it fall back to
+ * inheriting from its parent breakpoint again -- the reverse of
+ * withDeviceOverride(). Desktop can never be cleared (it has no parent
+ * breakpoint to inherit from, and ResponsiveValue.desktop is required, not
+ * optional), so this only accepts tablet/mobile. A legacy plain value or an
+ * unset raw has nothing to clear, so both pass through unchanged rather than
+ * materializing a ResponsiveValue object that didn't exist before.
+ */
+export function clearDeviceOverride<T>(
+  raw: T | ResponsiveValue<T> | undefined,
+  device: Exclude<DeviceWidth, 'desktop'>
+): T | ResponsiveValue<T> | undefined {
+  const asObject = asResponsiveObject(raw)
+  if (!asObject) return raw
+  const rest: ResponsiveValue<T> = { ...asObject }
+  delete rest[device]
+  return rest
+}

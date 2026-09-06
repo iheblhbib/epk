@@ -857,6 +857,7 @@
       "heightMedium": "Medium",
       "heightLarge": "Large",
       "inheritsFrom": "Inherits from {{device}}: {{value}}",
+      "resetToInherited": "Reset to inherited",
       "darkOverlay": "Dark overlay",
       "ctaLabel": "CTA button label",
       "ctaLabelPlaceholder": "Listen now",

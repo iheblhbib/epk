@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isInherited, normalizeResponsive, withDeviceOverride } from '@/lib/responsiveValue'
+import { clearDeviceOverride, isInherited, normalizeResponsive, withDeviceOverride } from '@/lib/responsiveValue'
 
 describe('normalizeResponsive', () => {
   it('treats a plain legacy value as desktop-only, inheriting to tablet and mobile', () => {
@@ -83,5 +83,26 @@ describe('withDeviceOverride', () => {
   })
   it('seeds desktop from the fallback when nothing is set yet', () => {
     expect(withDeviceOverride(undefined, 'tablet', 'small', 'large')).toEqual({ desktop: 'large', tablet: 'small' })
+  })
+})
+
+describe('clearDeviceOverride', () => {
+  it('removes an explicit tablet override, leaving desktop untouched', () => {
+    expect(clearDeviceOverride({ desktop: 'large', tablet: 'medium' }, 'tablet')).toEqual({ desktop: 'large' })
+  })
+
+  it('removes mobile while an existing tablet override is preserved', () => {
+    expect(clearDeviceOverride({ desktop: 'large', tablet: 'medium', mobile: 'small' }, 'mobile')).toEqual({
+      desktop: 'large',
+      tablet: 'medium',
+    })
+  })
+
+  it('is a no-op on a legacy plain value -- nothing to clear', () => {
+    expect(clearDeviceOverride('large', 'tablet')).toBe('large')
+  })
+
+  it('is a no-op on an undefined value -- nothing to clear', () => {
+    expect(clearDeviceOverride(undefined, 'tablet')).toBeUndefined()
   })
 })
