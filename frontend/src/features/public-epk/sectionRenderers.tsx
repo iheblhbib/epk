@@ -357,7 +357,7 @@ function PhotoLightbox({
             <button
               type="button"
               onClick={() => onNavigate((index - 1 + items.length) % items.length)}
-              className="absolute start-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
+              className="absolute start-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
               aria-label={t('publicEpk.photos.previous')}
             >
               <ChevronLeft className="size-5" />
@@ -365,7 +365,7 @@ function PhotoLightbox({
             <button
               type="button"
               onClick={() => onNavigate((index + 1) % items.length)}
-              className="absolute end-2 top-1/2 -translate-y-1/2 rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
+              className="absolute end-2 top-1/2 -translate-y-1/2 cursor-pointer rounded-full bg-background/80 p-2 text-foreground hover:bg-background"
               aria-label={t('publicEpk.photos.next')}
             >
               <ChevronRight className="size-5" />
@@ -390,7 +390,7 @@ function PhotosSection({ title, headerStyle, config }: { title: string; headerSt
             <button
               type="button"
               onClick={() => setOpenIndex(index)}
-              className="block aspect-square w-full overflow-hidden bg-[var(--epk-border)] transition-opacity hover:opacity-90"
+              className="block aspect-square w-full cursor-pointer overflow-hidden bg-[var(--epk-border)] transition-opacity hover:opacity-90"
               style={{ borderRadius: 'var(--epk-radius)' }}
             >
               <img src={item.thumbnail_url} alt={item.caption} className="size-full object-cover" loading="lazy" />
