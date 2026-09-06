@@ -1,0 +1,60 @@
+import { describe, expect, it } from 'vitest'
+import { isInherited, normalizeResponsive } from '@/lib/responsiveValue'
+
+describe('normalizeResponsive', () => {
+  it('treats a plain legacy value as desktop-only, inheriting to tablet and mobile', () => {
+    expect(normalizeResponsive('large', 'large')).toEqual({ desktop: 'large', tablet: 'large', mobile: 'large' })
+  })
+
+  it('treats a missing value as the given fallback', () => {
+    expect(normalizeResponsive(undefined, 'large')).toEqual({ desktop: 'large', tablet: 'large', mobile: 'large' })
+  })
+
+  it('lets tablet inherit desktop when tablet is unset', () => {
+    expect(normalizeResponsive({ desktop: 'large' }, 'large')).toEqual({
+      desktop: 'large',
+      tablet: 'large',
+      mobile: 'large',
+    })
+  })
+
+  it('lets mobile inherit tablet (not desktop) when only mobile is unset', () => {
+    expect(normalizeResponsive({ desktop: 'large', tablet: 'medium' }, 'large')).toEqual({
+      desktop: 'large',
+      tablet: 'medium',
+      mobile: 'medium',
+    })
+  })
+
+  it('keeps every explicit value when all three are set', () => {
+    expect(normalizeResponsive({ desktop: 'large', tablet: 'medium', mobile: 'small' }, 'large')).toEqual({
+      desktop: 'large',
+      tablet: 'medium',
+      mobile: 'small',
+    })
+  })
+})
+
+describe('isInherited', () => {
+  it('is always false for desktop', () => {
+    expect(isInherited(undefined, 'desktop')).toBe(false)
+    expect(isInherited({ desktop: 'large' }, 'desktop')).toBe(false)
+  })
+
+  it('is true for tablet/mobile when the value is a legacy plain string', () => {
+    expect(isInherited('large', 'tablet')).toBe(true)
+    expect(isInherited('large', 'mobile')).toBe(true)
+  })
+
+  it('is true for tablet when the responsive object has no tablet key', () => {
+    expect(isInherited({ desktop: 'large' }, 'tablet')).toBe(true)
+  })
+
+  it('is false for tablet when the responsive object has an explicit tablet value', () => {
+    expect(isInherited({ desktop: 'large', tablet: 'medium' }, 'tablet')).toBe(false)
+  })
+
+  it('is true for mobile when only desktop and tablet are set', () => {
+    expect(isInherited({ desktop: 'large', tablet: 'medium' }, 'mobile')).toBe(true)
+  })
+})

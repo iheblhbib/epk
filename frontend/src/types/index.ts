@@ -230,9 +230,18 @@ export interface EpkSectionComment {
   updated_at: string
 }
 
+export interface ResponsiveValue<T> {
+  desktop: T
+  tablet?: T | null
+  mobile?: T | null
+}
+
+export type HeightValue = 'small' | 'medium' | 'large'
+export type AlignValue = 'left' | 'center' | 'right'
+
 export interface HeroConfig {
-  alignment?: 'left' | 'center' | 'right'
-  height?: 'small' | 'medium' | 'large'
+  alignment?: AlignValue | ResponsiveValue<AlignValue>
+  height?: HeightValue | ResponsiveValue<HeightValue>
   overlay?: boolean
   headline?: string
   subtitle?: string
@@ -366,8 +375,8 @@ export interface PublicHeroConfig {
   description: string
   profile_image_url: string | null
   background_image_url: string | null
-  alignment: 'left' | 'center' | 'right'
-  height: 'small' | 'medium' | 'large'
+  alignment: { desktop: AlignValue; tablet: AlignValue; mobile: AlignValue }
+  height: { desktop: HeightValue; tablet: HeightValue; mobile: HeightValue }
   overlay: boolean
   cta_label: string
   cta_url: string
