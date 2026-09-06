@@ -99,6 +99,57 @@ it('resolves hero media ids to public urls', function () {
     $response->assertJsonPath('data.sections.0.config.background_image_url', null);
 });
 
+it('resolves a legacy plain-string hero height/alignment as fully inherited from desktop', function () {
+    $epk = makePublishedEpk();
+    $epk->sections()->create([
+        'type' => SectionType::Hero,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['headline' => 'Test', 'height' => 'small', 'alignment' => 'left'],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.height', ['desktop' => 'small', 'tablet' => 'small', 'mobile' => 'small']);
+    $response->assertJsonPath('data.sections.0.config.alignment', ['desktop' => 'left', 'tablet' => 'left', 'mobile' => 'left']);
+});
+
+it('lets a hero section\'s mobile height inherit from tablet, not desktop, when only mobile is unset', function () {
+    $epk = makePublishedEpk();
+    $epk->sections()->create([
+        'type' => SectionType::Hero,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['headline' => 'Test', 'height' => ['desktop' => 'large', 'tablet' => 'medium']],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.height', ['desktop' => 'large', 'tablet' => 'medium', 'mobile' => 'medium']);
+});
+
+it('keeps every explicit per-device hero height/alignment value when all three are set', function () {
+    $epk = makePublishedEpk();
+    $epk->sections()->create([
+        'type' => SectionType::Hero,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => [
+            'headline' => 'Test',
+            'height' => ['desktop' => 'large', 'tablet' => 'medium', 'mobile' => 'small'],
+            'alignment' => ['desktop' => 'center', 'tablet' => 'left', 'mobile' => 'right'],
+        ],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.height', ['desktop' => 'large', 'tablet' => 'medium', 'mobile' => 'small']);
+    $response->assertJsonPath('data.sections.0.config.alignment', ['desktop' => 'center', 'tablet' => 'left', 'mobile' => 'right']);
+});
+
 it('resolves downloads media ids to file objects, routed through the download endpoint', function () {
     $epk = makePublishedEpk();
     $file = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'presskit.pdf']);

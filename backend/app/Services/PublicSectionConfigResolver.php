@@ -52,8 +52,8 @@ class PublicSectionConfigResolver
                 'description' => $config['description'] ?? '',
                 'profile_image_url' => $this->urlFor($config['profile_media_id'] ?? null),
                 'background_image_url' => $this->urlFor($config['background_media_id'] ?? null),
-                'alignment' => $config['alignment'] ?? 'center',
-                'height' => $config['height'] ?? 'large',
+                'alignment' => $this->resolveResponsive($config['alignment'] ?? null, 'center'),
+                'height' => $this->resolveResponsive($config['height'] ?? null, 'large'),
                 'overlay' => $config['overlay'] ?? true,
                 'cta_label' => $config['cta_label'] ?? '',
                 'cta_url' => $config['cta_url'] ?? '',
@@ -320,6 +320,27 @@ class PublicSectionConfigResolver
         }
 
         return $result;
+    }
+
+    /**
+     * Normalizes a Hero field that may be stored as a legacy plain string OR
+     * as a { desktop, tablet?, mobile? } object into a fully-resolved
+     * { desktop, tablet, mobile } array -- mobile inherits tablet, tablet
+     * inherits desktop, when unset. Mirrors the frontend's
+     * normalizeResponsive() (frontend/src/lib/responsiveValue.ts); both must
+     * agree, since they resolve the same stored JSON.
+     *
+     * @return array{desktop: string, tablet: string, mobile: string}
+     */
+    private function resolveResponsive(mixed $raw, string $default): array
+    {
+        $value = is_array($raw) ? $raw : ['desktop' => $raw ?? $default];
+
+        $desktop = $value['desktop'] ?? $default;
+        $tablet = $value['tablet'] ?? $desktop;
+        $mobile = $value['mobile'] ?? $tablet;
+
+        return ['desktop' => $desktop, 'tablet' => $tablet, 'mobile' => $mobile];
     }
 
     private function mediaFor(?int $mediaId): ?Media
