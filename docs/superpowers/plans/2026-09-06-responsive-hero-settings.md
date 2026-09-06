@@ -44,7 +44,7 @@ classes so it responds to a visitor's actual viewport.
   two-field feature. Pure, isolated logic (the responsive-value helpers, the backend
   resolver) still gets real automated tests via TDD.
 - Every task ends with: relevant automated tests green, `vendor/bin/pint --test`
-  (backend tasks) or `npx tsc --noEmit` + `npx oxlint <changed files>` (frontend
+  (backend tasks) or `npx tsc -b --noEmit` + `npx oxlint <changed files>` (frontend
   tasks) clean, and a commit.
 
 ---
@@ -243,7 +243,7 @@ Expected: PASS (11 tests).
 
 - [ ] **Step 6: Verify the rest of the frontend still typechecks/lints**
 
-Run: `cd frontend && npx tsc --noEmit && npx oxlint src/types/index.ts src/lib/responsiveValue.ts src/lib/responsiveValue.test.ts`
+Run: `cd frontend && npx tsc -b --noEmit && npx oxlint src/types/index.ts src/lib/responsiveValue.ts src/lib/responsiveValue.test.ts`
 Expected: no errors. (Other files that reference `HeroConfig`/`PublicHeroConfig`
 will start failing to typecheck once their `height`/`alignment` usage no longer
 matches the widened type — that's expected and fixed in Tasks 3–5. If `tsc` reports
@@ -733,7 +733,7 @@ Run:
 ```bash
 cd frontend
 for f in ar de en es fr pt zh; do node -e "JSON.parse(require('fs').readFileSync('src/i18n/locales/$f.json','utf8')); console.log('$f OK')"; done
-npx tsc --noEmit
+npx tsc -b --noEmit
 npx oxlint src/features/epks/builder/EpkBuilderPage.tsx src/features/epks/builder/SectionSettingsPanel.tsx src/features/epks/builder/settings/HeroSettings.tsx
 ```
 Expected: all 7 locales print OK, `tsc` reports no errors in these three files (it
@@ -909,7 +909,7 @@ changes, from a direct `config.height ?? 'large'` read to the per-device-resolve
 
 - [ ] **Step 3: Verify typecheck and lint**
 
-Run: `cd frontend && npx tsc --noEmit && npx oxlint src/features/epks/builder/EpkBuilderPage.tsx src/features/epks/builder/LivePreview.tsx`
+Run: `cd frontend && npx tsc -b --noEmit && npx oxlint src/features/epks/builder/EpkBuilderPage.tsx src/features/epks/builder/LivePreview.tsx`
 Expected: no errors (this should also clear any remaining `HeroConfig`-shape errors
 left over from Task 1 — if `sectionRenderers.tsx` still errors at this point, that's
 expected, fixed in Task 5).
@@ -1049,7 +1049,7 @@ Replace with:
 Run:
 ```bash
 cd frontend
-npx tsc --noEmit
+npx tsc -b --noEmit
 npx oxlint src/features/public-epk/sectionRenderers.tsx
 npx vitest run
 ```
@@ -1087,7 +1087,7 @@ git commit -m "Render Hero Height/Alignment responsively on the public page"
 
 ```bash
 cd backend && php artisan test && vendor/bin/pint --test
-cd frontend && npx tsc --noEmit && npx vitest run
+cd frontend && npx tsc -b --noEmit && npx vitest run
 ```
 Expected: everything green — this catches any interaction between tasks that
 per-task verification might have missed.
