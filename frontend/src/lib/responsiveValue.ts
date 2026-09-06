@@ -48,3 +48,22 @@ export function isInherited<T>(raw: T | ResponsiveValue<T> | undefined, device: 
   if (!asObject) return true // a legacy plain value (or nothing) has no explicit tablet/mobile override
   return asObject[device] == null
 }
+
+/**
+ * Sets exactly one device's value, preserving whatever raw shape the other
+ * devices currently have -- including "not yet set" (i.e. still inheriting)
+ * -- rather than freezing them at their currently-resolved value. This is
+ * the write-side counterpart to normalizeResponsive(): that function is for
+ * reading/rendering (always fully resolved, no nulls); this one is for
+ * editing (never materializes an override the user didn't actually make).
+ */
+export function withDeviceOverride<T>(
+  raw: T | ResponsiveValue<T> | undefined,
+  device: DeviceWidth,
+  value: T,
+  fallback: T
+): ResponsiveValue<T> {
+  const asObject = asResponsiveObject(raw)
+  const base: ResponsiveValue<T> = asObject ?? { desktop: (raw as T | undefined) ?? fallback }
+  return { ...base, [device]: value }
+}

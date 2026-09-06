@@ -6,7 +6,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Switch } from '@/components/ui/switch'
 import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
-import { isInherited, normalizeResponsive, type DeviceWidth } from '@/lib/responsiveValue'
+import { isInherited, normalizeResponsive, withDeviceOverride, type DeviceWidth } from '@/lib/responsiveValue'
 import type { AlignValue, EpkSection, HeightValue, HeroConfig } from '@/types'
 
 export function HeroSettings({
@@ -40,17 +40,11 @@ export function HeroSettings({
   const heightInherited = isInherited(config.height, deviceWidth)
 
   function setAlignment(value: AlignValue) {
-    setConfig((prev) => ({
-      ...prev,
-      alignment: { ...normalizeResponsive<AlignValue>(prev.alignment, 'center'), [deviceWidth]: value },
-    }))
+    setConfig((prev) => ({ ...prev, alignment: withDeviceOverride(prev.alignment, deviceWidth, value, 'center') }))
   }
 
   function setHeight(value: HeightValue) {
-    setConfig((prev) => ({
-      ...prev,
-      height: { ...normalizeResponsive<HeightValue>(prev.height, 'large'), [deviceWidth]: value },
-    }))
+    setConfig((prev) => ({ ...prev, height: withDeviceOverride(prev.height, deviceWidth, value, 'large') }))
   }
 
   // Tablet inherits from desktop; mobile inherits from tablet (which may
