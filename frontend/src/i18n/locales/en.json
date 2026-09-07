@@ -713,7 +713,7 @@
       "checkVerification": "Check verification",
       "verifySuccess": "Domain verified — your public page is now live on it",
       "verifyError": "Could not verify this domain yet",
-      "removeConfirm": "Remove this custom domain? The EPK will still be reachable at its normal KORAX link.",
+      "removeConfirm": "Remove this custom domain? The EPK will still be reachable at its normal KORAXX link.",
       "removed": "Custom domain removed",
       "removeError": "Could not remove this domain"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "Welcome to KORAX",
-    "welcomeWithName": "Welcome to KORAX, {{name}}",
+    "welcome": "Welcome to KORAXX",
+    "welcomeWithName": "Welcome to KORAXX, {{name}}",
     "welcomeBack": "Welcome back",
     "welcomeBackWithName": "Welcome back, {{name}}",
     "noWorkspaceDescription": "Create a workspace to start building your first press kit.",

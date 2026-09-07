@@ -2,7 +2,7 @@
 
 Lets a workspace on the Business plan serve one EPK's public page from their own domain — `press.theirband.com` instead of `epk.karthagopm.com/epk/their-band`.
 
-The app handles claiming a domain, proving ownership of it, and resolving requests once it's verified. It does **not** handle making the domain itself reachable — pointing DNS at your hosting and getting it a certificate is real infrastructure work that happens outside this codebase, on your host. This doc covers both halves: what happens automatically, and the manual steps you (the KORAX operator) walk an EPK owner through.
+The app handles claiming a domain, proving ownership of it, and resolving requests once it's verified. It does **not** handle making the domain itself reachable — pointing DNS at your hosting and getting it a certificate is real infrastructure work that happens outside this codebase, on your host. This doc covers both halves: what happens automatically, and the manual steps you (the KORAXX operator) walk an EPK owner through.
 
 ## How it works
 

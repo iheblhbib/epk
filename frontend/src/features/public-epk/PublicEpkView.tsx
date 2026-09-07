@@ -59,7 +59,7 @@ export function PublicEpkView({
     meta.setAttribute('content', description)
 
     return () => {
-      document.title = 'KORAX'
+      document.title = 'KORAXX'
     }
   }, [epk])
 

@@ -50,11 +50,11 @@ class WorkspaceInvitationNotification extends Notification
         $url = "{$frontendUrl}/invitations/{$this->member->invite_token}";
 
         return (new MailMessage)
-            ->subject("You've been invited to join {$workspace->name} on KORAX")
+            ->subject("You've been invited to join {$workspace->name} on KORAXX")
             ->greeting('Hi there,')
             ->line($inviter
-                ? "{$inviter->name} has invited you to join \"{$workspace->name}\" on KORAX as a {$this->member->role->value}."
-                : "You've been invited to join \"{$workspace->name}\" on KORAX as a {$this->member->role->value}.")
+                ? "{$inviter->name} has invited you to join \"{$workspace->name}\" on KORAXX as a {$this->member->role->value}."
+                : "You've been invited to join \"{$workspace->name}\" on KORAXX as a {$this->member->role->value}.")
             ->action('View invitation', $url)
             ->line('If you were not expecting this invitation, you can safely ignore this email.');
     }

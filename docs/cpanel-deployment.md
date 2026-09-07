@@ -1,6 +1,6 @@
 # cPanel Deployment Guide
 
-This covers deploying KORAX to standard shared cPanel hosting — no Docker, no root access, no persistent Node process, no Redis. If your host offers something better (a VPS, Laravel Forge, Ploi, etc.), this guide still mostly applies but you have more options than assumed here.
+This covers deploying KORAXX to standard shared cPanel hosting — no Docker, no root access, no persistent Node process, no Redis. If your host offers something better (a VPS, Laravel Forge, Ploi, etc.), this guide still mostly applies but you have more options than assumed here.
 
 See [`architecture.md`](architecture.md) for *why* the app is split into a static-built `frontend/` and an API-only `backend/` — this doc is the *how*.
 

@@ -713,7 +713,7 @@
       "checkVerification": "检查验证",
       "verifySuccess": "域名已验证——您的公开页面现已在该域名上线",
       "verifyError": "暂时无法验证此域名",
-      "removeConfirm": "移除此自定义域名？该 EPK 仍可通过其常规 KORAX 链接访问。",
+      "removeConfirm": "移除此自定义域名？该 EPK 仍可通过其常规 KORAXX 链接访问。",
       "removed": "自定义域名已移除",
       "removeError": "无法移除此域名"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "欢迎使用 KORAX",
-    "welcomeWithName": "欢迎使用 KORAX，{{name}}",
+    "welcome": "欢迎使用 KORAXX",
+    "welcomeWithName": "欢迎使用 KORAXX，{{name}}",
     "welcomeBack": "欢迎回来",
     "welcomeBackWithName": "欢迎回来，{{name}}",
     "noWorkspaceDescription": "创建一个工作区，开始制作您的第一份 EPK。",

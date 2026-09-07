@@ -73,7 +73,7 @@ export function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
         <div className="flex size-7 items-center justify-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
           K
         </div>
-        <span className="font-heading text-sm font-semibold text-sidebar-foreground">KORAX</span>
+        <span className="font-heading text-sm font-semibold text-sidebar-foreground">KORAXX</span>
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">

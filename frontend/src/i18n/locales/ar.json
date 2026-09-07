@@ -713,7 +713,7 @@
       "checkVerification": "تحقّق",
       "verifySuccess": "تم التحقق من النطاق — أصبحت صفحتك العامة متاحة عليه الآن",
       "verifyError": "تعذّر التحقق من هذا النطاق حتى الآن",
-      "removeConfirm": "هل تريد إزالة هذا النطاق المخصص؟ سيظل الملف الصحفي متاحًا عبر رابط KORAX المعتاد.",
+      "removeConfirm": "هل تريد إزالة هذا النطاق المخصص؟ سيظل الملف الصحفي متاحًا عبر رابط KORAXX المعتاد.",
       "removed": "تمت إزالة النطاق المخصص",
       "removeError": "تعذّر إزالة هذا النطاق"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "مرحبًا بك في KORAX",
-    "welcomeWithName": "مرحبًا بك في KORAX، {{name}}",
+    "welcome": "مرحبًا بك في KORAXX",
+    "welcomeWithName": "مرحبًا بك في KORAXX، {{name}}",
     "welcomeBack": "مرحبًا بعودتك",
     "welcomeBackWithName": "مرحبًا بعودتك، {{name}}",
     "noWorkspaceDescription": "أنشئ مساحة عمل لتبدأ إنشاء ملفك الصحفي الأول.",

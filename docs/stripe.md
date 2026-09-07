@@ -1,6 +1,6 @@
 # Stripe Billing Setup
 
-How to configure real subscriptions for KORAX. The app talks to Stripe directly via the official `stripe/stripe-php` SDK (not Laravel Cashier — see the comment at the top of `App\Services\StripeBillingService` for why), so there's no extra package config beyond the environment variables below.
+How to configure real subscriptions for KORAXX. The app talks to Stripe directly via the official `stripe/stripe-php` SDK (not Laravel Cashier — see the comment at the top of `App\Services\StripeBillingService` for why), so there's no extra package config beyond the environment variables below.
 
 Three things happen once this is wired up:
 - A workspace owner/admin clicks **Upgrade** on the Billing page → redirected to a Stripe-hosted Checkout page.
@@ -20,7 +20,7 @@ Dashboard → **Developers → API keys**:
 
 ## 3. Create a Product with two Prices for each pack
 
-Dashboard → **Product catalog → Add product**. KORAX has three packs (`config/plans.php`) — create one Product per pack, each with **two** recurring Prices attached (monthly and yearly):
+Dashboard → **Product catalog → Add product**. KORAXX has three packs (`config/plans.php`) — create one Product per pack, each with **two** recurring Prices attached (monthly and yearly):
 
 1. **Starter** — €6.66/month recurring, plus a second price: €66.60/year recurring (yearly interval, billed as one annual charge — not a monthly price with a discount).
 2. **Pro** — €26.66/month, plus €266.64/year.

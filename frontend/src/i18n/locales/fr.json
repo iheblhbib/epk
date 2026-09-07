@@ -713,7 +713,7 @@
       "checkVerification": "Vérifier",
       "verifySuccess": "Domaine vérifié — votre page publique est maintenant en ligne dessus",
       "verifyError": "Impossible de vérifier ce domaine pour le moment",
-      "removeConfirm": "Supprimer ce domaine personnalisé ? L'EPK restera accessible via son lien KORAX habituel.",
+      "removeConfirm": "Supprimer ce domaine personnalisé ? L'EPK restera accessible via son lien KORAXX habituel.",
       "removed": "Domaine personnalisé supprimé",
       "removeError": "Impossible de supprimer ce domaine"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "Bienvenue sur KORAX",
-    "welcomeWithName": "Bienvenue sur KORAX, {{name}}",
+    "welcome": "Bienvenue sur KORAXX",
+    "welcomeWithName": "Bienvenue sur KORAXX, {{name}}",
     "welcomeBack": "Bon retour",
     "welcomeBackWithName": "Bon retour, {{name}}",
     "noWorkspaceDescription": "Créez un espace de travail pour commencer votre premier dossier de presse.",

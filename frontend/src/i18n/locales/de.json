@@ -713,7 +713,7 @@
       "checkVerification": "Verifizierung prüfen",
       "verifySuccess": "Domain verifiziert — Ihre öffentliche Seite ist jetzt darüber erreichbar",
       "verifyError": "Diese Domain konnte noch nicht verifiziert werden",
-      "removeConfirm": "Diese eigene Domain entfernen? Der EPK bleibt weiterhin über seinen normalen KORAX-Link erreichbar.",
+      "removeConfirm": "Diese eigene Domain entfernen? Der EPK bleibt weiterhin über seinen normalen KORAXX-Link erreichbar.",
       "removed": "Eigene Domain entfernt",
       "removeError": "Diese Domain konnte nicht entfernt werden"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "Willkommen bei KORAX",
-    "welcomeWithName": "Willkommen bei KORAX, {{name}}",
+    "welcome": "Willkommen bei KORAXX",
+    "welcomeWithName": "Willkommen bei KORAXX, {{name}}",
     "welcomeBack": "Willkommen zurück",
     "welcomeBackWithName": "Willkommen zurück, {{name}}",
     "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich, um Ihre erste Pressemappe zu erstellen.",

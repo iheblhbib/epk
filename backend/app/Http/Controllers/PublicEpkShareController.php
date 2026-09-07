@@ -27,7 +27,7 @@ class PublicEpkShareController extends Controller
 
         $title = $epk->seo_title ?: $epk->title;
         $description = $epk->seo_description
-            ?: ($epk->artist?->short_bio ?: __('Check out this press kit on KORAX.'));
+            ?: ($epk->artist?->short_bio ?: __('Check out this press kit on KORAXX.'));
 
         $imagePath = $epk->cover_image_path ?: $epk->artist?->profile_image_path;
         $image = $imagePath ? asset('storage/'.$imagePath) : null;

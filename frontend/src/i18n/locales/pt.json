@@ -713,7 +713,7 @@
       "checkVerification": "Verificar",
       "verifySuccess": "Domínio verificado — a sua página pública já está ativa nele",
       "verifyError": "Ainda não foi possível verificar este domínio",
-      "removeConfirm": "Remover este domínio personalizado? O EPK continuará acessível através do seu link habitual do KORAX.",
+      "removeConfirm": "Remover este domínio personalizado? O EPK continuará acessível através do seu link habitual do KORAXX.",
       "removed": "Domínio personalizado removido",
       "removeError": "Não foi possível remover este domínio"
     },
@@ -971,8 +971,8 @@
     }
   },
   "dashboard": {
-    "welcome": "Bem-vindo ao KORAX",
-    "welcomeWithName": "Bem-vindo ao KORAX, {{name}}",
+    "welcome": "Bem-vindo ao KORAXX",
+    "welcomeWithName": "Bem-vindo ao KORAXX, {{name}}",
     "welcomeBack": "Bem-vindo de volta",
     "welcomeBackWithName": "Bem-vindo de volta, {{name}}",
     "noWorkspaceDescription": "Crie um espaço de trabalho para começar a construir o seu primeiro EPK.",

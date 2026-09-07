@@ -81,7 +81,7 @@ export function PrivateEpkPage() {
     if (!epk) return
     document.title = epk.seo_title || epk.title
     return () => {
-      document.title = 'KORAX'
+      document.title = 'KORAXX'
     }
   }, [epk])
 

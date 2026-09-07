@@ -137,7 +137,7 @@ it('keeps the music download-all link recognizable as an external URL to mPDF, e
     // with no literal "." anywhere in it as an internal document anchor
     // instead of an external URL -- silently turning "Download the
     // discography as a ZIP" into a dead link that just jumps to page 1.
-    // A real production domain always has a dot (e.g. api.korax.app), so
+    // A real production domain always has a dot (e.g. api.koraxx.app), so
     // this never surfaces there, but a local dev URL like
     // "http://localhost:8000/api/public/epks/nova-ray/music/download-all"
     // has none at all, which is exactly the environment this link most
