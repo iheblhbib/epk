@@ -3,16 +3,15 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\WorkspaceMemberStatus;
-use App\Enums\WorkspaceRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreWorkspaceRequest;
 use App\Http\Requests\UpdateWorkspaceRequest;
 use App\Http\Resources\WorkspaceResource;
 use App\Models\Workspace;
 use App\Services\AuditLogger;
+use App\Services\WorkspaceCreator;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 
 class WorkspaceController extends Controller
 {
@@ -27,21 +26,13 @@ class WorkspaceController extends Controller
         return WorkspaceResource::collection($workspaces)->response();
     }
 
-    public function store(StoreWorkspaceRequest $request): JsonResponse
+    public function store(StoreWorkspaceRequest $request, WorkspaceCreator $workspaceCreator): JsonResponse
     {
-        $workspace = Workspace::create([
-            'name' => $request->validated('name'),
-            'slug' => $this->uniqueSlug($request->validated('name')),
-            'description' => $request->validated('description'),
-            'created_by' => $request->user()->id,
-        ]);
-
-        $workspace->members()->create([
-            'user_id' => $request->user()->id,
-            'role' => WorkspaceRole::Owner,
-            'status' => WorkspaceMemberStatus::Active,
-            'joined_at' => now(),
-        ]);
+        $workspace = $workspaceCreator->createWithOwner(
+            $request->validated('name'),
+            $request->user(),
+            $request->validated('description'),
+        );
 
         return (new WorkspaceResource($workspace->fresh('members')))->response()->setStatusCode(201);
     }
@@ -78,18 +69,5 @@ class WorkspaceController extends Controller
         $workspace->members()->where('user_id', $request->user()->id)->delete();
 
         return response()->json(['message' => __('You have left the workspace.')]);
-    }
-
-    private function uniqueSlug(string $name): string
-    {
-        $base = Str::slug($name) ?: 'workspace';
-        $slug = $base;
-        $suffix = 1;
-
-        while (Workspace::withTrashed()->where('slug', $slug)->exists()) {
-            $slug = "{$base}-".++$suffix;
-        }
-
-        return $slug;
     }
 }

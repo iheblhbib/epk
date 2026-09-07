@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\WorkspaceRole;
 use App\Models\User;
+use App\Models\Workspace;
 use Illuminate\Auth\Notifications\VerifyEmail;
 use Illuminate\Support\Facades\Notification;
 
@@ -28,6 +30,37 @@ it('registers a new user and logs them in', function () {
     // for any model with wasRecentlyCreated=true - a chained-test artifact only,
     // not real behavior (a real second request always resolves a fresh model).
     $this->getJson('/api/user')->assertSuccessful()->assertJsonPath('data.email', 'ada@example.com');
+});
+
+it('auto-creates a first workspace and makes the new user its owner', function () {
+    $this->postJson('/api/register', [
+        'name' => 'Ada Lovelace',
+        'email' => 'ada@example.com',
+        'password' => 'Password123!',
+        'password_confirmation' => 'Password123!',
+    ])->assertCreated();
+
+    $user = User::whereEmail('ada@example.com')->first();
+    $workspace = Workspace::firstWhere('created_by', $user->id);
+
+    expect($workspace)->not->toBeNull();
+    expect($workspace->name)->toBe('My First Workspace');
+    expect($workspace->members()->where('user_id', $user->id)->first()->role)
+        ->toBe(WorkspaceRole::Owner);
+});
+
+it('names the auto-created workspace in the registering visitor\'s language', function () {
+    $this->withHeaders(['Accept-Language' => 'fr'])->postJson('/api/register', [
+        'name' => 'Amélie Dubois',
+        'email' => 'amelie@example.com',
+        'password' => 'Password123!',
+        'password_confirmation' => 'Password123!',
+    ])->assertCreated();
+
+    $user = User::whereEmail('amelie@example.com')->first();
+    $workspace = Workspace::firstWhere('created_by', $user->id);
+
+    expect($workspace->name)->toBe('Mon premier espace de travail');
 });
 
 it('still creates the account and logs the user in when sending the verification email fails', function () {

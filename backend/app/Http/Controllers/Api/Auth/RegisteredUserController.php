@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\RegisterRequest;
 use App\Http\Resources\UserResource;
 use App\Models\User;
+use App\Services\WorkspaceCreator;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -17,7 +18,7 @@ use Throwable;
 
 class RegisteredUserController extends Controller
 {
-    public function store(RegisterRequest $request): JsonResponse
+    public function store(RegisterRequest $request, WorkspaceCreator $workspaceCreator): JsonResponse
     {
         // role/locale set explicitly rather than relying on their DB-level
         // defaults: Eloquent doesn't sync those back into the in-memory
@@ -34,6 +35,15 @@ class RegisteredUserController extends Controller
             'role' => UserRole::User,
             'locale' => Locale::from(app()->getLocale()),
         ]);
+
+        // Same Accept-Language resolution as the locale set above -- a new
+        // user lands straight in a workspace named in their own language
+        // instead of a blank "create your first workspace" prompt. Unlike
+        // the verification email below, a failure here isn't swallowed:
+        // this app assumes every user has at least one workspace almost
+        // everywhere, so an account with none is a broken state worth a
+        // failed registration over, not a silent gap to paper over later.
+        $workspaceCreator->createWithOwner(__('My First Workspace'), $user);
 
         // Sending the verification email happens synchronously (see
         // WorkspaceInvitationNotification's docblock -- no queue worker is
