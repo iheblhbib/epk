@@ -1,29 +1,29 @@
 import * as React from "react"
 
-import { useStableCaret } from "@/hooks/useStableCaret"
+import { useLocalControlledValue } from "@/hooks/useLocalControlledValue"
 import { cn } from "@/lib/utils"
 
 const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"textarea">>(function Textarea(
-  { className, onChange, ...props },
+  { className, value, onChange, ...props },
   forwardedRef
 ) {
-  const textareaRef = React.useRef<HTMLTextAreaElement>(null)
-  const stableCaret = useStableCaret(textareaRef)
+  // Only string values ever reach this component in practice -- an
+  // uncontrolled caller (no `value` prop at all) skips the local buffer
+  // entirely and renders straight through, same as a plain <textarea>.
+  const isControlled = value !== undefined
+  const local = useLocalControlledValue(isControlled ? String(value) : "")
 
   return (
     <textarea
-      ref={(node) => {
-        textareaRef.current = node
-        if (typeof forwardedRef === "function") forwardedRef(node)
-        else if (forwardedRef) forwardedRef.current = node
-      }}
+      ref={forwardedRef}
       data-slot="textarea"
       className={cn(
         "flex field-sizing-content min-h-16 w-full rounded-lg border border-input bg-transparent px-2.5 py-2 text-base transition-colors outline-none placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 disabled:cursor-not-allowed disabled:bg-input/50 disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 md:text-sm dark:bg-input/30 dark:disabled:bg-input/80 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40",
         className
       )}
+      {...(isControlled ? { value: local.value } : {})}
       onChange={(event) => {
-        stableCaret.onChange(event)
+        if (isControlled) local.onChange(event.target.value)
         onChange?.(event)
       }}
       {...props}
