@@ -1,6 +1,7 @@
 import { Check, RotateCcw } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
+import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { useDraftEpkTheme } from '@/features/epks/builder/hooks/useDraftEpkTheme'
@@ -114,11 +115,11 @@ function ColorOverride({
           onChange={(event) => onChange(event.target.value)}
           className="size-8 shrink-0 cursor-pointer rounded-md border border-border bg-transparent p-0.5"
         />
-        <input
+        <Input
           type="text"
           value={current}
           onChange={(event) => onChange(event.target.value)}
-          className="h-8 flex-1 rounded-md border border-border bg-background px-2 text-sm text-foreground"
+          className="flex-1"
         />
       </div>
     </div>
