@@ -85,6 +85,19 @@ it('410s a private link when the epk is archived', function () {
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
 });
 
+it('410s a private link when the epk has been deleted', function () {
+    // Deleting an EPK from the dashboard is the only "remove this EPK" action
+    // that actually exists in the product -- there's no UI path that ever
+    // sets status to Archived. Delete soft-deletes (Epk uses SoftDeletes),
+    // which excludes it from the default `epk()` relation query entirely,
+    // so this has to be checked explicitly rather than falling out of the
+    // Archived-status check above.
+    $link = draftEpkWithLink();
+    $link->epk->delete();
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
 it('still works for a draft or published epk -- only Archived disables the link', function () {
     $draftLink = draftEpkWithLink();
     $this->getJson("/api/private/{$draftLink->token}")->assertOk();

@@ -166,22 +166,30 @@ class PrivatePageController extends Controller
      */
     /**
      * A private link is meant to work even for a draft EPK -- that's the
-     * whole point (see this class's docblock). But three things make it a
-     * dead link the same as revoked/expired: the EPK being archived (it's
-     * gone, not just unpublished), the workspace owner's account being
-     * suspended, or the workspace's subscription no longer being active
-     * (trial expired, canceled, etc.) -- none of which the token itself
-     * encodes, so they're checked here on every use rather than baked into
-     * the link at creation time.
+     * whole point (see this class's docblock). But a few things make it a
+     * dead link the same as revoked/expired: the EPK being deleted (the
+     * dashboard's only "remove this EPK" action -- it soft-deletes, which
+     * excludes it from the default `epk()` relation query entirely, so it's
+     * eager-loaded with `withTrashed()` here specifically to still have it
+     * to check) or archived (no UI path sets this today, but the status
+     * exists and would mean the same thing if something ever does), the
+     * workspace owner's account being suspended, or the workspace's
+     * subscription no longer being active (trial expired, canceled, etc.)
+     * -- none of which the token itself encodes, so they're checked here on
+     * every use rather than baked into the link at creation time.
      */
     private function findActiveLink(string $token): PrivateLink
     {
         $link = PrivateLink::where('token', $token)
-            ->with(['epk.workspace.creator', 'epk.workspace.subscription'])
+            ->with([
+                'epk' => fn ($query) => $query->withTrashed(),
+                'epk.workspace.creator',
+                'epk.workspace.subscription',
+            ])
             ->firstOrFail();
 
         abort_if($link->isRevoked() || $link->isExpired(), 410, __('This link is no longer available.'));
-        abort_if($link->epk->status === EpkStatus::Archived, 410, __('This link is no longer available.'));
+        abort_if($link->epk->trashed() || $link->epk->status === EpkStatus::Archived, 410, __('This link is no longer available.'));
         abort_if($link->epk->workspace->creator?->suspended_at !== null, 410, __('This link is no longer available.'));
         abort_if(! $this->planLimits->hasActiveAccess($link->epk->workspace), 410, __('This link is no longer available.'));
 
