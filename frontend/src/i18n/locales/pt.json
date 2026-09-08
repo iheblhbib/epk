@@ -498,6 +498,9 @@
     "unlimitedEpks": "EPK ilimitados",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",
+    "unlimitedArtists": "Artistas ilimitados",
+    "artistCount_one": "{{count}} artista",
+    "artistCount_other": "{{count}} artistas",
     "unlimitedTeamMembers": "Membros de equipa ilimitados",
     "teamMemberCount_one": "{{count}} membro de equipa",
     "teamMemberCount_other": "{{count}} membros de equipa",
@@ -516,6 +519,7 @@
       "title": "Utilização",
       "description": "O que este espaço de trabalho está a usar em relação aos limites do seu plano.",
       "epks": "EPK",
+      "artists": "Artistas",
       "teamMembers": "Membros de equipa",
       "storage": "Armazenamento"
     },
@@ -665,14 +669,14 @@
       "biography": "Biografia",
       "photos": "Fotos",
       "music": "Música",
-      "releases": "Lançamentos",
+      "releases": "Discografia",
       "videos": "Vídeos",
       "press": "Imprensa",
       "events": "Eventos",
       "socialNetworks": "Redes sociais",
       "contact": "Contacto",
       "downloads": "Transferências",
-      "credits": "Créditos",
+      "credits": "Line-up",
       "custom": "Secção personalizada"
     },
     "addSection": "Adicionar secção",
@@ -770,7 +774,7 @@
       "saveError": "Não foi possível guardar o tema"
     },
     "privateLinks": {
-      "trigger": "Links privados",
+      "trigger": "Gerar links do EPK",
       "description": "Partilhe este EPK com pessoas específicas sem o publicar — funciona mesmo enquanto ainda é um rascunho.",
       "status": { "revoked": "Revogado", "expired": "Expirado", "active": "Ativo" },
       "untitledLink": "Link sem título",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "Ficheiros para transferência"
     },
+    "socialNetworks": {
+      "customLinks": "Links personalizados",
+      "customLabelPlaceholder": "Etiqueta (ex.: Linktree)",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "Selecionar ícone",
+      "addCustomLink": "Adicionar link personalizado"
+    },
     "music": {
-      "trackTitlePlaceholder": "Título da faixa (por defeito, o nome do ficheiro)",
+      "trackTitlePlaceholder": "Nome do álbum (por defeito, o nome do ficheiro)",
       "directUpload": "Envio direto",
       "selectAudioFile": "Selecionar ficheiro de áudio",
+      "lyricsPlaceholder": "Letra (opcional)",
       "addTrack": "Adicionar faixa"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "Álbum",
       "typeEp": "EP",
       "typeSingle": "Single",
+      "typeDemo": "Demo",
+      "typeLiveAlbum": "Álbum ao vivo",
+      "typeCompilation": "Coletânea",
+      "typeSplit": "Split",
       "titlePlaceholder": "Título do lançamento",
       "selectCoverArt": "Selecionar capa",
       "streamingLinks": "Links de streaming (opcional)",
@@ -1005,6 +1021,7 @@
       "download": "Transferir",
       "downloadAll": "Transferir tudo",
       "details": "Detalhes",
+      "lyrics": "Letra",
       "detailsDialog": {
         "title": "Detalhes do ficheiro",
         "filename": "Nome do ficheiro",

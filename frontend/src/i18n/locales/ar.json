@@ -498,6 +498,9 @@
     "unlimitedEpks": "ملفات صحفية غير محدودة",
     "epkCount_one": "ملف صحفي واحد",
     "epkCount_other": "{{count}} ملف صحفي",
+    "unlimitedArtists": "فنانون غير محدودين",
+    "artistCount_one": "فنان واحد",
+    "artistCount_other": "{{count}} فنانين",
     "unlimitedTeamMembers": "أعضاء فريق غير محدودين",
     "teamMemberCount_one": "عضو فريق واحد",
     "teamMemberCount_other": "{{count}} أعضاء فريق",
@@ -516,6 +519,7 @@
       "title": "الاستخدام",
       "description": "ما تستخدمه مساحة العمل هذه مقارنةً بحدود خطتها.",
       "epks": "الملفات الصحفية",
+      "artists": "الفنانون",
       "teamMembers": "أعضاء الفريق",
       "storage": "التخزين"
     },
@@ -665,14 +669,14 @@
       "biography": "السيرة الذاتية",
       "photos": "الصور",
       "music": "الموسيقى",
-      "releases": "الإصدارات",
+      "releases": "ديسكوغرافيا",
       "videos": "الفيديوهات",
       "press": "الصحافة",
       "events": "الفعاليات",
       "socialNetworks": "شبكات التواصل الاجتماعي",
       "contact": "التواصل",
       "downloads": "التنزيلات",
-      "credits": "الاعتمادات",
+      "credits": "التشكيلة",
       "custom": "قسم مخصص"
     },
     "addSection": "إضافة قسم",
@@ -770,7 +774,7 @@
       "saveError": "تعذّر حفظ التصميم"
     },
     "privateLinks": {
-      "trigger": "الروابط الخاصة",
+      "trigger": "إنشاء روابط EPK",
       "description": "شارك هذا الملف الصحفي مع أشخاص محددين دون نشره — يعمل حتى وهو مسودة.",
       "status": { "revoked": "مُلغى", "expired": "منتهي الصلاحية", "active": "نشط" },
       "untitledLink": "رابط بلا عنوان",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "الملفات القابلة للتنزيل"
     },
+    "socialNetworks": {
+      "customLinks": "روابط مخصصة",
+      "customLabelPlaceholder": "التسمية (مثال: Linktree)",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "اختر أيقونة",
+      "addCustomLink": "إضافة رابط مخصص"
+    },
     "music": {
-      "trackTitlePlaceholder": "عنوان المقطع (يُستخدم اسم الملف افتراضيًا)",
+      "trackTitlePlaceholder": "اسم الألبوم (يُستخدم اسم الملف افتراضيًا)",
       "directUpload": "رفع مباشر",
       "selectAudioFile": "اختر ملف صوتي",
+      "lyricsPlaceholder": "كلمات الأغنية (اختياري)",
       "addTrack": "إضافة مقطع"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "ألبوم",
       "typeEp": "EP",
       "typeSingle": "أغنية منفردة",
+      "typeDemo": "ديمو",
+      "typeLiveAlbum": "ألبوم مباشر",
+      "typeCompilation": "تجميعة",
+      "typeSplit": "إصدار مشترك",
       "titlePlaceholder": "عنوان الإصدار",
       "selectCoverArt": "اختر صورة الغلاف",
       "streamingLinks": "روابط البث (اختياري)",
@@ -1005,6 +1021,7 @@
       "download": "تنزيل",
       "downloadAll": "تنزيل الكل",
       "details": "التفاصيل",
+      "lyrics": "كلمات الأغنية",
       "detailsDialog": {
         "title": "تفاصيل الملف",
         "filename": "اسم الملف",

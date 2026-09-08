@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Download, ExternalLink, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -27,6 +27,7 @@ import type {
   PublicTrackItem,
   PublicVideosConfig,
   ReleaseLinks,
+  ReleaseType,
 } from '@/types'
 
 /**
@@ -45,6 +46,20 @@ const RELEASE_LINK_LABELS: Record<keyof ReleaseLinks, string> = {
   soundcloud: 'SoundCloud',
   deezer: 'Deezer',
   bandcamp: 'Bandcamp',
+}
+
+// Literal (rather than dynamically-templated) i18n keys, same reasoning as
+// HeroSettings' INHERITS_FROM_LABEL_KEY -- keeps every possible key visible
+// to static key-checking tools, and lets the public page show a translated
+// label instead of the raw stored type string (e.g. "live_album").
+const RELEASE_TYPE_LABEL_KEY: Record<ReleaseType, string> = {
+  single: 'epkBuilder.releases.typeSingle',
+  demo: 'epkBuilder.releases.typeDemo',
+  ep: 'epkBuilder.releases.typeEp',
+  album: 'epkBuilder.releases.typeAlbum',
+  live_album: 'epkBuilder.releases.typeLiveAlbum',
+  compilation: 'epkBuilder.releases.typeCompilation',
+  split: 'epkBuilder.releases.typeSplit',
 }
 
 // Tailwind's JIT scanner only picks up classes that appear as complete
@@ -222,18 +237,22 @@ function SocialNetworksSection({ title, headerStyle, config }: { title: string; 
   return (
     <SectionContainer title={title} headerStyle={headerStyle} align="center">
       <div className="flex flex-wrap justify-center gap-3">
-        {links.map((link) => {
+        {links.map((link, index) => {
           const Icon = SOCIAL_ICON[link.platform] ?? Globe
           return (
             <a
-              key={link.platform}
+              key={`${link.platform}-${index}`}
               href={link.url}
               target="_blank"
               rel="noreferrer"
-              className="flex size-11 items-center justify-center rounded-full border border-[var(--epk-border)] text-[var(--epk-fg)] transition-colors hover:border-[var(--epk-accent)] hover:text-[var(--epk-accent)]"
-              aria-label={link.platform}
+              className="flex size-11 items-center justify-center overflow-hidden rounded-full border border-[var(--epk-border)] text-[var(--epk-fg)] transition-colors hover:border-[var(--epk-accent)] hover:text-[var(--epk-accent)]"
+              aria-label={link.platform === 'custom' ? link.label || undefined : link.platform}
             >
-              <Icon className="size-5" />
+              {link.icon_url ? (
+                <img src={link.icon_url} alt="" className="size-full object-cover" />
+              ) : (
+                <Icon className="size-5" />
+              )}
             </a>
           )
         })}
@@ -333,8 +352,8 @@ function CreditsSection({ title, headerStyle, config }: { title: string; headerS
       <ul className="divide-y divide-[var(--epk-border)]">
         {items.map((item, index) => (
           <li key={index} className="flex items-baseline gap-2 py-2 text-sm">
-            <span className="text-[var(--epk-muted)]">{item.role}</span>
             <span className="font-medium text-[var(--epk-fg)]">{item.name}</span>
+            <span className="text-[var(--epk-muted)]">{item.role}</span>
           </li>
         ))}
       </ul>
@@ -526,6 +545,29 @@ function TrackDetailsDialog({
   )
 }
 
+function LyricsDialog({
+  open,
+  onOpenChange,
+  track,
+}: {
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  track: PublicTrackItem
+}) {
+  const { t } = useTranslation()
+
+  return (
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>{track.title || t('publicEpk.music.lyrics')}</DialogTitle>
+        </DialogHeader>
+        <p className="max-h-[60vh] overflow-y-auto text-sm whitespace-pre-wrap text-foreground">{track.lyrics}</p>
+      </DialogContent>
+    </Dialog>
+  )
+}
+
 function MusicSection({
   title,
   headerStyle,
@@ -543,10 +585,12 @@ function MusicSection({
   // duration server-side just for this detail panel.
   const [durations, setDurations] = useState<Record<number, number>>({})
   const [detailsIndex, setDetailsIndex] = useState<number | null>(null)
+  const [lyricsIndex, setLyricsIndex] = useState<number | null>(null)
 
   if (!config.tracks || config.tracks.length === 0) return null
 
   const detailsTrack = detailsIndex !== null ? config.tracks[detailsIndex] : undefined
+  const lyricsTrack = lyricsIndex !== null ? config.tracks[lyricsIndex] : undefined
 
   return (
     <SectionContainer title={title} headerStyle={headerStyle}>
@@ -569,7 +613,7 @@ function MusicSection({
               ) : (
                 <span />
               )}
-              {track.provider === 'upload' && track.download_url && (
+              {((track.provider === 'upload' && track.download_url) || track.lyrics) && (
                 <DropdownMenu>
                   <DropdownMenuTrigger
                     render={
@@ -583,17 +627,27 @@ function MusicSection({
                     <MoreHorizontal className="size-4" />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="end">
-                    <DropdownMenuItem
-                      render={<a href={track.download_url} />}
-                      onClick={() => onTrack('download', { filename: track.filename })}
-                    >
-                      <Download className="size-4" />
-                      {t('publicEpk.music.download')}
-                    </DropdownMenuItem>
-                    <DropdownMenuItem onClick={() => setDetailsIndex(index)}>
-                      <Info className="size-4" />
-                      {t('publicEpk.music.details')}
-                    </DropdownMenuItem>
+                    {track.provider === 'upload' && track.download_url && (
+                      <DropdownMenuItem
+                        render={<a href={track.download_url} />}
+                        onClick={() => onTrack('download', { filename: track.filename })}
+                      >
+                        <Download className="size-4" />
+                        {t('publicEpk.music.download')}
+                      </DropdownMenuItem>
+                    )}
+                    {track.provider === 'upload' && track.download_url && (
+                      <DropdownMenuItem onClick={() => setDetailsIndex(index)}>
+                        <Info className="size-4" />
+                        {t('publicEpk.music.details')}
+                      </DropdownMenuItem>
+                    )}
+                    {track.lyrics && (
+                      <DropdownMenuItem onClick={() => setLyricsIndex(index)}>
+                        <FileText className="size-4" />
+                        {t('publicEpk.music.lyrics')}
+                      </DropdownMenuItem>
+                    )}
                   </DropdownMenuContent>
                 </DropdownMenu>
               )}
@@ -628,6 +682,15 @@ function MusicSection({
           duration={detailsIndex !== null ? durations[detailsIndex] : undefined}
         />
       )}
+      {lyricsTrack && (
+        <LyricsDialog
+          open={lyricsIndex !== null}
+          onOpenChange={(open) => {
+            if (!open) setLyricsIndex(null)
+          }}
+          track={lyricsTrack}
+        />
+      )}
     </SectionContainer>
   )
 }
@@ -638,6 +701,7 @@ function ReleasesSection({ title, headerStyle, buttonStyle, config }: {
   buttonStyle: ReturnType<typeof resolveTheme>['buttonStyle']
   config: PublicReleasesConfig
 }) {
+  const { t } = useTranslation()
   if (!config.releases || config.releases.length === 0) return null
 
   return (
@@ -653,8 +717,8 @@ function ReleasesSection({ title, headerStyle, buttonStyle, config }: {
                 )}
               </div>
               <p className="text-sm font-medium text-[var(--epk-fg)]">{release.title}</p>
-              <p className="text-xs text-[var(--epk-muted)] capitalize">
-                {release.type}
+              <p className="text-xs text-[var(--epk-muted)]">
+                {t(RELEASE_TYPE_LABEL_KEY[release.type] ?? RELEASE_TYPE_LABEL_KEY.album)}
                 {release.release_date && ` · ${release.release_date}`}
               </p>
               {links.length > 0 && (

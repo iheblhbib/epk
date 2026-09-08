@@ -498,6 +498,9 @@
     "unlimitedEpks": "Unbegrenzte EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",
+    "unlimitedArtists": "Unbegrenzte Künstler",
+    "artistCount_one": "{{count}} Künstler",
+    "artistCount_other": "{{count}} Künstler",
     "unlimitedTeamMembers": "Unbegrenzte Teammitglieder",
     "teamMemberCount_one": "{{count}} Teammitglied",
     "teamMemberCount_other": "{{count}} Teammitglieder",
@@ -516,6 +519,7 @@
       "title": "Nutzung",
       "description": "Was dieser Arbeitsbereich im Verhältnis zu den Grenzen seines Tarifs nutzt.",
       "epks": "EPKs",
+      "artists": "Künstler",
       "teamMembers": "Teammitglieder",
       "storage": "Speicher"
     },
@@ -665,14 +669,14 @@
       "biography": "Biografie",
       "photos": "Fotos",
       "music": "Musik",
-      "releases": "Veröffentlichungen",
+      "releases": "Diskografie",
       "videos": "Videos",
       "press": "Presse",
       "events": "Termine",
       "socialNetworks": "Soziale Netzwerke",
       "contact": "Kontakt",
       "downloads": "Downloads",
-      "credits": "Credits",
+      "credits": "Line-up",
       "custom": "Benutzerdefinierte Sektion"
     },
     "addSection": "Sektion hinzufügen",
@@ -770,7 +774,7 @@
       "saveError": "Das Design konnte nicht gespeichert werden"
     },
     "privateLinks": {
-      "trigger": "Private Links",
+      "trigger": "EPK-Links generieren",
       "description": "Teilen Sie diesen EPK mit bestimmten Personen, ohne ihn zu veröffentlichen — funktioniert auch als Entwurf.",
       "status": { "revoked": "Widerrufen", "expired": "Abgelaufen", "active": "Aktiv" },
       "untitledLink": "Link ohne Titel",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "Herunterladbare Dateien"
     },
+    "socialNetworks": {
+      "customLinks": "Eigene Links",
+      "customLabelPlaceholder": "Bezeichnung (z. B. Linktree)",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "Symbol auswählen",
+      "addCustomLink": "Eigenen Link hinzufügen"
+    },
     "music": {
-      "trackTitlePlaceholder": "Titelname (standardmäßig der Dateiname)",
+      "trackTitlePlaceholder": "Name des Albums (standardmäßig der Dateiname)",
       "directUpload": "Direkter Upload",
       "selectAudioFile": "Audiodatei auswählen",
+      "lyricsPlaceholder": "Songtext (optional)",
       "addTrack": "Titel hinzufügen"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "Album",
       "typeEp": "EP",
       "typeSingle": "Single",
+      "typeDemo": "Demo",
+      "typeLiveAlbum": "Live-Album",
+      "typeCompilation": "Kompilation",
+      "typeSplit": "Split",
       "titlePlaceholder": "Titel der Veröffentlichung",
       "selectCoverArt": "Cover auswählen",
       "streamingLinks": "Streaming-Links (optional)",
@@ -1005,6 +1021,7 @@
       "download": "Herunterladen",
       "downloadAll": "Alle herunterladen",
       "details": "Details",
+      "lyrics": "Songtext",
       "detailsDialog": {
         "title": "Dateidetails",
         "filename": "Dateiname",

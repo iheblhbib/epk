@@ -149,7 +149,18 @@ function BiographyPreview({ config, headerStyle, t }: { config: BiographyConfig;
   )
 }
 
-function SocialNetworksPreview({ config, headerStyle, t }: { config: SocialNetworksConfig; headerStyle: HeaderStyle; t: TFunction }) {
+function SocialNetworksPreview({
+  config,
+  workspaceId,
+  headerStyle,
+  t,
+}: {
+  config: SocialNetworksConfig
+  workspaceId: number
+  headerStyle: HeaderStyle
+  t: TFunction
+}) {
+  const { data: media } = useMediaList(workspaceId)
   const links = (config.links ?? []).filter((link) => link.url)
 
   if (links.length === 0) {
@@ -162,18 +173,26 @@ function SocialNetworksPreview({ config, headerStyle, t }: { config: SocialNetwo
     <div className="px-8 py-10">
       <SectionHeading title={t('epkBuilder.sectionTypes.socialNetworks')} headerStyle={headerStyle} />
       <div className="flex flex-wrap justify-center gap-4">
-        {links.map((link) => {
+        {links.map((link, index) => {
           const Icon = SOCIAL_PLATFORM_ICON[link.platform] ?? Globe
+          const customIconUrl =
+            link.platform === 'custom' ? media?.find((item) => item.id === link.icon_media_id)?.url : undefined
+
           return (
             <a
-              key={link.platform}
+              key={`${link.platform}-${index}`}
               href={link.url}
               target="_blank"
               rel="noreferrer"
               onClick={(event) => event.preventDefault()}
-              className="flex size-10 items-center justify-center rounded-full border border-[var(--epk-border)] text-[var(--epk-fg)]"
+              aria-label={link.platform === 'custom' ? link.label || undefined : link.platform}
+              className="flex size-10 items-center justify-center overflow-hidden rounded-full border border-[var(--epk-border)] text-[var(--epk-fg)]"
             >
-              <Icon className="size-4" />
+              {customIconUrl ? (
+                <img src={customIconUrl} alt="" className="size-full object-cover" />
+              ) : (
+                <Icon className="size-4" />
+              )}
             </a>
           )
         })}
@@ -249,8 +268,8 @@ function CreditsPreview({ config, headerStyle, t }: { config: CreditsConfig; hea
         <ul className="space-y-1 text-sm">
           {items.map((item, index) => (
             <li key={index} className="flex items-baseline gap-2">
-              <span className="text-[var(--epk-muted)]">{item.role || '—'}</span>
               <span className="text-[var(--epk-fg)]">{item.name || '—'}</span>
+              <span className="text-[var(--epk-muted)]">{item.role || '—'}</span>
             </li>
           ))}
         </ul>
@@ -539,7 +558,14 @@ export function LivePreview({
               case 'biography':
                 return <BiographyPreview config={section.config as BiographyConfig} headerStyle={theme.headerStyle} t={t} />
               case 'social_networks':
-                return <SocialNetworksPreview config={section.config as SocialNetworksConfig} headerStyle={theme.headerStyle} t={t} />
+                return (
+                  <SocialNetworksPreview
+                    config={section.config as SocialNetworksConfig}
+                    workspaceId={workspaceId}
+                    headerStyle={theme.headerStyle}
+                    t={t}
+                  />
+                )
               case 'contact':
                 return <ContactPreview config={section.config as ContactConfig} headerStyle={theme.headerStyle} t={t} />
               case 'downloads':

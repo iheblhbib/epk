@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Textarea } from '@/components/ui/textarea'
 import { GalleryItemRow } from '@/features/epks/builder/components/GalleryItemRow'
 import { MediaPickerSingle } from '@/features/epks/builder/components/MediaPicker'
 import { useDraftSectionConfig } from '@/features/epks/builder/hooks/useDraftSectionConfig'
@@ -75,6 +76,12 @@ export function MusicSettings({ epkId, workspaceId, section }: { epkId: number; 
               onChange={(event) => updateTrack(index, { url: event.target.value })}
             />
           )}
+          <Textarea
+            placeholder={t('epkBuilder.music.lyricsPlaceholder')}
+            rows={4}
+            value={track.lyrics ?? ''}
+            onChange={(event) => updateTrack(index, { lyrics: event.target.value })}
+          />
         </GalleryItemRow>
       ))}
       <Button

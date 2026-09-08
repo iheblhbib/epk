@@ -18,18 +18,6 @@ export function CreditsSettings({ epkId, section }: { epkId: number; section: Ep
       {items.map((item, index) => (
         <div key={index} className="flex items-center gap-2">
           <Input
-            placeholder={t('epkBuilder.credits.rolePlaceholder')}
-            value={item.role}
-            onChange={(event) =>
-              setConfig((prev) => ({
-                ...prev,
-                items: (prev.items ?? []).map((entry, i) =>
-                  i === index ? { ...entry, role: event.target.value } : entry
-                ),
-              }))
-            }
-          />
-          <Input
             placeholder={t('epkBuilder.credits.namePlaceholder')}
             value={item.name}
             onChange={(event) =>
@@ -37,6 +25,18 @@ export function CreditsSettings({ epkId, section }: { epkId: number; section: Ep
                 ...prev,
                 items: (prev.items ?? []).map((entry, i) =>
                   i === index ? { ...entry, name: event.target.value } : entry
+                ),
+              }))
+            }
+          />
+          <Input
+            placeholder={t('epkBuilder.credits.rolePlaceholder')}
+            value={item.role}
+            onChange={(event) =>
+              setConfig((prev) => ({
+                ...prev,
+                items: (prev.items ?? []).map((entry, i) =>
+                  i === index ? { ...entry, role: event.target.value } : entry
                 ),
               }))
             }

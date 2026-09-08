@@ -259,6 +259,12 @@ export interface BiographyConfig {
 export interface SocialLink {
   platform: string
   url: string
+  // Only meaningful when platform === 'custom' -- an artist-provided
+  // display name and, optionally, an uploaded icon image (falls back to a
+  // generic link icon on both the builder preview and the public page when
+  // unset).
+  label?: string
+  icon_media_id?: number | null
 }
 
 export interface SocialNetworksConfig {
@@ -311,13 +317,14 @@ export interface TrackItem {
   provider?: MusicProvider
   audio_media_id?: number | null
   url?: string
+  lyrics?: string
 }
 
 export interface MusicConfig {
   tracks?: TrackItem[]
 }
 
-export type ReleaseType = 'album' | 'ep' | 'single'
+export type ReleaseType = 'single' | 'demo' | 'ep' | 'album' | 'live_album' | 'compilation' | 'split'
 
 export interface ReleaseLinks {
   spotify?: string
@@ -386,8 +393,17 @@ export interface PublicBiographyConfig {
   html: string
 }
 
+export interface PublicSocialLink {
+  platform: string
+  url: string
+  label?: string
+  // Resolved from icon_media_id -- only present for a custom link the
+  // artist uploaded an icon image for.
+  icon_url?: string | null
+}
+
 export interface PublicSocialNetworksConfig {
-  links: SocialLink[]
+  links: PublicSocialLink[]
 }
 
 export interface PublicContactConfig {
@@ -444,6 +460,9 @@ export interface PublicTrackItem {
   download_url?: string
   filename?: string
   size?: number
+  // Optional, and not tied to provider -- an embedded track can carry
+  // lyrics just as well as an uploaded one.
+  lyrics?: string
 }
 
 export interface PublicMusicConfig {
@@ -756,6 +775,7 @@ export interface PlanDetails {
   max_epks: number | null
   max_storage_bytes: number | null
   max_team_members: number | null
+  max_artists: number | null
   custom_themes: boolean
   private_links: boolean
   white_label: boolean
@@ -781,6 +801,7 @@ export interface BillingData {
   usage: {
     epks: BillingUsageMetric
     team_members: BillingUsageMetric
+    artists: BillingUsageMetric
     storage_bytes: BillingUsageMetric
   }
   plans: Record<SubscriptionPlan, PlanDetails>

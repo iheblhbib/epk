@@ -25,9 +25,13 @@ export function ReleasesSettings({ epkId, workspaceId, section }: { epkId: numbe
   const setConfig = useDraftSectionConfig<ReleasesConfig>(epkId, section)
   const releases = config.releases ?? []
   const typeItems = {
-    album: t('epkBuilder.releases.typeAlbum'),
-    ep: t('epkBuilder.releases.typeEp'),
     single: t('epkBuilder.releases.typeSingle'),
+    demo: t('epkBuilder.releases.typeDemo'),
+    ep: t('epkBuilder.releases.typeEp'),
+    album: t('epkBuilder.releases.typeAlbum'),
+    live_album: t('epkBuilder.releases.typeLiveAlbum'),
+    compilation: t('epkBuilder.releases.typeCompilation'),
+    split: t('epkBuilder.releases.typeSplit'),
   }
 
   const updateRelease = (index: number, patch: Partial<ReleaseItem>) =>

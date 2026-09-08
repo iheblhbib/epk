@@ -8,6 +8,8 @@ export const SOCIAL_PLATFORMS: { key: string; label: string; icon: SocialIcon; p
   { key: 'x', label: 'X', icon: SOCIAL_ICON.x, placeholder: 'https://x.com/…' },
   { key: 'spotify', label: 'Spotify', icon: SOCIAL_ICON.spotify, placeholder: 'https://open.spotify.com/artist/…' },
   { key: 'soundcloud', label: 'SoundCloud', icon: SOCIAL_ICON.soundcloud, placeholder: 'https://soundcloud.com/…' },
+  { key: 'bandcamp', label: 'Bandcamp', icon: SOCIAL_ICON.bandcamp, placeholder: 'https://…bandcamp.com/…' },
+  { key: 'deezer', label: 'Deezer', icon: SOCIAL_ICON.deezer, placeholder: 'https://deezer.com/…' },
   { key: 'website', label: 'Website', icon: SOCIAL_ICON.website, placeholder: 'https://…' },
 ]
 

@@ -498,6 +498,9 @@
     "unlimitedEpks": "EPK 数量不限",
     "epkCount_one": "{{count}} 个 EPK",
     "epkCount_other": "{{count}} 个 EPK",
+    "unlimitedArtists": "艺人数量不限",
+    "artistCount_one": "{{count}} 位艺人",
+    "artistCount_other": "{{count}} 位艺人",
     "unlimitedTeamMembers": "团队成员数量不限",
     "teamMemberCount_one": "{{count}} 名团队成员",
     "teamMemberCount_other": "{{count}} 名团队成员",
@@ -516,6 +519,7 @@
       "title": "使用情况",
       "description": "此工作区相对于其套餐限额的使用情况。",
       "epks": "EPK",
+      "artists": "艺人",
       "teamMembers": "团队成员",
       "storage": "存储空间"
     },
@@ -665,14 +669,14 @@
       "biography": "个人简介",
       "photos": "照片",
       "music": "音乐",
-      "releases": "发行作品",
+      "releases": "唱片全集",
       "videos": "视频",
       "press": "媒体报道",
       "events": "活动",
       "socialNetworks": "社交媒体",
       "contact": "联系方式",
       "downloads": "下载",
-      "credits": "制作名单",
+      "credits": "阵容",
       "custom": "自定义版块"
     },
     "addSection": "添加版块",
@@ -770,7 +774,7 @@
       "saveError": "无法保存主题"
     },
     "privateLinks": {
-      "trigger": "私密链接",
+      "trigger": "生成 EPK 链接",
       "description": "在不发布的情况下与特定人员分享此 EPK — 即使仍是草稿也可使用。",
       "status": { "revoked": "已撤销", "expired": "已过期", "active": "有效" },
       "untitledLink": "未命名链接",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "可下载文件"
     },
+    "socialNetworks": {
+      "customLinks": "自定义链接",
+      "customLabelPlaceholder": "标签（例如 Linktree）",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "选择图标",
+      "addCustomLink": "添加自定义链接"
+    },
     "music": {
-      "trackTitlePlaceholder": "音轨标题（默认使用文件名）",
+      "trackTitlePlaceholder": "专辑名称（默认使用文件名）",
       "directUpload": "直接上传",
       "selectAudioFile": "选择音频文件",
+      "lyricsPlaceholder": "歌词（可选）",
       "addTrack": "添加音轨"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "专辑",
       "typeEp": "EP",
       "typeSingle": "单曲",
+      "typeDemo": "样带",
+      "typeLiveAlbum": "现场专辑",
+      "typeCompilation": "合辑",
+      "typeSplit": "联合专辑",
       "titlePlaceholder": "发行作品标题",
       "selectCoverArt": "选择封面图",
       "streamingLinks": "流媒体链接（可选）",
@@ -1005,6 +1021,7 @@
       "download": "下载",
       "downloadAll": "全部下载",
       "details": "详情",
+      "lyrics": "歌词",
       "detailsDialog": {
         "title": "文件详情",
         "filename": "文件名",

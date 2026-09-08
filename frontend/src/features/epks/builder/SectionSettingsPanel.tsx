@@ -104,7 +104,7 @@ export function SectionSettingsPanel({
               case 'biography':
                 return <BiographySettings epkId={epkId} section={section} />
               case 'social_networks':
-                return <SocialNetworksSettings epkId={epkId} section={section} />
+                return <SocialNetworksSettings epkId={epkId} workspaceId={workspaceId} section={section} />
               case 'contact':
                 return <ContactSettings epkId={epkId} section={section} />
               case 'downloads':

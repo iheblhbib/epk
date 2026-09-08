@@ -498,6 +498,9 @@
     "unlimitedEpks": "Unlimited EPKs",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPKs",
+    "unlimitedArtists": "Unlimited artists",
+    "artistCount_one": "{{count}} artist",
+    "artistCount_other": "{{count}} artists",
     "unlimitedTeamMembers": "Unlimited team members",
     "teamMemberCount_one": "{{count}} team member",
     "teamMemberCount_other": "{{count}} team members",
@@ -516,6 +519,7 @@
       "title": "Usage",
       "description": "What this workspace is using against its plan limits.",
       "epks": "EPKs",
+      "artists": "Artists",
       "teamMembers": "Team members",
       "storage": "Storage"
     },
@@ -665,14 +669,14 @@
       "biography": "Biography",
       "photos": "Photos",
       "music": "Music",
-      "releases": "Releases",
+      "releases": "Discography",
       "videos": "Videos",
       "press": "Press",
       "events": "Events",
       "socialNetworks": "Social Networks",
       "contact": "Contact",
       "downloads": "Downloads",
-      "credits": "Credits",
+      "credits": "Line-up",
       "custom": "Custom Section"
     },
     "addSection": "Add section",
@@ -770,7 +774,7 @@
       "saveError": "Could not save the theme"
     },
     "privateLinks": {
-      "trigger": "Private links",
+      "trigger": "Generate EPK Links",
       "description": "Share this EPK with specific people without publishing it — works even while it's still a draft.",
       "status": { "revoked": "Revoked", "expired": "Expired", "active": "Active" },
       "untitledLink": "Untitled link",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "Downloadable files"
     },
+    "socialNetworks": {
+      "customLinks": "Custom links",
+      "customLabelPlaceholder": "Label (e.g. Linktree)",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "Select icon",
+      "addCustomLink": "Add custom link"
+    },
     "music": {
-      "trackTitlePlaceholder": "Track title (defaults to the filename)",
+      "trackTitlePlaceholder": "Name of album (defaults to the filename)",
       "directUpload": "Direct upload",
       "selectAudioFile": "Select audio file",
+      "lyricsPlaceholder": "Lyrics (optional)",
       "addTrack": "Add track"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "Album",
       "typeEp": "EP",
       "typeSingle": "Single",
+      "typeDemo": "Demo",
+      "typeLiveAlbum": "Live Album",
+      "typeCompilation": "Compilation",
+      "typeSplit": "Split",
       "titlePlaceholder": "Release title",
       "selectCoverArt": "Select cover art",
       "streamingLinks": "Streaming links (optional)",
@@ -1005,6 +1021,7 @@
       "download": "Download",
       "downloadAll": "Download all",
       "details": "Details",
+      "lyrics": "Lyrics",
       "detailsDialog": {
         "title": "File details",
         "filename": "Filename",

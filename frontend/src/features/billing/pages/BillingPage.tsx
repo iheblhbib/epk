@@ -82,6 +82,10 @@ function PlanCard({
           </div>
           <CardDescription>
             {plan.max_epks === null ? t('billing.unlimitedEpks') : t('billing.epkCount', { count: plan.max_epks })} ·{' '}
+            {plan.max_artists === null
+              ? t('billing.unlimitedArtists')
+              : t('billing.artistCount', { count: plan.max_artists })}{' '}
+            ·{' '}
             {plan.max_team_members === null
               ? t('billing.unlimitedTeamMembers')
               : t('billing.teamMemberCount', { count: plan.max_team_members })}{' '}
@@ -264,6 +268,11 @@ export function BillingPage() {
         </CardHeader>
         <CardContent className="space-y-4">
           <UsageBar label={t('billing.usage.epks')} used={billing.usage.epks.used} limit={billing.usage.epks.limit} />
+          <UsageBar
+            label={t('billing.usage.artists')}
+            used={billing.usage.artists.used}
+            limit={billing.usage.artists.limit}
+          />
           <UsageBar
             label={t('billing.usage.teamMembers')}
             used={billing.usage.team_members.used}

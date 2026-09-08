@@ -498,6 +498,9 @@
     "unlimitedEpks": "EPK illimités",
     "epkCount_one": "{{count}} EPK",
     "epkCount_other": "{{count}} EPK",
+    "unlimitedArtists": "Artistes illimités",
+    "artistCount_one": "{{count}} artiste",
+    "artistCount_other": "{{count}} artistes",
     "unlimitedTeamMembers": "Membres d'équipe illimités",
     "teamMemberCount_one": "{{count}} membre d'équipe",
     "teamMemberCount_other": "{{count}} membres d'équipe",
@@ -516,6 +519,7 @@
       "title": "Utilisation",
       "description": "Ce que cet espace de travail utilise par rapport aux limites de son forfait.",
       "epks": "EPK",
+      "artists": "Artistes",
       "teamMembers": "Membres d'équipe",
       "storage": "Stockage"
     },
@@ -665,14 +669,14 @@
       "biography": "Biographie",
       "photos": "Photos",
       "music": "Musique",
-      "releases": "Sorties",
+      "releases": "Discographie",
       "videos": "Vidéos",
-      "press": "Presse",
+      "press": "Press",
       "events": "Événements",
       "socialNetworks": "Réseaux sociaux",
       "contact": "Contact",
       "downloads": "Téléchargements",
-      "credits": "Crédits",
+      "credits": "Line-up",
       "custom": "Section personnalisée"
     },
     "addSection": "Ajouter une section",
@@ -770,7 +774,7 @@
       "saveError": "Impossible d'enregistrer le thème"
     },
     "privateLinks": {
-      "trigger": "Liens privés",
+      "trigger": "Générer les liens de l'EPK",
       "description": "Partagez cet EPK avec des personnes précises sans le publier — fonctionne même en brouillon.",
       "status": { "revoked": "Révoqué", "expired": "Expiré", "active": "Actif" },
       "untitledLink": "Lien sans titre",
@@ -894,10 +898,18 @@
     "downloads": {
       "files": "Fichiers téléchargeables"
     },
+    "socialNetworks": {
+      "customLinks": "Liens personnalisés",
+      "customLabelPlaceholder": "Libellé (ex. Linktree)",
+      "customUrlPlaceholder": "https://…",
+      "selectCustomIcon": "Sélectionner une icône",
+      "addCustomLink": "Ajouter un lien personnalisé"
+    },
     "music": {
-      "trackTitlePlaceholder": "Titre du morceau (par défaut, le nom du fichier)",
+      "trackTitlePlaceholder": "Nom de l'album (par défaut, le nom du fichier)",
       "directUpload": "Envoi direct",
       "selectAudioFile": "Sélectionner un fichier audio",
+      "lyricsPlaceholder": "Paroles (facultatif)",
       "addTrack": "Ajouter un morceau"
     },
     "photos": {
@@ -917,6 +929,10 @@
       "typeAlbum": "Album",
       "typeEp": "EP",
       "typeSingle": "Single",
+      "typeDemo": "Démo",
+      "typeLiveAlbum": "Album live",
+      "typeCompilation": "Compilation",
+      "typeSplit": "Split",
       "titlePlaceholder": "Titre de la sortie",
       "selectCoverArt": "Sélectionner la pochette",
       "streamingLinks": "Liens de streaming (facultatif)",
@@ -1005,6 +1021,7 @@
       "download": "Télécharger",
       "downloadAll": "Tout télécharger",
       "details": "Détails",
+      "lyrics": "Paroles",
       "detailsDialog": {
         "title": "Détails du fichier",
         "filename": "Nom du fichier",
