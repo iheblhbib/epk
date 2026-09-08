@@ -60,6 +60,28 @@ it('lets a workspace member download a PDF for a draft EPK', function () {
     expect(substr($response->getContent(), 0, 4))->toBe('%PDF');
 });
 
+it('exposes Content-Disposition to cross-origin JS, so the builder download button can read the real filename', function () {
+    // The builder's "Download PDF" button fetches through axios (cross-origin
+    // in both dev and prod -- frontend/backend are always different
+    // origins), then reads response.headers['content-disposition'] itself to
+    // name the saved file -- see frontend/src/lib/downloadFile.ts. Without
+    // this header on the CORS-exposed allowlist, the browser hides it from
+    // JS entirely and that code silently falls back to a generic filename,
+    // even though the server sent the real one all along.
+    config(['cors.allowed_origins' => ['http://localhost:5173']]);
+
+    $epk = makeEpkForPdf();
+    $owner = User::factory()->create();
+    $epk->workspace->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
+
+    $response = $this->actingAs($owner)
+        ->withHeaders(['Origin' => 'http://localhost:5173'])
+        ->get("/api/epks/{$epk->id}/pdf");
+
+    $response->assertOk();
+    expect($response->headers->get('Access-Control-Expose-Headers'))->toContain('Content-Disposition');
+});
+
 it('refuses a PDF download to someone outside the workspace', function () {
     $epk = makeEpkForPdf();
     $stranger = User::factory()->create();

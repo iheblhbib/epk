@@ -2,8 +2,8 @@
 
 namespace App\Http\Middleware;
 
-use App\Enums\SubscriptionStatus;
 use App\Models\Workspace;
+use App\Services\PlanLimits;
 use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -25,6 +25,8 @@ use Symfony\Component\HttpFoundation\Response;
  */
 class EnsureSubscriptionIsActive
 {
+    public function __construct(private readonly PlanLimits $planLimits) {}
+
     public function handle(Request $request, Closure $next): Response
     {
         $workspace = $this->resolveWorkspace($request);
@@ -33,12 +35,7 @@ class EnsureSubscriptionIsActive
             return $next($request);
         }
 
-        $subscription = $workspace->subscription;
-
-        $hasAccess = $subscription?->status === SubscriptionStatus::Active
-            || ($subscription?->status === SubscriptionStatus::Trialing && $subscription->trial_ends_at?->isFuture());
-
-        if (! $hasAccess) {
+        if (! $this->planLimits->hasActiveAccess($workspace)) {
             abort(402, __('Your trial has ended. Choose a plan to keep using this workspace.'));
         }
 

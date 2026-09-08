@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateArtistRequest;
 use App\Http\Resources\ArtistResource;
 use App\Models\Artist;
 use App\Models\Workspace;
+use App\Services\PlanLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Validation\ValidationException;
 
@@ -20,8 +21,14 @@ class ArtistController extends Controller
         return ArtistResource::collection($workspace->artists()->orderBy('name')->get())->response();
     }
 
-    public function store(StoreArtistRequest $request, Workspace $workspace): JsonResponse
+    public function store(StoreArtistRequest $request, Workspace $workspace, PlanLimits $planLimits): JsonResponse
     {
+        if (! $planLimits->canCreateArtist($workspace)) {
+            throw ValidationException::withMessages([
+                'name' => __('You\'ve reached the artist limit for your current plan. Upgrade to add more.'),
+            ]);
+        }
+
         $artist = $workspace->artists()->create($request->validated());
 
         return (new ArtistResource($artist))->response()->setStatusCode(201);

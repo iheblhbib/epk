@@ -25,14 +25,14 @@ enum SectionType: string
             self::Biography => 'Biography',
             self::Photos => 'Photos',
             self::Music => 'Music',
-            self::Releases => 'Releases',
+            self::Releases => 'Discography',
             self::Videos => 'Videos',
             self::Press => 'Press',
             self::Events => 'Events',
             self::SocialNetworks => 'Social Networks',
             self::Contact => 'Contact',
             self::Downloads => 'Downloads',
-            self::Credits => 'Credits',
+            self::Credits => 'Line-up',
             self::Custom => 'Custom Section',
         };
     }

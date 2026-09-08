@@ -1,6 +1,8 @@
 <?php
 
+use App\Enums\EpkStatus;
 use App\Enums\SectionType;
+use App\Enums\SubscriptionStatus;
 use App\Models\Artist;
 use App\Models\Epk;
 use App\Models\Media;
@@ -72,6 +74,44 @@ it('410s an expired link', function () {
 
 it('410s a revoked link', function () {
     $link = draftEpkWithLink(['revoked_at' => now()]);
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
+it('410s a private link when the epk is archived', function () {
+    $link = draftEpkWithLink();
+    $link->epk->update(['status' => EpkStatus::Archived]);
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
+it('still works for a draft or published epk -- only Archived disables the link', function () {
+    $draftLink = draftEpkWithLink();
+    $this->getJson("/api/private/{$draftLink->token}")->assertOk();
+
+    $publishedLink = draftEpkWithLink();
+    $publishedLink->epk->update(['status' => EpkStatus::Published]);
+    $this->getJson("/api/private/{$publishedLink->token}")->assertOk();
+});
+
+it('410s a private link when the workspace owner\'s account is suspended', function () {
+    $link = draftEpkWithLink();
+    // suspended_at is deliberately not mass-assignable (see AdminUserController,
+    // the only real code path that sets it) -- direct property assignment,
+    // same as it does.
+    $creator = $link->epk->workspace->creator;
+    $creator->suspended_at = now();
+    $creator->save();
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
+it('410s a private link when the workspace subscription is not active', function () {
+    $link = draftEpkWithLink();
+    $link->epk->workspace->subscription()->update([
+        'status' => SubscriptionStatus::Canceled,
+        'trial_ends_at' => null,
+    ]);
 
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
 });
@@ -149,6 +189,7 @@ it('downloads all uploaded music tracks as a single zip through the private link
 
     $response->assertOk();
     expect($response->headers->get('Content-Type'))->toBe('application/zip');
+    expect($response->headers->get('Content-Disposition'))->toContain('unreleased-epk-music.zip');
 
     $zipPath = storage_path('framework/testing/downloaded-private.zip');
     file_put_contents($zipPath, $response->streamedContent());
@@ -194,6 +235,7 @@ it('downloads all files in a downloads section as a single zip through the priva
 
     $response->assertOk();
     expect($response->headers->get('Content-Type'))->toBe('application/zip');
+    expect($response->headers->get('Content-Disposition'))->toContain('unreleased-epk-files.zip');
 
     $zipPath = storage_path('framework/testing/downloaded-files-private.zip');
     file_put_contents($zipPath, $response->streamedContent());

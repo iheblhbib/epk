@@ -37,9 +37,10 @@ return [
 
     'starter' => [
         'label' => 'Starter',
-        'max_epks' => 3,
+        'max_epks' => 1,
         'max_storage_bytes' => 150 * 1024 * 1024, // 150 MB
         'max_team_members' => 2,
+        'max_artists' => 1,
         'custom_themes' => false,
         'private_links' => false,
         'white_label' => false,
@@ -50,9 +51,10 @@ return [
 
     'pro' => [
         'label' => 'Pro',
-        'max_epks' => 10,
+        'max_epks' => 5,
         'max_storage_bytes' => 2 * 1024 * 1024 * 1024, // 2 GB
         'max_team_members' => 10,
+        'max_artists' => 5,
         'custom_themes' => true,
         'private_links' => true,
         'white_label' => false,
@@ -66,6 +68,7 @@ return [
         'max_epks' => null, // unlimited
         'max_storage_bytes' => 20 * 1024 * 1024 * 1024, // 20 GB
         'max_team_members' => null, // unlimited
+        'max_artists' => null, // unlimited
         'custom_themes' => true,
         'private_links' => true,
         'white_label' => true,

@@ -62,7 +62,14 @@ class PublicSectionConfigResolver
                 'html' => $config['html'] ?? '',
             ],
             SectionType::SocialNetworks => [
-                'links' => $config['links'] ?? [],
+                'links' => collect($config['links'] ?? [])
+                    ->map(fn ($link) => [
+                        'platform' => $link['platform'] ?? '',
+                        'url' => $link['url'] ?? '',
+                        'label' => $link['label'] ?? '',
+                        'icon_url' => $this->urlFor($link['icon_media_id'] ?? null),
+                    ])
+                    ->all(),
             ],
             SectionType::Contact => [
                 'booking_email' => $config['booking_email'] ?? '',
@@ -297,6 +304,7 @@ class PublicSectionConfigResolver
                             : route('public.epk.download', ['slug' => $section->epk->slug, 'media' => $media->id]),
                         'filename' => $media->original_filename,
                         'size' => $media->size,
+                        'lyrics' => $track['lyrics'] ?? '',
                     ];
                 }
 
@@ -305,7 +313,12 @@ class PublicSectionConfigResolver
                     return null;
                 }
 
-                return ['title' => $track['title'] ?? '', 'provider' => $provider, 'embed_url' => $embedUrl];
+                return [
+                    'title' => $track['title'] ?? '',
+                    'provider' => $provider,
+                    'embed_url' => $embedUrl,
+                    'lyrics' => $track['lyrics'] ?? '',
+                ];
             })
             ->filter()
             ->values()

@@ -13,6 +13,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PublicEpkController extends Controller
@@ -107,7 +108,7 @@ class PublicEpkController extends Controller
 
         $mediaItems = Media::whereIn('id', $mediaIds)->get();
 
-        return $this->zipBuilder->stream($mediaItems, "{$slug}-music.zip");
+        return $this->zipBuilder->stream($mediaItems, Str::slug($epk->title).'-music.zip');
     }
 
     /**
@@ -128,7 +129,7 @@ class PublicEpkController extends Controller
 
         $mediaItems = Media::whereIn('id', $mediaIds)->get();
 
-        return $this->zipBuilder->stream($mediaItems, "{$slug}-files.zip");
+        return $this->zipBuilder->stream($mediaItems, Str::slug($epk->title).'-files.zip');
     }
 
     /**

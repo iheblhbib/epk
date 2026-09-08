@@ -30,6 +30,7 @@ class BillingController extends Controller
                 'usage' => [
                     'epks' => ['used' => $workspace->epks()->count(), 'limit' => $planLimits->maxEpks($workspace)],
                     'team_members' => ['used' => $workspace->members()->count(), 'limit' => $planLimits->maxTeamMembers($workspace)],
+                    'artists' => ['used' => $workspace->artists()->count(), 'limit' => $planLimits->maxArtists($workspace)],
                     'storage_bytes' => [
                         'used' => (int) $workspace->media()->sum('size'),
                         'limit' => $planLimits->maxStorageBytes($workspace),

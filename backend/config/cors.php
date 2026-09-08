@@ -25,7 +25,21 @@ return [
 
     'allowed_headers' => ['*'],
 
-    'exposed_headers' => [],
+    // Content-Disposition isn't on the browser's default cross-origin-visible
+    // header allowlist -- without exposing it explicitly, JS reading
+    // response.headers['content-disposition'] (e.g. the builder's "Download
+    // PDF" button, which fetches through axios rather than a plain <a href>
+    // so Sanctum's cookie auth actually attaches) always comes back
+    // undefined, silently falling back to a generic filename instead of the
+    // real one the backend already sends.
+    // Content-Disposition isn't on the browser's default cross-origin-visible
+    // header allowlist -- without exposing it explicitly, JS reading
+    // response.headers['content-disposition'] (e.g. the builder's "Download
+    // PDF" button, which fetches through axios rather than a plain <a href>
+    // so Sanctum's cookie auth actually attaches) always comes back
+    // undefined, silently falling back to a generic filename instead of the
+    // real one the backend already sends.
+    'exposed_headers' => ['Content-Disposition'],
 
     'max_age' => 0,
 

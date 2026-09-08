@@ -239,9 +239,9 @@ it('streams a music track file with a Content-Disposition header, not just downl
     expect($response->headers->get('Content-Disposition'))->toContain('live-take.mp3');
 });
 
-it('downloads all uploaded music tracks as a single zip', function () {
+it('downloads all uploaded music tracks as a single zip named after the EPK, not the slug', function () {
     Storage::fake('public');
-    $epk = makePublishedEpk();
+    $epk = makePublishedEpk(['title' => 'Nova Ray EPK']);
     $trackOne = Media::factory()->create([
         'workspace_id' => $epk->workspace_id, 'disk' => 'public',
         'path' => 'workspaces/1/media/audio/one.mp3', 'original_filename' => 'one.mp3',
@@ -269,6 +269,7 @@ it('downloads all uploaded music tracks as a single zip', function () {
     $response->assertOk();
     expect($response->headers->get('Content-Type'))->toBe('application/zip');
     expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+    expect($response->headers->get('Content-Disposition'))->toContain('nova-ray-epk-music.zip');
 
     $zipPath = storage_path('framework/testing/downloaded.zip');
     file_put_contents($zipPath, $response->streamedContent());
@@ -324,9 +325,9 @@ it('404s the download-all endpoint when the epk has no uploaded music tracks', f
     $this->get(route('public.epk.music.download-all', ['slug' => $epk->slug]))->assertNotFound();
 });
 
-it('downloads all files in a downloads section as a single zip', function () {
+it('downloads all files in a downloads section as a single zip named after the EPK, not the slug', function () {
     Storage::fake('public');
-    $epk = makePublishedEpk();
+    $epk = makePublishedEpk(['title' => 'Nova Ray EPK']);
     $fileOne = Media::factory()->create([
         'workspace_id' => $epk->workspace_id, 'disk' => 'public',
         'path' => 'workspaces/1/media/document/one.pdf', 'original_filename' => 'one.pdf',
@@ -350,6 +351,7 @@ it('downloads all files in a downloads section as a single zip', function () {
     $response->assertOk();
     expect($response->headers->get('Content-Type'))->toBe('application/zip');
     expect($response->headers->get('Content-Disposition'))->toContain('attachment');
+    expect($response->headers->get('Content-Disposition'))->toContain('nova-ray-epk-files.zip');
 
     $zipPath = storage_path('framework/testing/downloaded-files.zip');
     file_put_contents($zipPath, $response->streamedContent());
@@ -450,6 +452,31 @@ it('resolves a photo gallery, dropping entries whose media no longer exists', fu
     expect($items[0]['caption'])->toBe('On stage');
 });
 
+it('resolves a custom social link\'s uploaded icon to a url, alongside a fixed-platform link', function () {
+    $epk = makePublishedEpk();
+    $icon = Media::factory()->image()->create(['workspace_id' => $epk->workspace_id]);
+
+    $epk->sections()->create([
+        'type' => SectionType::SocialNetworks,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['links' => [
+            ['platform' => 'instagram', 'url' => 'https://instagram.com/novaray'],
+            ['platform' => 'custom', 'url' => 'https://linktr.ee/novaray', 'label' => 'Linktree', 'icon_media_id' => $icon->id],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $links = $response->json('data.sections.0.config.links');
+    expect($links)->toHaveCount(2);
+    expect($links[0])->toMatchArray(['platform' => 'instagram', 'url' => 'https://instagram.com/novaray', 'label' => '']);
+    expect($links[0]['icon_url'])->toBeNull();
+    expect($links[1])->toMatchArray(['platform' => 'custom', 'url' => 'https://linktr.ee/novaray', 'label' => 'Linktree']);
+    expect($links[1]['icon_url'])->toBe($icon->url());
+});
+
 it('resolves music tracks to audio urls, falling back to the filename when untitled', function () {
     $epk = makePublishedEpk();
     $audio = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'live-take.mp3']);
@@ -466,6 +493,27 @@ it('resolves music tracks to audio urls, falling back to the filename when untit
     $response->assertOk();
     $response->assertJsonPath('data.sections.0.config.tracks.0.title', 'live-take.mp3');
     $response->assertJsonPath('data.sections.0.config.tracks.0.audio_url', $audio->url());
+});
+
+it('resolves optional lyrics on a music track, for both an uploaded and an embedded track', function () {
+    $epk = makePublishedEpk();
+    $audio = Media::factory()->create(['workspace_id' => $epk->workspace_id, 'original_filename' => 'live-take.mp3']);
+
+    $epk->sections()->create([
+        'type' => SectionType::Music,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['tracks' => [
+            ['title' => 'Live Take', 'provider' => 'upload', 'audio_media_id' => $audio->id, 'lyrics' => "Verse one\nVerse two"],
+            ['title' => 'On Spotify', 'provider' => 'spotify', 'url' => 'https://open.spotify.com/track/4uLU6hMCjMI75M1A2tKUQC', 'lyrics' => 'Embedded lyrics'],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.sections.0.config.tracks.0.lyrics', "Verse one\nVerse two");
+    $response->assertJsonPath('data.sections.0.config.tracks.1.lyrics', 'Embedded lyrics');
 });
 
 it('exposes a download url, filename, and size for uploaded music tracks, routed through the download endpoint', function () {

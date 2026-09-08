@@ -21,24 +21,47 @@ function billingWorkspaceWithOwner(SubscriptionPlan $plan = SubscriptionPlan::St
 }
 
 it('exposes starter limits and two Stripe price ids per plan from config', function () {
-    expect(config('plans.starter.max_epks'))->toBe(3);
+    expect(config('plans.starter.max_epks'))->toBe(1);
+    expect(config('plans.starter.max_artists'))->toBe(1);
     expect(config('plans.starter.max_storage_bytes'))->toBe(150 * 1024 * 1024);
+    expect(config('plans.pro.max_epks'))->toBe(5);
+    expect(config('plans.pro.max_artists'))->toBe(5);
     expect(config('plans.pro.max_storage_bytes'))->toBe(2 * 1024 * 1024 * 1024);
+    expect(config('plans.business.max_epks'))->toBeNull();
+    expect(config('plans.business.max_artists'))->toBeNull();
     expect(config('plans.business.max_storage_bytes'))->toBe(20 * 1024 * 1024 * 1024);
     expect(config('plans.starter'))->toHaveKeys(['stripe_price_id_monthly', 'stripe_price_id_yearly']);
     expect(config('plans'))->not->toHaveKey('free');
 });
 
-it('blocks creating a fourth epk on the starter plan (limit is 3)', function () {
+it('blocks creating a second epk on the starter plan (limit is 1)', function () {
     [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    Epk::factory()->count(3)->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
+    Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id]);
 
     $this->actingAs($owner)->postJson('/api/epks', [
         'workspace_id' => $workspace->id,
         'artist_id' => $artist->id,
         'title' => 'One EPK Too Many',
     ])->assertUnprocessable();
+});
+
+it('blocks creating a second artist on the starter plan (limit is 1)', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Starter);
+    Artist::factory()->create(['workspace_id' => $workspace->id]);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/artists", [
+        'name' => 'One Artist Too Many',
+    ])->assertUnprocessable();
+});
+
+it('allows a second artist once the workspace is on Pro', function () {
+    [$workspace, $owner] = billingWorkspaceWithOwner(SubscriptionPlan::Pro);
+    Artist::factory()->create(['workspace_id' => $workspace->id]);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/artists", [
+        'name' => 'Second Artist',
+    ])->assertCreated();
 });
 
 it('allows a fourth epk once the workspace is on Pro', function () {
@@ -147,7 +170,8 @@ it('returns plan, usage, and the plan comparison table from the billing endpoint
 
     $response->assertOk()
         ->assertJsonPath('data.plan', SubscriptionPlan::Starter->value)
-        ->assertJsonPath('data.usage.epks.limit', 3)
+        ->assertJsonPath('data.usage.epks.limit', 1)
+        ->assertJsonPath('data.usage.artists.limit', 1)
         ->assertJsonStructure(['data' => ['plan', 'usage', 'plans' => ['starter', 'pro', 'business']]]);
 });
 

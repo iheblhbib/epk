@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use App\Models\Workspace;
 
 /**
@@ -43,6 +44,11 @@ class PlanLimits
         return $this->limits($workspace)['max_team_members'];
     }
 
+    public function maxArtists(Workspace $workspace): ?int
+    {
+        return $this->limits($workspace)['max_artists'];
+    }
+
     public function canUseCustomThemes(Workspace $workspace): bool
     {
         return (bool) $this->limits($workspace)['custom_themes'];
@@ -70,6 +76,28 @@ class PlanLimits
         $max = $this->maxTeamMembers($workspace);
 
         return $max === null || $workspace->members()->count() < $max;
+    }
+
+    public function canCreateArtist(Workspace $workspace): bool
+    {
+        $max = $this->maxArtists($workspace);
+
+        return $max === null || $workspace->artists()->count() < $max;
+    }
+
+    /**
+     * Same "active or still-trialing" check EnsureSubscriptionIsActive
+     * enforces for every authenticated, workspace-scoped route -- also used
+     * by the private-link gate (PrivatePageController::findActiveLink()),
+     * which resolves its own workspace manually since a `/private/{token}`
+     * request isn't authenticated and doesn't route-bind a Workspace.
+     */
+    public function hasActiveAccess(Workspace $workspace): bool
+    {
+        $subscription = $workspace->subscription;
+
+        return $subscription?->status === SubscriptionStatus::Active
+            || ($subscription?->status === SubscriptionStatus::Trialing && $subscription->trial_ends_at?->isFuture());
     }
 
     public function remainingStorageBytes(Workspace $workspace): ?int

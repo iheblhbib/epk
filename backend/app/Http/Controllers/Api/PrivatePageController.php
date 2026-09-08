@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\AnalyticsEventType;
+use App\Enums\EpkStatus;
 use App\Enums\SectionType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAnalyticsEventRequest;
@@ -13,11 +14,13 @@ use App\Models\Media;
 use App\Models\PrivateLink;
 use App\Services\AnalyticsEventLogger;
 use App\Services\MusicZipBuilder;
+use App\Services\PlanLimits;
 use App\Services\PublicSectionConfigResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
@@ -34,6 +37,7 @@ class PrivatePageController extends Controller
         private readonly PublicSectionConfigResolver $resolver,
         private readonly AnalyticsEventLogger $logger,
         private readonly MusicZipBuilder $zipBuilder,
+        private readonly PlanLimits $planLimits,
     ) {}
 
     public function show(Request $request, string $token): JsonResponse
@@ -108,7 +112,7 @@ class PrivatePageController extends Controller
 
         $mediaItems = Media::whereIn('id', $mediaIds)->get();
 
-        return $this->zipBuilder->stream($mediaItems, 'music.zip');
+        return $this->zipBuilder->stream($mediaItems, Str::slug($link->epk->title).'-music.zip');
     }
 
     public function downloadAllFiles(Request $request, string $token): StreamedResponse
@@ -126,7 +130,7 @@ class PrivatePageController extends Controller
 
         $mediaItems = Media::whereIn('id', $mediaIds)->get();
 
-        return $this->zipBuilder->stream($mediaItems, 'files.zip');
+        return $this->zipBuilder->stream($mediaItems, Str::slug($link->epk->title).'-files.zip');
     }
 
     /**
@@ -160,11 +164,26 @@ class PrivatePageController extends Controller
      * whoever received it, so saying *why* access ended isn't a meaningful
      * leak and is far more useful to a confused recipient.
      */
+    /**
+     * A private link is meant to work even for a draft EPK -- that's the
+     * whole point (see this class's docblock). But three things make it a
+     * dead link the same as revoked/expired: the EPK being archived (it's
+     * gone, not just unpublished), the workspace owner's account being
+     * suspended, or the workspace's subscription no longer being active
+     * (trial expired, canceled, etc.) -- none of which the token itself
+     * encodes, so they're checked here on every use rather than baked into
+     * the link at creation time.
+     */
     private function findActiveLink(string $token): PrivateLink
     {
-        $link = PrivateLink::where('token', $token)->firstOrFail();
+        $link = PrivateLink::where('token', $token)
+            ->with(['epk.workspace.creator', 'epk.workspace.subscription'])
+            ->firstOrFail();
 
         abort_if($link->isRevoked() || $link->isExpired(), 410, __('This link is no longer available.'));
+        abort_if($link->epk->status === EpkStatus::Archived, 410, __('This link is no longer available.'));
+        abort_if($link->epk->workspace->creator?->suspended_at !== null, 410, __('This link is no longer available.'));
+        abort_if(! $this->planLimits->hasActiveAccess($link->epk->workspace), 410, __('This link is no longer available.'));
 
         return $link;
     }
