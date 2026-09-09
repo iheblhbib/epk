@@ -190,8 +190,8 @@
                     <table class="layout">
                         @foreach($config['items'] as $item)
                             <tr class="credit-row">
-                                <td class="credit-role">{{ $item['role'] ?? '' }}</td>
                                 <td>{{ $item['name'] ?? '' }}</td>
+                                <td class="credit-role">{{ $item['role'] ?? '' }}</td>
                             </tr>
                         @endforeach
                     </table>

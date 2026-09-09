@@ -195,6 +195,25 @@ it('keeps the music download-all link recognizable as an external URL to mPDF, e
     expect($renderedHref)->toContain('.');
 });
 
+it('renders the credits/line-up name before the role, matching the builder and public page', function () {
+    $epk = Epk::factory()->published()->make(['title' => 'Nova Ray EPK']);
+    $artist = Artist::factory()->make(['name' => 'Nova Ray']);
+
+    $html = view('pdf.epk', [
+        'epk' => $epk,
+        'artist' => $artist,
+        'sections' => collect([
+            [
+                'type' => SectionType::Credits,
+                'title' => 'Line-up',
+                'config' => ['items' => [['name' => 'Ada Lovelace', 'role' => 'Vocals']]],
+            ],
+        ]),
+    ])->render();
+
+    expect(strpos($html, 'Ada Lovelace'))->toBeLessThan(strpos($html, 'Vocals'));
+});
+
 it('embeds a hero image as a base64 data URI instead of a self-referential HTTP url', function () {
     // mPDF fetches any http(s) <img src> over a real HTTP connection, even
     // one pointing back at this same server -- on a single-worker dev server
