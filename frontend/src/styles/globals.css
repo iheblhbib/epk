@@ -60,9 +60,18 @@
 
 /*
  * KORAXX design tokens.
- * Neutral scale is warm (not default Tailwind gray), accent is an
- * indigo-violet distinct from generic "SaaS blue". Headings use
- * Space Grotesk for an editorial, premium feel; body copy uses Inter.
+ * Neutral scale is warm (not default Tailwind gray), accent is the exact
+ * red from the KORAXX ring mark (#cc1417), sampled from the logo itself
+ * rather than picked separately -- so the app chrome and the brand mark
+ * are provably the same red, not just a close match. Headings use Space
+ * Grotesk for an editorial, premium feel; body copy uses Inter.
+ *
+ * --destructive is intentionally left as its own rose/crimson rather than
+ * also becoming this red: they never render as adjacent buttons (see
+ * ConfirmDialog, which always pairs `destructive` with a neutral "outline"
+ * cancel, never with a `default`-variant primary button), but keeping a
+ * visibly different hue for "delete this" avoids the two ever reading as
+ * the same action at a glance.
  */
 :root {
     --background: #faf9f6;
@@ -71,14 +80,14 @@
     --card-foreground: #17151f;
     --popover: #ffffff;
     --popover-foreground: #17151f;
-    --primary: #6d5ef9;
+    --primary: #cc1417;
     --primary-foreground: #ffffff;
     --secondary: #f1efea;
     --secondary-foreground: #17151f;
     --muted: #f1efea;
     --muted-foreground: #6b6875;
-    --accent: #ededfe;
-    --accent-foreground: #4b3fd1;
+    --accent: #fbefef;
+    --accent-foreground: #9e0f12;
     --destructive: #e11d48;
     --destructive-foreground: #ffffff;
     --success: #16a34a;
@@ -87,8 +96,8 @@
     --warning-foreground: #ffffff;
     --border: #e7e4dd;
     --input: #e7e4dd;
-    --ring: #6d5ef9;
-    --chart-1: #6d5ef9;
+    --ring: #cc1417;
+    --chart-1: #cc1417;
     --chart-2: #3b82f6;
     --chart-3: #16a34a;
     --chart-4: #d97706;
@@ -96,12 +105,12 @@
     --radius: 0.625rem;
     --sidebar: #f5f3ee;
     --sidebar-foreground: #17151f;
-    --sidebar-primary: #6d5ef9;
+    --sidebar-primary: #cc1417;
     --sidebar-primary-foreground: #ffffff;
-    --sidebar-accent: #ededfe;
-    --sidebar-accent-foreground: #4b3fd1;
+    --sidebar-accent: #fbefef;
+    --sidebar-accent-foreground: #9e0f12;
     --sidebar-border: #e7e4dd;
-    --sidebar-ring: #6d5ef9;
+    --sidebar-ring: #cc1417;
 }
 
 .dark {
@@ -111,14 +120,14 @@
     --card-foreground: #f4f3f8;
     --popover: #17151f;
     --popover-foreground: #f4f3f8;
-    --primary: #8b7fff;
+    --primary: #ee3a3d;
     --primary-foreground: #0e0d13;
     --secondary: #1f1c29;
     --secondary-foreground: #f4f3f8;
     --muted: #1f1c29;
     --muted-foreground: #9b96a8;
-    --accent: #241f35;
-    --accent-foreground: #c4bbff;
+    --accent: #4a1c1d;
+    --accent-foreground: #f1b1b2;
     --destructive: #fb7185;
     --destructive-foreground: #17151f;
     --success: #4ade80;
@@ -127,20 +136,20 @@
     --warning-foreground: #0e0d13;
     --border: color-mix(in oklab, white 10%, transparent);
     --input: color-mix(in oklab, white 15%, transparent);
-    --ring: #8b7fff;
-    --chart-1: #8b7fff;
+    --ring: #ee3a3d;
+    --chart-1: #ee3a3d;
     --chart-2: #60a5fa;
     --chart-3: #4ade80;
     --chart-4: #fbbf24;
     --chart-5: #fb7185;
     --sidebar: #131019;
     --sidebar-foreground: #f4f3f8;
-    --sidebar-primary: #8b7fff;
+    --sidebar-primary: #ee3a3d;
     --sidebar-primary-foreground: #0e0d13;
-    --sidebar-accent: #241f35;
-    --sidebar-accent-foreground: #c4bbff;
+    --sidebar-accent: #4a1c1d;
+    --sidebar-accent-foreground: #f1b1b2;
     --sidebar-border: color-mix(in oklab, white 10%, transparent);
-    --sidebar-ring: #8b7fff;
+    --sidebar-ring: #ee3a3d;
 }
 
 @layer base {

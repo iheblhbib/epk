@@ -37,8 +37,8 @@ export function PageViewsChart({ points }: { points: AnalyticsDailyPoint[] }) {
       {
         label: t('analytics.pageViews'),
         data: points.map((point) => point.count),
-        borderColor: '#6d5ef9',
-        backgroundColor: 'rgba(109, 94, 249, 0.12)',
+        borderColor: '#cc1417',
+        backgroundColor: 'rgba(204, 20, 23, 0.12)',
         fill: true,
         tension: 0.3,
         pointRadius: 0,
