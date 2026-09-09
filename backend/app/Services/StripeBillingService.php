@@ -46,10 +46,17 @@ class StripeBillingService
 
         $existingCustomerId = $workspace->subscription?->stripe_customer_id;
 
+        // Stripe's Checkout Session API rejects a request that specifies
+        // both `customer` and `customer_email` -- not just both non-empty,
+        // but both *present* at all, even with one set to null/omitted via
+        // a falsy PHP value. Only one of the two keys can appear.
+        $customerParam = $existingCustomerId
+            ? ['customer' => $existingCustomerId]
+            : ['customer_email' => $workspace->creator?->email];
+
         $session = $this->client->checkout->sessions->create([
             'mode' => 'subscription',
-            'customer' => $existingCustomerId,
-            'customer_email' => $existingCustomerId ? null : $workspace->creator?->email,
+            ...$customerParam,
             // Belt-and-suspenders workspace lookup on the webhook side: this
             // lands on the Checkout Session itself, while subscription_data
             // below copies the same metadata onto the Subscription object
