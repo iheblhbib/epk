@@ -69,11 +69,9 @@ export function SidebarNavContent({ onNavigate }: { onNavigate?: () => void }) {
 
   return (
     <>
-      <div className="flex items-center gap-2 px-2 pb-6">
-        <div className="flex size-7 items-center justify-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
-          K
-        </div>
-        <span className="font-heading text-sm font-semibold text-sidebar-foreground">KORAXX</span>
+      <div className="flex items-center px-2 pb-6">
+        <img src="/brand/wordmark-light.png" alt="KORAXX" className="h-5 w-auto dark:hidden" />
+        <img src="/brand/wordmark-dark.png" alt="KORAXX" className="hidden h-5 w-auto dark:block" />
       </div>
 
       <nav className="flex flex-1 flex-col gap-1">

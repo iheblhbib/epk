@@ -28,11 +28,9 @@ export function AuthCard({
 
       <div className="w-full max-w-sm space-y-8">
         <div className="flex flex-col items-center gap-4 text-center">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex size-8 items-center justify-center rounded-md bg-primary font-heading text-base font-semibold text-primary-foreground">
-              K
-            </div>
-            <span className="font-heading text-lg font-semibold text-foreground">KORAXX</span>
+          <Link to="/">
+            <img src="/brand/lockup-light.png" alt="KORAXX" className="h-12 w-auto dark:hidden" />
+            <img src="/brand/lockup-dark.png" alt="KORAXX" className="hidden h-12 w-auto dark:block" />
           </Link>
           <div className="space-y-1">
             <h1 className="font-heading text-xl font-semibold text-foreground">{title}</h1>

@@ -20,9 +20,7 @@ export function AdminLayout() {
     <div className="flex h-screen bg-background">
       <aside className="hidden w-60 shrink-0 flex-col border-e border-sidebar-border bg-sidebar px-3 py-4 md:flex">
         <div className="flex items-center gap-2 px-2 pb-6">
-          <div className="flex size-7 items-center justify-center rounded-md bg-primary font-heading text-sm font-semibold text-primary-foreground">
-            K
-          </div>
+          <img src="/brand/mark.png" alt="" className="size-6" />
           <span className="font-heading text-sm font-semibold text-sidebar-foreground">{t('nav.admin')}</span>
         </div>
 
