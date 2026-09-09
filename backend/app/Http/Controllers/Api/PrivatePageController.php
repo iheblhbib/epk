@@ -28,8 +28,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
  * The unauthenticated side of a private share link — everything a visitor
  * who holds a `/private/{token}` link can do. Reuses PublicEpkResource for
  * the actual EPK payload (same shape the public page gets) since a private
- * link is really "the public page, gated by token + optional password,
- * without requiring the EPK to be published".
+ * link is really "the public page, gated by token + optional password" —
+ * it still requires the EPK to be Published, same as the public page does;
+ * the difference is only the token + optional password gate on top.
  */
 class PrivatePageController extends Controller
 {
@@ -165,18 +166,18 @@ class PrivatePageController extends Controller
      * leak and is far more useful to a confused recipient.
      */
     /**
-     * A private link is meant to work even for a draft EPK -- that's the
-     * whole point (see this class's docblock). But a few things make it a
-     * dead link the same as revoked/expired: the EPK being deleted (the
+     * A private link needs its EPK Published, exactly like the public page
+     * does -- unpublishing (or never publishing) an EPK disables its private
+     * link the same way it disables the public one. A few other things make
+     * it a dead link the same as revoked/expired: the EPK being deleted (the
      * dashboard's only "remove this EPK" action -- it soft-deletes, which
      * excludes it from the default `epk()` relation query entirely, so it's
      * eager-loaded with `withTrashed()` here specifically to still have it
-     * to check) or archived (no UI path sets this today, but the status
-     * exists and would mean the same thing if something ever does), the
-     * workspace owner's account being suspended, or the workspace's
-     * subscription no longer being active (trial expired, canceled, etc.)
-     * -- none of which the token itself encodes, so they're checked here on
-     * every use rather than baked into the link at creation time.
+     * to check), the workspace owner's account being suspended, or the
+     * workspace's subscription no longer being active (trial expired,
+     * canceled, etc.) -- none of which the token itself encodes, so they're
+     * checked here on every use rather than baked into the link at creation
+     * time.
      */
     private function findActiveLink(string $token): PrivateLink
     {
@@ -189,7 +190,7 @@ class PrivatePageController extends Controller
             ->firstOrFail();
 
         abort_if($link->isRevoked() || $link->isExpired(), 410, __('This link is no longer available.'));
-        abort_if($link->epk->trashed() || $link->epk->status === EpkStatus::Archived, 410, __('This link is no longer available.'));
+        abort_if($link->epk->trashed() || $link->epk->status !== EpkStatus::Published, 410, __('This link is no longer available.'));
         abort_if($link->epk->workspace->creator?->suspended_at !== null, 410, __('This link is no longer available.'));
         abort_if(! $this->planLimits->hasActiveAccess($link->epk->workspace), 410, __('This link is no longer available.'));
 

@@ -10,17 +10,28 @@ use App\Models\PrivateLink;
 use App\Models\Workspace;
 use Illuminate\Support\Facades\Storage;
 
-function draftEpkWithLink(array $linkAttributes = []): PrivateLink
+/**
+ * A private link only works for a Published EPK -- same requirement as the
+ * public page. epkWithLink() defaults to Published so every test below is
+ * exercising the "otherwise-active" link; tests for the unpublished cases
+ * override status explicitly.
+ */
+function epkWithLink(array $epkAttributes = [], array $linkAttributes = []): PrivateLink
 {
     $workspace = Workspace::factory()->create();
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id]);
-    $epk = Epk::factory()->create(['workspace_id' => $workspace->id, 'artist_id' => $artist->id, 'title' => 'Unreleased EPK']);
+    $epk = Epk::factory()->create(array_merge([
+        'workspace_id' => $workspace->id,
+        'artist_id' => $artist->id,
+        'title' => 'Unreleased EPK',
+        'status' => EpkStatus::Published,
+    ], $epkAttributes));
 
     return PrivateLink::factory()->for($epk)->create($linkAttributes);
 }
 
-it('serves a draft epk through a private link with no password', function () {
-    $link = draftEpkWithLink();
+it('serves a published epk through a private link with no password', function () {
+    $link = epkWithLink();
 
     $response = $this->getJson("/api/private/{$link->token}");
 
@@ -29,7 +40,7 @@ it('serves a draft epk through a private link with no password', function () {
 });
 
 it('increments the view counter on each successful view', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     expect($link->view_count)->toBe(0);
 
     $this->getJson("/api/private/{$link->token}")->assertOk();
@@ -40,7 +51,7 @@ it('increments the view counter on each successful view', function () {
 });
 
 it('requires a password when the link has one, and rejects the wrong one', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->setPassword('correct-horse');
     $link->save();
 
@@ -54,7 +65,7 @@ it('requires a password when the link has one, and rejects the wrong one', funct
 });
 
 it('grants access after the correct password, and remembers it for the session', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->setPassword('correct-horse');
     $link->save();
 
@@ -67,19 +78,33 @@ it('grants access after the correct password, and remembers it for the session',
 });
 
 it('410s an expired link', function () {
-    $link = draftEpkWithLink(['expires_at' => now()->subHour()]);
+    $link = epkWithLink([], ['expires_at' => now()->subHour()]);
 
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
 });
 
 it('410s a revoked link', function () {
-    $link = draftEpkWithLink(['revoked_at' => now()]);
+    $link = epkWithLink([], ['revoked_at' => now()]);
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
+it('410s a private link when the epk is a draft (not yet published)', function () {
+    $link = epkWithLink(['status' => EpkStatus::Draft]);
+
+    $this->getJson("/api/private/{$link->token}")->assertStatus(410);
+});
+
+it('410s a private link when the epk is unpublished after having been published', function () {
+    $link = epkWithLink();
+
+    $link->epk->update(['status' => EpkStatus::Draft]);
 
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
 });
 
 it('410s a private link when the epk is archived', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->epk->update(['status' => EpkStatus::Archived]);
 
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
@@ -92,23 +117,14 @@ it('410s a private link when the epk has been deleted', function () {
     // which excludes it from the default `epk()` relation query entirely,
     // so this has to be checked explicitly rather than falling out of the
     // Archived-status check above.
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->epk->delete();
 
     $this->getJson("/api/private/{$link->token}")->assertStatus(410);
 });
 
-it('still works for a draft or published epk -- only Archived disables the link', function () {
-    $draftLink = draftEpkWithLink();
-    $this->getJson("/api/private/{$draftLink->token}")->assertOk();
-
-    $publishedLink = draftEpkWithLink();
-    $publishedLink->epk->update(['status' => EpkStatus::Published]);
-    $this->getJson("/api/private/{$publishedLink->token}")->assertOk();
-});
-
 it('410s a private link when the workspace owner\'s account is suspended', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     // suspended_at is deliberately not mass-assignable (see AdminUserController,
     // the only real code path that sets it) -- direct property assignment,
     // same as it does.
@@ -120,7 +136,7 @@ it('410s a private link when the workspace owner\'s account is suspended', funct
 });
 
 it('410s a private link when the workspace subscription is not active', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->epk->workspace->subscription()->update([
         'status' => SubscriptionStatus::Canceled,
         'trial_ends_at' => null,
@@ -135,7 +151,7 @@ it('404s an unknown token', function () {
 
 it('streams a downloads-section file through the private link', function () {
     Storage::fake('public');
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $media = Media::factory()->create([
         'workspace_id' => $link->epk->workspace_id,
         'disk' => 'public',
@@ -156,7 +172,7 @@ it('streams a downloads-section file through the private link', function () {
 
 it('streams a music track file through the private link, not just downloads-section files', function () {
     Storage::fake('public');
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $media = Media::factory()->create([
         'workspace_id' => $link->epk->workspace_id,
         'disk' => 'public',
@@ -178,7 +194,7 @@ it('streams a music track file through the private link, not just downloads-sect
 
 it('downloads all uploaded music tracks as a single zip through the private link', function () {
     Storage::fake('public');
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $trackOne = Media::factory()->create([
         'workspace_id' => $link->epk->workspace_id, 'disk' => 'public',
         'path' => 'workspaces/1/media/audio/one.mp3', 'original_filename' => 'one.mp3',
@@ -214,7 +230,7 @@ it('downloads all uploaded music tracks as a single zip through the private link
 });
 
 it('requires the password before allowing the download-all zip on a password-protected link', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->setPassword('correct-horse');
     $link->save();
     $link->epk->sections()->create([
@@ -227,7 +243,7 @@ it('requires the password before allowing the download-all zip on a password-pro
 
 it('downloads all files in a downloads section as a single zip through the private link', function () {
     Storage::fake('public');
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $fileOne = Media::factory()->create([
         'workspace_id' => $link->epk->workspace_id, 'disk' => 'public',
         'path' => 'workspaces/1/media/document/one.pdf', 'original_filename' => 'one.pdf',
@@ -260,7 +276,7 @@ it('downloads all files in a downloads section as a single zip through the priva
 });
 
 it('requires the password before allowing the downloads-section download-all zip on a password-protected link', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
     $link->setPassword('correct-horse');
     $link->save();
     $link->epk->sections()->create([
@@ -272,7 +288,7 @@ it('requires the password before allowing the downloads-section download-all zip
 });
 
 it('records an analytics event scoped to the private link', function () {
-    $link = draftEpkWithLink();
+    $link = epkWithLink();
 
     $this->postJson("/api/private/{$link->token}/events", ['type' => 'page_view'])->assertCreated();
 
@@ -283,8 +299,8 @@ it('records an analytics event scoped to the private link', function () {
     ]);
 });
 
-it('does not resolve the public download route for a non-published epk', function () {
-    $link = draftEpkWithLink();
+it('resolves download urls through the private route, not the public one', function () {
+    $link = epkWithLink();
     $media = Media::factory()->create(['workspace_id' => $link->epk->workspace_id]);
     $link->epk->sections()->create([
         'type' => SectionType::Downloads, 'is_enabled' => true, 'position' => 0,
@@ -293,8 +309,6 @@ it('does not resolve the public download route for a non-published epk', functio
 
     $response = $this->getJson("/api/private/{$link->token}");
 
-    // The resolved download URL must be the private route, not the public
-    // one (which would 404 for this draft epk regardless of link validity).
     $url = $response->json('data.sections.0.config.files.0.url');
     expect($url)->toContain("/private/{$link->token}/downloads/{$media->id}");
 });
