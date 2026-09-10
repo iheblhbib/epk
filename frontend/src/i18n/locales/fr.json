@@ -871,7 +871,7 @@
       "untitledTrack": "Morceau sans titre",
       "noPress": "Aucune couverture presse pour le moment.",
       "read": "Lire",
-      "comingSoon": "Le contenu {{label}} arrive dans une phase ultérieure.",
+      "noEvents": "Aucun événement pour le moment.",
       "noSectionsEnabled": "Aucune section activée. Ajoutez ou activez une section pour voir l'aperçu."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "Racontez l'histoire de l'artiste…"
     },
-    "comingSoon": {
-      "title": "Éditeur {{label}} bientôt disponible",
-      "description": "La gestion complète du contenu de cette section arrive dans une phase ultérieure. Vous pouvez déjà l'ajouter, la réordonner et l'activer."
+    "events": {
+      "titlePlaceholder": "Nom de l'événement (facultatif)",
+      "venuePlaceholder": "Salle",
+      "cityPlaceholder": "Ville, pays",
+      "ticketUrlPlaceholder": "Lien billetterie (facultatif)",
+      "addEvent": "Ajouter un événement",
+      "tba": "À venir",
+      "typeHeadline": "Tête d'affiche",
+      "typeSupport": "Première partie",
+      "typeFestival": "Festival",
+      "typeLivestream": "Livestream",
+      "typeOther": "Autre"
     },
     "contact": {
       "bookingEmail": "E-mail booking",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "Lire l'article",
     "downloadPdf": "Télécharger le PDF",
+    "events": {
+      "upcoming": "À venir",
+      "past": "Concerts passés",
+      "tickets": "Billets",
+      "tba": "Date à confirmer"
+    },
     "music": {
       "download": "Télécharger",
       "downloadAll": "Tout télécharger",

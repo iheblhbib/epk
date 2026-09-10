@@ -214,6 +214,31 @@ it('renders the credits/line-up name before the role, matching the builder and p
     expect(strpos($html, 'Ada Lovelace'))->toBeLessThan(strpos($html, 'Vocals'));
 });
 
+it('renders the events section as a table with each show\'s date, venue and city', function () {
+    $epk = Epk::factory()->published()->make(['title' => 'Nova Ray EPK']);
+    $artist = Artist::factory()->make(['name' => 'Nova Ray']);
+
+    $html = view('pdf.epk', [
+        'epk' => $epk,
+        'artist' => $artist,
+        'sections' => collect([
+            [
+                'type' => SectionType::Events,
+                'title' => 'Events',
+                'config' => ['events' => [
+                    ['title' => 'Tour kickoff', 'type' => 'headline', 'date' => '2027-05-01', 'venue' => 'The Fillmore', 'city' => 'San Francisco', 'ticket_url' => '', 'is_past' => false],
+                    ['title' => '', 'type' => 'festival', 'date' => '2024-07-04', 'venue' => 'Roskilde', 'city' => 'Denmark', 'ticket_url' => '', 'is_past' => true],
+                ]],
+            ],
+        ]),
+    ])->render();
+
+    expect($html)->toContain('The Fillmore');
+    expect($html)->toContain('San Francisco');
+    expect($html)->toContain('2027');
+    expect($html)->toContain('Roskilde');
+});
+
 it('embeds a hero image as a base64 data URI instead of a self-referential HTTP url', function () {
     // mPDF fetches any http(s) <img src> over a real HTTP connection, even
     // one pointing back at this same server -- on a single-worker dev server

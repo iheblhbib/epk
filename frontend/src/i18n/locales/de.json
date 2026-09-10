@@ -871,7 +871,7 @@
       "untitledTrack": "Unbenannter Track",
       "noPress": "Noch keine Presseberichte.",
       "read": "Lesen",
-      "comingSoon": "Der Inhalt „{{label}}“ folgt in einer späteren Phase.",
+      "noEvents": "Noch keine Events.",
       "noSectionsEnabled": "Keine Sektionen aktiviert. Fügen Sie eine Sektion hinzu oder aktivieren Sie sie, um die Vorschau zu sehen."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "Erzählen Sie die Geschichte des Künstlers…"
     },
-    "comingSoon": {
-      "title": "Editor für „{{label}}“ bald verfügbar",
-      "description": "Die vollständige Inhaltsverwaltung für diese Sektion folgt in einer späteren Phase. Sie können sie bereits hinzufügen, neu anordnen und aktivieren."
+    "events": {
+      "titlePlaceholder": "Eventname (optional)",
+      "venuePlaceholder": "Venue",
+      "cityPlaceholder": "Stadt, Land",
+      "ticketUrlPlaceholder": "Ticket-Link (optional)",
+      "addEvent": "Event hinzufügen",
+      "tba": "Noch offen",
+      "typeHeadline": "Headline-Show",
+      "typeSupport": "Support-Slot",
+      "typeFestival": "Festival",
+      "typeLivestream": "Livestream",
+      "typeOther": "Sonstiges"
     },
     "contact": {
       "bookingEmail": "Booking-E-Mail",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "Artikel lesen",
     "downloadPdf": "PDF herunterladen",
+    "events": {
+      "upcoming": "Anstehend",
+      "past": "Vergangene Shows",
+      "tickets": "Tickets",
+      "tba": "Termin offen"
+    },
     "music": {
       "download": "Herunterladen",
       "downloadAll": "Alle herunterladen",

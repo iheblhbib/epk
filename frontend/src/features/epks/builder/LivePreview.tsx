@@ -1,4 +1,4 @@
-import { Download, ExternalLink, Globe, Mail, MapPin, PlayCircle, Phone, Quote, Sparkles } from 'lucide-react'
+import { Download, ExternalLink, Globe, Mail, MapPin, PlayCircle, Phone, Quote } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
 import type { TFunction } from 'i18next'
@@ -15,6 +15,7 @@ import type {
   DownloadsConfig,
   Epk,
   EpkSection,
+  EventsConfig,
   HeroConfig,
   MusicConfig,
   PhotosConfig,
@@ -491,11 +492,33 @@ function PressPreview({ config, headerStyle, t }: { config: PressConfig; headerS
   )
 }
 
-function ComingSoonPreview({ label, t }: { label: string; t: TFunction }) {
+function EventsPreview({ config, headerStyle, t }: { config: EventsConfig; headerStyle: HeaderStyle; t: TFunction }) {
+  const events = [...(config.events ?? [])]
+    .filter((event) => event.date || event.venue)
+    .sort((a, b) => (a.date ?? '9999-12-31').localeCompare(b.date ?? '9999-12-31'))
+  const todayIso = new Date().toLocaleDateString('en-CA')
+
   return (
-    <div className="flex flex-col items-center gap-2 px-8 py-10 text-center">
-      <Sparkles className="size-5 text-[var(--epk-muted)]" />
-      <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.comingSoon', { label })}</p>
+    <div className="px-8 py-10">
+      <SectionHeading title={t('epkBuilder.sectionTypes.events')} headerStyle={headerStyle} />
+      {events.length === 0 ? (
+        <p className="text-sm text-[var(--epk-muted)]">{t('epkBuilder.preview.noEvents')}</p>
+      ) : (
+        <ul className="space-y-2 text-sm">
+          {events.map((event, index) => {
+            const past = !!event.date && event.date < todayIso
+            return (
+              <li key={index} className={cn('flex flex-wrap items-baseline gap-x-2', past && 'opacity-50')}>
+                <span className="text-[var(--epk-muted)] tabular-nums">
+                  {event.date ? new Date(`${event.date}T00:00:00`).toLocaleDateString() : t('epkBuilder.events.tba')}
+                </span>
+                <span className="font-medium text-[var(--epk-fg)]">{event.venue || '—'}</span>
+                {event.city && <span className="text-[var(--epk-muted)]">{event.city}</span>}
+              </li>
+            )
+          })}
+        </ul>
+      )}
     </div>
   )
 }
@@ -603,8 +626,10 @@ export function LivePreview({
                 return <VideosPreview config={section.config as VideosConfig} headerStyle={theme.headerStyle} t={t} />
               case 'press':
                 return <PressPreview config={section.config as PressConfig} headerStyle={theme.headerStyle} t={t} />
+              case 'events':
+                return <EventsPreview config={section.config as EventsConfig} headerStyle={theme.headerStyle} t={t} />
               default:
-                return <ComingSoonPreview label={section.label} t={t} />
+                return null
             }
           })()}
         </button>

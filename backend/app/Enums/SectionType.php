@@ -85,7 +85,7 @@ enum SectionType: string
             self::Releases => ['releases' => []],
             self::Videos => ['videos' => []],
             self::Press => ['items' => []],
-            self::Events => [],
+            self::Events => ['events' => []],
         };
     }
 }

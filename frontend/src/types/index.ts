@@ -373,6 +373,21 @@ export interface PressConfig {
   items?: PressItem[]
 }
 
+export type EventType = 'headline' | 'support' | 'festival' | 'livestream' | 'other'
+
+export interface EventItem {
+  title?: string
+  type?: EventType
+  date?: string | null
+  venue?: string
+  city?: string
+  ticket_url?: string
+}
+
+export interface EventsConfig {
+  events?: EventItem[]
+}
+
 // --- Public EPK (unauthenticated /epk/{slug} page) ---
 // Mirrors the builder's per-type configs, but already resolved server-side:
 // media ids become URLs/file objects, and hidden Contact fields are blanked
@@ -506,6 +521,22 @@ export interface PublicPressItem {
 
 export interface PublicPressConfig {
   items: PublicPressItem[]
+}
+
+export interface PublicEventItem {
+  title: string
+  type: EventType
+  date: string | null
+  venue: string
+  city: string
+  ticket_url: string
+  // Resolved server-side against "today" (whole-day comparison) so the
+  // public page and PDF agree on which shows are upcoming vs. past.
+  is_past: boolean
+}
+
+export interface PublicEventsConfig {
+  events: PublicEventItem[]
 }
 
 export interface PublicEpkSection {

@@ -871,7 +871,7 @@
       "untitledTrack": "未命名曲目",
       "noPress": "暂无媒体报道。",
       "read": "阅读全文",
-      "comingSoon": "{{label}}内容将在后续阶段推出。",
+      "noEvents": "暂无活动。",
       "noSectionsEnabled": "未启用任何版块。请添加或启用一个版块以查看预览。"
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "讲述艺人的故事…"
     },
-    "comingSoon": {
-      "title": "{{label}}编辑器即将推出",
-      "description": "此版块的完整内容管理功能将在后续阶段推出。您目前已可以添加、重新排序和启用它。"
+    "events": {
+      "titlePlaceholder": "活动名称（可选）",
+      "venuePlaceholder": "场馆",
+      "cityPlaceholder": "城市、国家",
+      "ticketUrlPlaceholder": "购票链接（可选）",
+      "addEvent": "添加活动",
+      "tba": "待定",
+      "typeHeadline": "专场演出",
+      "typeSupport": "暖场演出",
+      "typeFestival": "音乐节",
+      "typeLivestream": "线上直播",
+      "typeOther": "其他"
     },
     "contact": {
       "bookingEmail": "演出经纪邮箱",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "阅读全文",
     "downloadPdf": "下载 PDF",
+    "events": {
+      "upcoming": "即将举行",
+      "past": "往期演出",
+      "tickets": "购票",
+      "tba": "日期待定"
+    },
     "music": {
       "download": "下载",
       "downloadAll": "全部下载",

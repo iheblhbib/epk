@@ -871,7 +871,7 @@
       "untitledTrack": "Pista sin título",
       "noPress": "Aún no hay cobertura de prensa.",
       "read": "Leer",
-      "comingSoon": "El contenido de {{label}} llegará en una fase posterior.",
+      "noEvents": "Aún no hay eventos.",
       "noSectionsEnabled": "No hay secciones activadas. Añade o activa una sección para ver la vista previa."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "Cuenta la historia del artista…"
     },
-    "comingSoon": {
-      "title": "Editor de {{label}} próximamente",
-      "description": "La gestión completa del contenido de esta sección llegará en una fase posterior. Ya puedes añadirla, reordenarla y activarla."
+    "events": {
+      "titlePlaceholder": "Nombre del evento (opcional)",
+      "venuePlaceholder": "Sala",
+      "cityPlaceholder": "Ciudad, país",
+      "ticketUrlPlaceholder": "Enlace de entradas (opcional)",
+      "addEvent": "Añadir evento",
+      "tba": "Por confirmar",
+      "typeHeadline": "Concierto principal",
+      "typeSupport": "Telonero",
+      "typeFestival": "Festival",
+      "typeLivestream": "Directo online",
+      "typeOther": "Otro"
     },
     "contact": {
       "bookingEmail": "Correo de booking",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "Leer el artículo",
     "downloadPdf": "Descargar PDF",
+    "events": {
+      "upcoming": "Próximos",
+      "past": "Conciertos pasados",
+      "tickets": "Entradas",
+      "tba": "Fecha por confirmar"
+    },
     "music": {
       "download": "Descargar",
       "downloadAll": "Descargar todo",

@@ -47,6 +47,14 @@
         /* Contact */
         .contact-row td { padding: 2px 0; font-size: 9.5pt; }
         .contact-label { color: #888; width: 100px; }
+
+        /* Events */
+        .event-row td { padding: 3px 0; font-size: 9.5pt; border-bottom: 1px solid #eee; }
+        .event-date { color: #888; width: 130px; }
+        .event-venue { font-weight: bold; }
+        .event-meta { color: #888; }
+        .event-row.is-past td { color: #aaa; }
+        .event-row.is-past .event-venue { color: #888; }
     </style>
 </head>
 <body>
@@ -192,6 +200,33 @@
                             <tr class="credit-row">
                                 <td>{{ $item['name'] ?? '' }}</td>
                                 <td class="credit-role">{{ $item['role'] ?? '' }}</td>
+                            </tr>
+                        @endforeach
+                    </table>
+                </div>
+            @endif
+            @break
+
+        @case(\App\Enums\SectionType::Events)
+            @if(!empty($config['events']))
+                <div class="section">
+                    <h2>{{ $section['title'] }}</h2>
+                    <table class="layout">
+                        @foreach($config['events'] as $event)
+                            <tr class="event-row{{ !empty($event['is_past']) ? ' is-past' : '' }}">
+                                <td class="event-date">
+                                    @if(!empty($event['date']))
+                                        {{ \Illuminate\Support\Carbon::parse($event['date'])->format('M j, Y') }}
+                                    @else
+                                        TBA
+                                    @endif
+                                </td>
+                                <td>
+                                    <span class="event-venue">{{ $event['venue'] ?? '' }}</span>@if(!empty($event['city'])), {{ $event['city'] }}@endif
+                                    @if(!empty($event['title']))
+                                        <span class="event-meta"> &middot; {{ $event['title'] }}</span>
+                                    @endif
+                                </td>
                             </tr>
                         @endforeach
                     </table>

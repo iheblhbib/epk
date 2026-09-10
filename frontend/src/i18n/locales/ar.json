@@ -871,7 +871,7 @@
       "untitledTrack": "مقطع بلا عنوان",
       "noPress": "لا توجد تغطية صحفية بعد.",
       "read": "قراءة",
-      "comingSoon": "محتوى {{label}} قادم في مرحلة لاحقة.",
+      "noEvents": "لا توجد أحداث بعد.",
       "noSectionsEnabled": "لا توجد أقسام مفعّلة. أضف قسمًا أو فعّله لرؤية المعاينة."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "احكِ قصة الفنان…"
     },
-    "comingSoon": {
-      "title": "محرر {{label}} قادم قريبًا",
-      "description": "الإدارة الكاملة لمحتوى هذا القسم قادمة في مرحلة لاحقة. يمكنك بالفعل إضافته وإعادة ترتيبه وتفعيله."
+    "events": {
+      "titlePlaceholder": "اسم الحدث (اختياري)",
+      "venuePlaceholder": "المكان",
+      "cityPlaceholder": "المدينة، البلد",
+      "ticketUrlPlaceholder": "رابط التذاكر (اختياري)",
+      "addEvent": "إضافة حدث",
+      "tba": "لاحقًا",
+      "typeHeadline": "حفلة رئيسية",
+      "typeSupport": "حفلة افتتاحية",
+      "typeFestival": "مهرجان",
+      "typeLivestream": "بث مباشر",
+      "typeOther": "أخرى"
     },
     "contact": {
       "bookingEmail": "بريد الحجوزات",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "قراءة المقال",
     "downloadPdf": "تنزيل PDF",
+    "events": {
+      "upcoming": "قادمة",
+      "past": "حفلات سابقة",
+      "tickets": "التذاكر",
+      "tba": "التاريخ لاحقًا"
+    },
     "music": {
       "download": "تنزيل",
       "downloadAll": "تنزيل الكل",

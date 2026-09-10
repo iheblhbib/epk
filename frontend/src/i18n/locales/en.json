@@ -871,7 +871,7 @@
       "untitledTrack": "Untitled track",
       "noPress": "No press coverage yet.",
       "read": "Read",
-      "comingSoon": "{{label}} content arrives in a later phase.",
+      "noEvents": "No events yet.",
       "noSectionsEnabled": "No sections enabled. Add or enable a section to see the preview."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "Tell the artist's story…"
     },
-    "comingSoon": {
-      "title": "{{label}} editor coming soon",
-      "description": "Full content management for this section arrives in a later phase. You can still add, reorder, and toggle it now."
+    "events": {
+      "titlePlaceholder": "Event name (optional)",
+      "venuePlaceholder": "Venue",
+      "cityPlaceholder": "City, country",
+      "ticketUrlPlaceholder": "Ticket URL (optional)",
+      "addEvent": "Add event",
+      "tba": "TBA",
+      "typeHeadline": "Headline show",
+      "typeSupport": "Support slot",
+      "typeFestival": "Festival",
+      "typeLivestream": "Livestream",
+      "typeOther": "Other"
     },
     "contact": {
       "bookingEmail": "Booking email",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "Read the piece",
     "downloadPdf": "Download PDF",
+    "events": {
+      "upcoming": "Upcoming",
+      "past": "Past shows",
+      "tickets": "Tickets",
+      "tba": "Date TBA"
+    },
     "music": {
       "download": "Download",
       "downloadAll": "Download all",

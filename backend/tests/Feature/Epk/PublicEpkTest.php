@@ -748,3 +748,74 @@ it('hides phone and address on the contact section unless explicitly shown', fun
     $response->assertJsonPath('data.sections.0.config.phone', '');
     $response->assertJsonPath('data.sections.0.config.address', '123 Main St');
 });
+
+it('resolves events: drops empty entries, sorts by date ascending, and flags past ones', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Events,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['events' => [
+            ['title' => 'Later show', 'type' => 'headline', 'date' => now()->addMonths(3)->format('Y-m-d'), 'venue' => 'The Fillmore', 'city' => 'San Francisco', 'ticket_url' => 'https://tix.example/2'],
+            ['title' => 'Past show', 'type' => 'festival', 'date' => now()->subMonths(2)->format('Y-m-d'), 'venue' => 'Roskilde', 'city' => 'Denmark'],
+            ['title' => 'Soon show', 'type' => 'support', 'date' => now()->addMonths(1)->format('Y-m-d'), 'venue' => 'Bowery Ballroom', 'city' => 'New York'],
+            ['title' => 'Nothing', 'type' => 'other'],
+        ]],
+    ]);
+
+    $response = $this->getJson("/api/public/epks/{$epk->slug}");
+
+    $response->assertOk();
+    $events = $response->json('data.sections.0.config.events');
+    expect($events)->toHaveCount(3);
+    expect(array_column($events, 'title'))->toBe(['Past show', 'Soon show', 'Later show']);
+    expect($events[0]['is_past'])->toBeTrue();
+    expect($events[1]['is_past'])->toBeFalse();
+    expect($events[2])->toMatchArray([
+        'title' => 'Later show',
+        'type' => 'headline',
+        'date' => now()->addMonths(3)->format('Y-m-d'),
+        'venue' => 'The Fillmore',
+        'city' => 'San Francisco',
+        'ticket_url' => 'https://tix.example/2',
+        'is_past' => false,
+    ]);
+});
+
+it('keeps an event with a venue but no date, sorting it after dated events', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Events,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['events' => [
+            ['venue' => 'TBA venue', 'city' => 'Berlin'],
+            ['title' => 'Dated', 'date' => now()->addMonths(1)->format('Y-m-d'), 'venue' => 'Club'],
+        ]],
+    ]);
+
+    $events = $this->getJson("/api/public/epks/{$epk->slug}")->json('data.sections.0.config.events');
+    expect($events)->toHaveCount(2);
+    expect($events[0]['title'])->toBe('Dated');
+    expect($events[1]['venue'])->toBe('TBA venue');
+    expect($events[1]['date'])->toBeNull();
+    expect($events[1]['is_past'])->toBeFalse();
+});
+
+it('treats an event dated today as upcoming, not past', function () {
+    $epk = makePublishedEpk();
+
+    $epk->sections()->create([
+        'type' => SectionType::Events,
+        'is_enabled' => true,
+        'position' => 0,
+        'config' => ['events' => [
+            ['date' => now()->format('Y-m-d'), 'venue' => 'Tonight'],
+        ]],
+    ]);
+
+    $events = $this->getJson("/api/public/epks/{$epk->slug}")->json('data.sections.0.config.events');
+    expect($events[0]['is_past'])->toBeFalse();
+});

@@ -871,7 +871,7 @@
       "untitledTrack": "Faixa sem título",
       "noPress": "Ainda sem cobertura de imprensa.",
       "read": "Ler",
-      "comingSoon": "O conteúdo de {{label}} chega numa fase posterior.",
+      "noEvents": "Ainda não há eventos.",
       "noSectionsEnabled": "Nenhuma secção ativada. Adicione ou ative uma secção para ver a pré-visualização."
     },
     "gallery": {
@@ -915,9 +915,18 @@
     "biography": {
       "placeholder": "Conte a história do artista…"
     },
-    "comingSoon": {
-      "title": "Editor de {{label}} brevemente",
-      "description": "A gestão completa do conteúdo desta secção chega numa fase posterior. Já pode adicioná-la, reordená-la e ativá-la."
+    "events": {
+      "titlePlaceholder": "Nome do evento (opcional)",
+      "venuePlaceholder": "Local",
+      "cityPlaceholder": "Cidade, país",
+      "ticketUrlPlaceholder": "Link de bilhetes (opcional)",
+      "addEvent": "Adicionar evento",
+      "tba": "A confirmar",
+      "typeHeadline": "Concerto principal",
+      "typeSupport": "Abertura",
+      "typeFestival": "Festival",
+      "typeLivestream": "Transmissão ao vivo",
+      "typeOther": "Outro"
     },
     "contact": {
       "bookingEmail": "E-mail de booking",
@@ -1062,6 +1071,12 @@
     },
     "readThePiece": "Ler o artigo",
     "downloadPdf": "Transferir PDF",
+    "events": {
+      "upcoming": "Próximos",
+      "past": "Concertos anteriores",
+      "tickets": "Bilhetes",
+      "tba": "Data a confirmar"
+    },
     "music": {
       "download": "Transferir",
       "downloadAll": "Transferir tudo",

@@ -6,6 +6,7 @@ use App\Enums\SectionType;
 use App\Models\EpkSection;
 use App\Models\Media;
 use App\Models\PrivateLink;
+use Illuminate\Support\Carbon;
 
 /**
  * Turns a section's raw builder config — which stores bare media_id
@@ -162,7 +163,31 @@ class PublicSectionConfigResolver
                     ->values()
                     ->all(),
             ],
-            // Events has no dedicated content yet.
+            SectionType::Events => [
+                'events' => collect($config['events'] ?? [])
+                    ->map(function ($event) {
+                        $date = ($event['date'] ?? '') ?: null;
+
+                        return [
+                            'title' => $event['title'] ?? '',
+                            'type' => $event['type'] ?? 'headline',
+                            'date' => $date,
+                            'venue' => $event['venue'] ?? '',
+                            'city' => $event['city'] ?? '',
+                            'ticket_url' => $event['ticket_url'] ?? '',
+                            // A show happening today still counts as upcoming --
+                            // compare whole days, not the current instant.
+                            'is_past' => $date !== null && Carbon::parse($date)->startOfDay()->lt(Carbon::today()),
+                        ];
+                    })
+                    // Keep an entry if it says *something* about where/when --
+                    // a bare "type"-only row the artist never filled in is noise.
+                    ->filter(fn ($event) => $event['date'] !== null || $event['venue'] !== '')
+                    // Dateless ("TBA") entries sort last, after every dated one.
+                    ->sortBy(fn ($event) => $event['date'] ?? '9999-12-31')
+                    ->values()
+                    ->all(),
+            ],
             default => [],
         };
     }

@@ -5,11 +5,11 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { BiographySettings } from '@/features/epks/builder/settings/BiographySettings'
-import { ComingSoonSettings } from '@/features/epks/builder/settings/ComingSoonSettings'
 import { ContactSettings } from '@/features/epks/builder/settings/ContactSettings'
 import { CreditsSettings } from '@/features/epks/builder/settings/CreditsSettings'
 import { CustomSettings } from '@/features/epks/builder/settings/CustomSettings'
 import { DownloadsSettings } from '@/features/epks/builder/settings/DownloadsSettings'
+import { EventsSettings } from '@/features/epks/builder/settings/EventsSettings'
 import { HeroSettings } from '@/features/epks/builder/settings/HeroSettings'
 import { MusicSettings } from '@/features/epks/builder/settings/MusicSettings'
 import { PhotosSettings } from '@/features/epks/builder/settings/PhotosSettings'
@@ -123,8 +123,10 @@ export function SectionSettingsPanel({
                 return <VideosSettings epkId={epkId} section={section} />
               case 'press':
                 return <PressSettings epkId={epkId} section={section} />
+              case 'events':
+                return <EventsSettings epkId={epkId} section={section} />
               default:
-                return <ComingSoonSettings label={section.label} type={section.type} />
+                return null
             }
           })()}
         </div>

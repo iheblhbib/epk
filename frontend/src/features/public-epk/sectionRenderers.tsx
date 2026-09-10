@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote } from 'lucide-react'
+import { ChevronLeft, ChevronRight, Download, ExternalLink, FileText, Globe, Info, Mail, MapPin, MoreHorizontal, Phone, Quote, Ticket } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { useTranslation } from 'react-i18next'
@@ -10,6 +10,7 @@ import { cn } from '@/lib/utils'
 import type {
   AlignValue,
   AnalyticsEventType,
+  EventType,
   HeightValue,
   PublicBiographyConfig,
   PublicContactConfig,
@@ -17,6 +18,7 @@ import type {
   PublicCustomConfig,
   PublicDownloadsConfig,
   PublicEpkSection,
+  PublicEventsConfig,
   PublicHeroConfig,
   PublicMusicConfig,
   PublicPhotoItem,
@@ -60,6 +62,14 @@ const RELEASE_TYPE_LABEL_KEY: Record<ReleaseType, string> = {
   live_album: 'epkBuilder.releases.typeLiveAlbum',
   compilation: 'epkBuilder.releases.typeCompilation',
   split: 'epkBuilder.releases.typeSplit',
+}
+
+const EVENT_TYPE_LABEL_KEY: Record<EventType, string> = {
+  headline: 'epkBuilder.events.typeHeadline',
+  support: 'epkBuilder.events.typeSupport',
+  festival: 'epkBuilder.events.typeFestival',
+  livestream: 'epkBuilder.events.typeLivestream',
+  other: 'epkBuilder.events.typeOther',
 }
 
 // Tailwind's JIT scanner only picks up classes that appear as complete
@@ -816,6 +826,121 @@ function PressSection({ title, headerStyle, config }: { title: string; headerSty
   )
 }
 
+function formatEventDate(date: string | null, fallback: string): string {
+  if (!date) return fallback
+  const parsed = new Date(`${date}T00:00:00`)
+  if (Number.isNaN(parsed.getTime())) return date
+  return parsed.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' })
+}
+
+function EventRow({
+  event,
+  buttonStyle,
+  t,
+}: {
+  event: PublicEventsConfig['events'][number]
+  buttonStyle: ReturnType<typeof resolveTheme>['buttonStyle']
+  t: ReturnType<typeof useTranslation>['t']
+}) {
+  const meta = [
+    event.city,
+    event.type !== 'headline' ? t(EVENT_TYPE_LABEL_KEY[event.type] ?? EVENT_TYPE_LABEL_KEY.other) : null,
+    event.title || null,
+  ].filter(Boolean)
+
+  return (
+    <li
+      className={cn(
+        'flex flex-wrap items-center justify-between gap-x-4 gap-y-2 border-b border-[var(--epk-border)] py-3 last:border-0',
+        event.is_past && 'opacity-55'
+      )}
+    >
+      <div className="min-w-0">
+        <p className="flex flex-wrap items-baseline gap-x-2 text-sm">
+          <span className="font-medium text-[var(--epk-fg)] tabular-nums">
+            {formatEventDate(event.date, t('publicEpk.events.tba'))}
+          </span>
+          {event.venue && (
+            <>
+              <span className="text-[var(--epk-muted)]">·</span>
+              <span className="font-medium text-[var(--epk-fg)]">{event.venue}</span>
+            </>
+          )}
+        </p>
+        {meta.length > 0 && <p className="mt-0.5 text-xs text-[var(--epk-muted)]">{meta.join(' · ')}</p>}
+      </div>
+      {!event.is_past && event.ticket_url && (
+        <a
+          href={event.ticket_url}
+          target="_blank"
+          rel="noreferrer"
+          className={cn(
+            'inline-flex shrink-0 items-center gap-1.5 bg-[var(--epk-accent)] px-3 py-1.5 text-xs font-medium text-[var(--epk-accent-fg)] transition-opacity hover:opacity-90',
+            buttonRadiusClass(buttonStyle)
+          )}
+        >
+          <Ticket className="size-3.5" />
+          {t('publicEpk.events.tickets')}
+        </a>
+      )}
+    </li>
+  )
+}
+
+function EventsSection({
+  title,
+  headerStyle,
+  buttonStyle,
+  config,
+}: {
+  title: string
+  headerStyle: HeaderStyle
+  buttonStyle: ReturnType<typeof resolveTheme>['buttonStyle']
+  config: PublicEventsConfig
+}) {
+  const { t } = useTranslation()
+  const events = config.events ?? []
+  if (events.length === 0) return null
+
+  const upcoming = events.filter((event) => !event.is_past)
+  // Resolver hands events over oldest-first; past shows read better newest-first.
+  const past = events.filter((event) => event.is_past).reverse()
+  const showHeaders = upcoming.length > 0 && past.length > 0
+
+  return (
+    <SectionContainer title={title} headerStyle={headerStyle}>
+      {upcoming.length > 0 && (
+        <div className={past.length > 0 ? 'mb-6' : undefined}>
+          {showHeaders && (
+            <p className="mb-2 text-xs font-semibold tracking-wide text-[var(--epk-muted)] uppercase">
+              {t('publicEpk.events.upcoming')}
+            </p>
+          )}
+          <ul>
+            {upcoming.map((event, index) => (
+              <EventRow key={index} event={event} buttonStyle={buttonStyle} t={t} />
+            ))}
+          </ul>
+        </div>
+      )}
+      {past.length > 0 && (
+        <div>
+          {showHeaders && (
+            <p className="mb-2 text-xs font-semibold tracking-wide text-[var(--epk-muted)] uppercase">
+              {t('publicEpk.events.past')}
+            </p>
+          )}
+          <ul>
+            {past.map((event, index) => (
+              <EventRow key={index} event={event} buttonStyle={buttonStyle} t={t} />
+            ))}
+          </ul>
+        </div>
+      )}
+    </SectionContainer>
+  )
+}
+
 export function renderSection(
   section: PublicEpkSection,
   fallbackTitle: string,
@@ -927,8 +1052,17 @@ export function renderSection(
           config={section.config as unknown as PublicPressConfig}
         />
       )
+    case 'events':
+      return (
+        <EventsSection
+          key={section.id}
+          title={section.title}
+          headerStyle={theme.headerStyle}
+          buttonStyle={theme.buttonStyle}
+          config={section.config as unknown as PublicEventsConfig}
+        />
+      )
     default:
-      // Events has no public content yet.
       return null
   }
 }
