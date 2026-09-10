@@ -477,6 +477,21 @@
         "title": "Votre rôle a changé",
         "mailDescription": "Recevez un e-mail lorsqu'un administrateur modifie votre rôle dans un espace de travail.",
         "databaseDescription": "Affichez une notification lorsque votre rôle dans un espace de travail change."
+      },
+      "weeklyDigest": {
+        "title": "Résumé hebdomadaire",
+        "mailDescription": "Recevez un e-mail hebdomadaire résumant l'activité de chaque espace de travail.",
+        "databaseDescription": "Affichez un résumé d'activité hebdomadaire dans vos notifications."
+      },
+      "draftReminder": {
+        "title": "Rappels de brouillon",
+        "mailDescription": "Recevez un e-mail si un EPK reste à l'état de brouillon pendant une semaine sans être publié.",
+        "databaseDescription": "Affichez un rappel concernant les EPK laissés à l'état de brouillon."
+      },
+      "viewMilestone": {
+        "title": "Paliers de vues",
+        "mailDescription": "Recevez un e-mail lorsqu'un de vos EPK franchit un palier de vues (100, 500, 1 000…).",
+        "databaseDescription": "Affichez une notification lorsqu'un EPK franchit un palier de vues."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "« {{epk}} » a été ouvert via {{link}}{{context}}",
     "invitationAcceptedBlurb": "{{member}} a accepté votre invitation et a rejoint {{workspace}} en tant que {{role}}",
     "memberRoleChangedByBlurb": "{{changer}} a modifié votre rôle dans {{workspace}} en {{role}}",
-    "memberRoleChangedBlurb": "Votre rôle dans {{workspace}} est désormais {{role}}"
+    "memberRoleChangedBlurb": "Votre rôle dans {{workspace}} est désormais {{role}}",
+    "draftReminderBlurb": "« {{epk}} » est toujours un brouillon — publiez-le pour le partager",
+    "viewMilestoneBlurb": "« {{epk}} » vient de dépasser {{count}} vues",
+    "weeklyDigestBlurb": "{{workspace}} a enregistré {{count}} vues au cours des 7 derniers jours"
   },
   "common": {
     "save": "Enregistrer",

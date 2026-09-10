@@ -1,4 +1,4 @@
-import { Bell, Eye, Loader2, ShieldAlert, Sparkles, UserCheck, UserPlus, Users } from 'lucide-react'
+import { BarChart3, Bell, Eye, FileText, Loader2, ShieldAlert, Sparkles, TrendingUp, UserCheck, UserPlus, Users } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -193,6 +193,51 @@ function NotificationRow({ notification }: { notification: AppNotification }) {
                 workspace: workspace_name,
                 role: t(`common.roles.${new_role}`),
               })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'draft_reminder': {
+      const { epk_id, epk_title } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<FileText className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to={`/epks/${epk_id}/builder`}
+          onClick={onOpen}
+        >
+          {t('notifications.draftReminderBlurb', { epk: epk_title })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'view_milestone': {
+      const { epk_id, epk_title, milestone } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<TrendingUp className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to={`/epks/${epk_id}/builder`}
+          onClick={onOpen}
+        >
+          {t('notifications.viewMilestoneBlurb', { epk: epk_title, count: milestone })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'weekly_digest': {
+      const { workspace_name, page_views } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<BarChart3 className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to="/analytics"
+          onClick={onOpen}
+        >
+          {t('notifications.weeklyDigestBlurb', { workspace: workspace_name, count: page_views })}
         </NotificationRowShell>
       )
     }

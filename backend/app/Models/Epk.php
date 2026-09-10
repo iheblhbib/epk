@@ -32,6 +32,8 @@ class Epk extends Model
         'custom_domain_token',
         'custom_domain_verified_at',
         'published_at',
+        'draft_nudged_at',
+        'last_view_milestone',
     ];
 
     protected static function booted(): void
@@ -48,6 +50,7 @@ class Epk extends Model
             'custom_settings' => 'array',
             'custom_domain_verified_at' => 'datetime',
             'published_at' => 'datetime',
+            'draft_nudged_at' => 'datetime',
         ];
     }
 

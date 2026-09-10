@@ -477,6 +477,21 @@
         "title": "Deine Rolle wurde geändert",
         "mailDescription": "Erhalte eine E-Mail, wenn ein Administrator deine Rolle in einem Arbeitsbereich ändert.",
         "databaseDescription": "Zeige eine Benachrichtigung, wenn sich deine Rolle in einem Arbeitsbereich ändert."
+      },
+      "weeklyDigest": {
+        "title": "Wochenübersicht",
+        "mailDescription": "Erhalte eine wöchentliche E-Mail mit einer Zusammenfassung der Aktivität jedes Arbeitsbereichs.",
+        "databaseDescription": "Zeige eine wöchentliche Aktivitätszusammenfassung in deinen Benachrichtigungen."
+      },
+      "draftReminder": {
+        "title": "Entwurfs-Erinnerungen",
+        "mailDescription": "Erhalte eine E-Mail, wenn ein EPK eine Woche lang als Entwurf bleibt, ohne veröffentlicht zu werden.",
+        "databaseDescription": "Zeige eine Erinnerung an EPKs, die als Entwürfe verbleiben."
+      },
+      "viewMilestone": {
+        "title": "Aufruf-Meilensteine",
+        "mailDescription": "Erhalte eine E-Mail, wenn eines deiner EPKs einen Aufruf-Meilenstein überschreitet (100, 500, 1.000…).",
+        "databaseDescription": "Zeige eine Benachrichtigung, wenn ein EPK einen Aufruf-Meilenstein überschreitet."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "„{{epk}}\" wurde über {{link}} geöffnet{{context}}",
     "invitationAcceptedBlurb": "{{member}} hat deine Einladung angenommen und {{workspace}} als {{role}} beigetreten",
     "memberRoleChangedByBlurb": "{{changer}} hat deine Rolle in {{workspace}} zu {{role}} geändert",
-    "memberRoleChangedBlurb": "Deine Rolle in {{workspace}} ist jetzt {{role}}"
+    "memberRoleChangedBlurb": "Deine Rolle in {{workspace}} ist jetzt {{role}}",
+    "draftReminderBlurb": "„{{epk}}\" ist noch ein Entwurf — veröffentliche ihn, um ihn zu teilen",
+    "viewMilestoneBlurb": "„{{epk}}\" hat gerade {{count}} Aufrufe überschritten",
+    "weeklyDigestBlurb": "{{workspace}} hatte in den letzten 7 Tagen {{count}} Seitenaufrufe"
   },
   "common": {
     "save": "Änderungen speichern",

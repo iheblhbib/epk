@@ -117,6 +117,30 @@ export interface MemberRoleChangedNotificationPayload {
   changed_by_name: string | null
 }
 
+export interface DraftReminderNotificationPayload {
+  kind: 'draft_reminder'
+  epk_id: number
+  epk_title: string
+  workspace_id: number
+}
+
+export interface ViewMilestoneNotificationPayload {
+  kind: 'view_milestone'
+  epk_id: number
+  epk_title: string
+  workspace_id: number
+  milestone: number
+}
+
+export interface WeeklyDigestNotificationPayload {
+  kind: 'weekly_digest'
+  workspace_id: number
+  workspace_name: string
+  page_views: number
+  unique_visitors: number
+  downloads: number
+}
+
 // `kind` is a discriminant — a new backend notification type becomes a new
 // tagged member of this union (plus its own *NotificationPayload interface
 // above), and every switch on `kind` in the frontend gets a compile error
@@ -128,6 +152,9 @@ export type AppNotification =
   | { id: string; kind: 'private_link_opened'; payload: PrivateLinkOpenedNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'invitation_accepted'; payload: InvitationAcceptedNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'member_role_changed'; payload: MemberRoleChangedNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'draft_reminder'; payload: DraftReminderNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'view_milestone'; payload: ViewMilestoneNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'weekly_digest'; payload: WeeklyDigestNotificationPayload; read_at: string | null; created_at: string }
 
 // Mirrors backend/config/notification_preferences.php — only the channels
 // listed there are toggleable per kind, so this shape (not a generic
@@ -155,6 +182,9 @@ export interface NotificationPreferences {
   private_link_opened: { mail: boolean; database: boolean }
   invitation_accepted: { mail: boolean; database: boolean }
   member_role_changed: { mail: boolean; database: boolean }
+  weekly_digest: { mail: boolean; database: boolean }
+  draft_reminder: { mail: boolean; database: boolean }
+  view_milestone: { mail: boolean; database: boolean }
 }
 
 export type EpkStatus = 'draft' | 'published' | 'archived'

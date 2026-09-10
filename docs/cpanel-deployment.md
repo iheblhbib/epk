@@ -91,7 +91,16 @@ Laravel's scheduler needs exactly one cron entry, regardless of how many schedul
 * * * * * cd /home/youruser/api.karthagopm.com && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-**This cron entry is now required, not optional.** `routes/console.php` schedules `billing:trial-reminders` to run once a day (07:00 server time) — it emails workspace owners/admins that their free trial ends in 3 days, then 1 day, then that it has ended. Without the `schedule:run` cron actually running, those emails never go out. The command is idempotent (a `subscriptions.trial_reminder_stage` marker), so a double-run or a day the cron misses is harmless — it just sends whichever reminder is now due, once.
+**This cron entry is now required, not optional.** `routes/console.php` schedules several email jobs:
+
+| Command | Schedule | What it sends |
+|---|---|---|
+| `billing:trial-reminders` | daily 07:00 | trial ends in 3 days / 1 day / has ended |
+| `epks:draft-nudge` | daily 08:00 | "your EPK has been a draft for a week" |
+| `epks:view-milestones` | daily 08:15 | "your EPK just passed 100 / 500 / 1,000… views" |
+| `digest:weekly` | Mondays 08:30 | weekly per-workspace activity digest |
+
+Without the `schedule:run` cron actually running, none of these send. Every command is idempotent (a per-row marker column, or a skip-if-already-done check), so a double-run or a day the cron misses is harmless. Verify with `php artisan schedule:list`.
 
 Still no queue worker anywhere: every notification (including these) sends synchronously during the scheduled run, specifically so a host with no worker process never silently drops one (see [`WorkspaceInvitationNotification`](../backend/app/Notifications/WorkspaceInvitationNotification.php)). Laravel's database-driven session garbage collection already happens via its built-in "lottery" on ordinary requests — no cron needed for that specifically.
 

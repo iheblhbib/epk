@@ -27,4 +27,7 @@ return [
     'private_link_opened' => ['mail', 'database'],
     'invitation_accepted' => ['mail', 'database'],
     'member_role_changed' => ['mail', 'database'],
+    'weekly_digest' => ['mail', 'database'],
+    'draft_reminder' => ['mail', 'database'],
+    'view_milestone' => ['mail', 'database'],
 ];

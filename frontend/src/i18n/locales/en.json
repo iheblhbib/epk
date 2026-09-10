@@ -477,6 +477,21 @@
         "title": "Your role changed",
         "mailDescription": "Get an email when an admin changes your role in a workspace.",
         "databaseDescription": "Show a bell notification when your role in a workspace changes."
+      },
+      "weeklyDigest": {
+        "title": "Weekly digest",
+        "mailDescription": "Get a weekly email summarising each workspace's activity.",
+        "databaseDescription": "Show a weekly activity summary in your notifications."
+      },
+      "draftReminder": {
+        "title": "Draft reminders",
+        "mailDescription": "Get an email if an EPK sits as a draft for a week without being published.",
+        "databaseDescription": "Show a reminder about EPKs left as drafts."
+      },
+      "viewMilestone": {
+        "title": "View milestones",
+        "mailDescription": "Get an email when one of your EPKs passes a view milestone (100, 500, 1,000…).",
+        "databaseDescription": "Show a notification when an EPK passes a view milestone."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "\"{{epk}}\" was opened via {{link}}{{context}}",
     "invitationAcceptedBlurb": "{{member}} accepted your invitation and joined {{workspace}} as {{role}}",
     "memberRoleChangedByBlurb": "{{changer}} changed your role in {{workspace}} to {{role}}",
-    "memberRoleChangedBlurb": "Your role in {{workspace}} is now {{role}}"
+    "memberRoleChangedBlurb": "Your role in {{workspace}} is now {{role}}",
+    "draftReminderBlurb": "\"{{epk}}\" is still a draft — publish it to share it",
+    "viewMilestoneBlurb": "\"{{epk}}\" just passed {{count}} views",
+    "weeklyDigestBlurb": "{{workspace}} had {{count}} page views in the last 7 days"
   },
   "common": {
     "save": "Save changes",

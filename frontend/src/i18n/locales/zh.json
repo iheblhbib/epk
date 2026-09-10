@@ -477,6 +477,21 @@
         "title": "你的角色已更改",
         "mailDescription": "当管理员更改你在工作区中的角色时接收邮件。",
         "databaseDescription": "当你在工作区中的角色更改时显示提示通知。"
+      },
+      "weeklyDigest": {
+        "title": "每周摘要",
+        "mailDescription": "每周接收一封汇总各工作区活动的邮件。",
+        "databaseDescription": "在通知中显示每周活动摘要。"
+      },
+      "draftReminder": {
+        "title": "草稿提醒",
+        "mailDescription": "如果 EPK 作为草稿保留一周仍未发布，接收邮件提醒。",
+        "databaseDescription": "显示关于仍为草稿的 EPK 的提醒。"
+      },
+      "viewMilestone": {
+        "title": "浏览量里程碑",
+        "mailDescription": "当你的某个 EPK 突破浏览量里程碑（100、500、1000……）时接收邮件。",
+        "databaseDescription": "当 EPK 突破浏览量里程碑时显示通知。"
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "有人通过{{link}}打开了“{{epk}}”{{context}}",
     "invitationAcceptedBlurb": "{{member}} 接受了你的邀请，以{{role}}身份加入了 {{workspace}}",
     "memberRoleChangedByBlurb": "{{changer}} 将你在 {{workspace}} 的角色更改为{{role}}",
-    "memberRoleChangedBlurb": "你在 {{workspace}} 的角色现在是{{role}}"
+    "memberRoleChangedBlurb": "你在 {{workspace}} 的角色现在是{{role}}",
+    "draftReminderBlurb": "“{{epk}}”仍是草稿——发布后即可分享",
+    "viewMilestoneBlurb": "“{{epk}}”的浏览量刚刚突破 {{count}}",
+    "weeklyDigestBlurb": "过去 7 天，{{workspace}} 获得 {{count}} 次页面浏览"
   },
   "common": {
     "save": "保存更改",

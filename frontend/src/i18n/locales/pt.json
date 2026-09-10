@@ -477,6 +477,21 @@
         "title": "A sua função mudou",
         "mailDescription": "Receba um e-mail quando um administrador altera a sua função num espaço de trabalho.",
         "databaseDescription": "Mostrar uma notificação quando a sua função num espaço de trabalho muda."
+      },
+      "weeklyDigest": {
+        "title": "Resumo semanal",
+        "mailDescription": "Receba um e-mail semanal com o resumo da atividade de cada espaço de trabalho.",
+        "databaseDescription": "Mostrar um resumo de atividade semanal nas suas notificações."
+      },
+      "draftReminder": {
+        "title": "Lembretes de rascunho",
+        "mailDescription": "Receba um e-mail se um EPK ficar como rascunho durante uma semana sem ser publicado.",
+        "databaseDescription": "Mostrar um lembrete sobre EPKs deixados como rascunhos."
+      },
+      "viewMilestone": {
+        "title": "Marcos de visualizações",
+        "mailDescription": "Receba um e-mail quando um dos seus EPKs ultrapassa um marco de visualizações (100, 500, 1000…).",
+        "databaseDescription": "Mostrar uma notificação quando um EPK ultrapassa um marco de visualizações."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "\"{{epk}}\" foi aberto através de {{link}}{{context}}",
     "invitationAcceptedBlurb": "{{member}} aceitou o seu convite e entrou em {{workspace}} como {{role}}",
     "memberRoleChangedByBlurb": "{{changer}} alterou a sua função em {{workspace}} para {{role}}",
-    "memberRoleChangedBlurb": "A sua função em {{workspace}} agora é {{role}}"
+    "memberRoleChangedBlurb": "A sua função em {{workspace}} agora é {{role}}",
+    "draftReminderBlurb": "\"{{epk}}\" ainda é um rascunho — publique-o para partilhar",
+    "viewMilestoneBlurb": "\"{{epk}}\" acabou de ultrapassar as {{count}} visualizações",
+    "weeklyDigestBlurb": "{{workspace}} teve {{count}} visualizações nos últimos 7 dias"
   },
   "common": {
     "save": "Guardar alterações",

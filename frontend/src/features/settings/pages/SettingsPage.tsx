@@ -546,6 +546,60 @@ function NotificationsTab() {
             onCheckedChange={(checked) => toggle('member_role_changed', 'database', checked)}
           />
         </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.weeklyDigest.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.weeklyDigest.mailDescription')}
+            checked={preferences.weekly_digest.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('weekly_digest', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.weeklyDigest.databaseDescription')}
+            checked={preferences.weekly_digest.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('weekly_digest', 'database', checked)}
+          />
+        </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.draftReminder.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.draftReminder.mailDescription')}
+            checked={preferences.draft_reminder.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('draft_reminder', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.draftReminder.databaseDescription')}
+            checked={preferences.draft_reminder.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('draft_reminder', 'database', checked)}
+          />
+        </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.viewMilestone.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.viewMilestone.mailDescription')}
+            checked={preferences.view_milestone.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('view_milestone', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.viewMilestone.databaseDescription')}
+            checked={preferences.view_milestone.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('view_milestone', 'database', checked)}
+          />
+        </div>
       </CardContent>
     </Card>
   )

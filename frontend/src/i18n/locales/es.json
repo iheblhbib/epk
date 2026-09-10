@@ -477,6 +477,21 @@
         "title": "Tu rol cambió",
         "mailDescription": "Recibe un correo cuando un administrador cambia tu rol en un espacio de trabajo.",
         "databaseDescription": "Muestra una notificación cuando cambia tu rol en un espacio de trabajo."
+      },
+      "weeklyDigest": {
+        "title": "Resumen semanal",
+        "mailDescription": "Recibe un correo semanal con el resumen de la actividad de cada espacio de trabajo.",
+        "databaseDescription": "Muestra un resumen de actividad semanal en tus notificaciones."
+      },
+      "draftReminder": {
+        "title": "Recordatorios de borrador",
+        "mailDescription": "Recibe un correo si un EPK permanece como borrador durante una semana sin publicarse.",
+        "databaseDescription": "Muestra un recordatorio sobre los EPK que quedan como borradores."
+      },
+      "viewMilestone": {
+        "title": "Hitos de visitas",
+        "mailDescription": "Recibe un correo cuando uno de tus EPK supera un hito de visitas (100, 500, 1000…).",
+        "databaseDescription": "Muestra una notificación cuando un EPK supera un hito de visitas."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "Se abrió \"{{epk}}\" mediante {{link}}{{context}}",
     "invitationAcceptedBlurb": "{{member}} aceptó tu invitación y se unió a {{workspace}} como {{role}}",
     "memberRoleChangedByBlurb": "{{changer}} cambió tu rol en {{workspace}} a {{role}}",
-    "memberRoleChangedBlurb": "Tu rol en {{workspace}} ahora es {{role}}"
+    "memberRoleChangedBlurb": "Tu rol en {{workspace}} ahora es {{role}}",
+    "draftReminderBlurb": "\"{{epk}}\" sigue siendo un borrador — publícalo para compartirlo",
+    "viewMilestoneBlurb": "\"{{epk}}\" acaba de superar las {{count}} visitas",
+    "weeklyDigestBlurb": "{{workspace}} tuvo {{count}} visitas en los últimos 7 días"
   },
   "common": {
     "save": "Guardar cambios",

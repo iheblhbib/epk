@@ -477,6 +477,21 @@
         "title": "تغيّر دورك",
         "mailDescription": "احصل على بريد إلكتروني عندما يغيّر مسؤول دورك في مساحة عمل.",
         "databaseDescription": "إظهار إشعار عندما يتغيّر دورك في مساحة عمل."
+      },
+      "weeklyDigest": {
+        "title": "الملخص الأسبوعي",
+        "mailDescription": "احصل على بريد إلكتروني أسبوعي يلخص نشاط كل مساحة عمل.",
+        "databaseDescription": "إظهار ملخص نشاط أسبوعي في إشعاراتك."
+      },
+      "draftReminder": {
+        "title": "تذكيرات المسودات",
+        "mailDescription": "احصل على بريد إلكتروني إذا ظل ملف EPK كمسودة لمدة أسبوع دون نشره.",
+        "databaseDescription": "إظهار تذكير بشأن ملفات EPK المتروكة كمسودات."
+      },
+      "viewMilestone": {
+        "title": "إنجازات المشاهدات",
+        "mailDescription": "احصل على بريد إلكتروني عندما يتجاوز أحد ملفاتك إنجاز مشاهدات (100، 500، 1000…).",
+        "databaseDescription": "إظهار إشعار عندما يتجاوز ملف EPK إنجاز مشاهدات."
       }
     },
     "activity": {
@@ -1159,7 +1174,10 @@
     "privateLinkOpenedBlurb": "تم فتح «{{epk}}» عبر {{link}}{{context}}",
     "invitationAcceptedBlurb": "قبل {{member}} دعوتك وانضم إلى {{workspace}} بصفة {{role}}",
     "memberRoleChangedByBlurb": "غيّر {{changer}} دورك في {{workspace}} إلى {{role}}",
-    "memberRoleChangedBlurb": "دورك في {{workspace}} الآن {{role}}"
+    "memberRoleChangedBlurb": "دورك في {{workspace}} الآن {{role}}",
+    "draftReminderBlurb": "«{{epk}}» لا يزال مسودة — انشره لمشاركته",
+    "viewMilestoneBlurb": "تجاوز «{{epk}}» للتو {{count}} مشاهدة",
+    "weeklyDigestBlurb": "حصلت {{workspace}} على {{count}} مشاهدة خلال الأيام السبعة الماضية"
   },
   "common": {
     "save": "حفظ التغييرات",
