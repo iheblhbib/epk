@@ -6,7 +6,9 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ConfirmTwoFactorAuthenticationRequest;
 use App\Http\Requests\Auth\DisableTwoFactorAuthenticationRequest;
 use App\Http\Requests\Auth\EnableTwoFactorAuthenticationRequest;
+use App\Notifications\TwoFactorAuthenticationChangedNotification;
 use App\Services\TwoFactorAuthenticationService;
+use App\Support\RequestOrigin;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
@@ -60,6 +62,9 @@ class TwoFactorAuthenticationController extends Controller
             'two_factor_confirmed_at' => now(),
         ])->save();
 
+        [$ip, $country] = RequestOrigin::of($request);
+        $user->notify(new TwoFactorAuthenticationChangedNotification(enabled: true, ip: $ip, country: $country));
+
         // A flat array, consistent with recoveryCodes()/regenerateRecoveryCodes()
         // below — not wrapped in a 'recovery_codes' key, which the frontend
         // doesn't expect here any more than it does from those two.
@@ -68,11 +73,21 @@ class TwoFactorAuthenticationController extends Controller
 
     public function destroy(DisableTwoFactorAuthenticationRequest $request): JsonResponse
     {
-        $request->user()->forceFill([
+        $user = $request->user();
+        $wasEnabled = $user->hasEnabledTwoFactorAuthentication();
+
+        $user->forceFill([
             'two_factor_secret' => null,
             'two_factor_recovery_codes' => null,
             'two_factor_confirmed_at' => null,
         ])->save();
+
+        // Only alert when 2FA was actually on -- a no-op "disable" on an
+        // account that never enabled it isn't a security event.
+        if ($wasEnabled) {
+            [$ip, $country] = RequestOrigin::of($request);
+            $user->notify(new TwoFactorAuthenticationChangedNotification(enabled: false, ip: $ip, country: $country));
+        }
 
         return response()->json(['message' => __('Two-factor authentication disabled.')]);
     }

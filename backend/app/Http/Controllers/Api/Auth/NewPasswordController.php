@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Auth\ResetPasswordRequest;
 use App\Models\User;
+use App\Notifications\PasswordChangedNotification;
+use App\Support\RequestOrigin;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Hash;
@@ -16,14 +18,17 @@ class NewPasswordController extends Controller
 {
     public function store(ResetPasswordRequest $request): JsonResponse
     {
+        $resetUser = null;
+
         $status = Password::reset(
             $request->only('email', 'password', 'password_confirmation', 'token'),
-            function (User $user) use ($request) {
+            function (User $user) use ($request, &$resetUser) {
                 $user->forceFill([
                     'password' => Hash::make($request->validated('password')),
                     'remember_token' => Str::random(60),
                 ])->save();
 
+                $resetUser = $user;
                 event(new PasswordReset($user));
             }
         );
@@ -33,6 +38,9 @@ class NewPasswordController extends Controller
                 'email' => [__($status)],
             ]);
         }
+
+        [$ip, $country] = RequestOrigin::of($request);
+        $resetUser->notify(new PasswordChangedNotification($ip, $country));
 
         return response()->json(['message' => __($status)]);
     }
