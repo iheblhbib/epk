@@ -141,25 +141,12 @@ export function ArtistFormDialog({
               />
             </div>
 
-            <div className="grid grid-cols-3 gap-3">
-              <FormField
-                control={form.control}
-                name="genre"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>{t('artists.fields.genre')}</FormLabel>
-                    <FormControl>
-                      <Input {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+            <div className="grid grid-cols-2 gap-3">
               <FormField
                 control={form.control}
                 name="country"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="min-w-0">
                     <FormLabel>{t('artists.fields.country')}</FormLabel>
                     <Select items={COUNTRY_ITEMS} value={field.value ?? ''} onValueChange={field.onChange}>
                       <FormControl>
@@ -183,10 +170,39 @@ export function ArtistFormDialog({
                 control={form.control}
                 name="city"
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className="min-w-0">
                     <FormLabel>{t('artists.fields.city')}</FormLabel>
                     <FormControl>
                       <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <FormField
+                control={form.control}
+                name="genre"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>{t('artists.fields.genre')}</FormLabel>
+                    <FormControl>
+                      <Input {...field} />
+                    </FormControl>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="website"
+                render={({ field }) => (
+                  <FormItem className="min-w-0">
+                    <FormLabel>{t('artists.fields.website')}</FormLabel>
+                    <FormControl>
+                      <Input type="url" placeholder="https://" {...field} />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
@@ -202,20 +218,6 @@ export function ArtistFormDialog({
                   <FormLabel>{t('artists.fields.shortBio')}</FormLabel>
                   <FormControl>
                     <Textarea rows={3} {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={form.control}
-              name="website"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>{t('artists.fields.website')}</FormLabel>
-                  <FormControl>
-                    <Input type="url" placeholder="https://" {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
