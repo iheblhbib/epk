@@ -25,4 +25,6 @@ return [
     'epk_published' => ['database'],
     'team_member_joined' => ['database'],
     'private_link_opened' => ['mail', 'database'],
+    'invitation_accepted' => ['mail', 'database'],
+    'member_role_changed' => ['mail', 'database'],
 ];

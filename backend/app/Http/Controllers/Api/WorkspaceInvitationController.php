@@ -9,6 +9,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\WorkspaceMemberResource;
 use App\Models\User;
 use App\Models\WorkspaceMember;
+use App\Notifications\InvitationAcceptedNotification;
 use App\Notifications\TeamMemberJoinedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -199,13 +200,17 @@ class WorkspaceInvitationController extends Controller
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
+        $member->setRelation('user', User::find($userId));
+
         $this->notifyExistingMembers($member, $userId);
+        $this->notifyInviter($member, $userId);
     }
 
     /**
      * "Existing" — everyone who was already active before this join, minus
-     * the person who just joined (they don't need a bell telling them they
-     * joined; the invite-accepted UI flow they're already on covers that).
+     * the person who just joined (the invite-accepted UI flow already covers
+     * that for them) and minus the inviter, who gets the more specific
+     * InvitationAcceptedNotification instead of this generic broadcast.
      */
     private function notifyExistingMembers(WorkspaceMember $member, int $newUserId): void
     {
@@ -214,12 +219,21 @@ class WorkspaceInvitationController extends Controller
                 ->where('status', WorkspaceMemberStatus::Active)
                 ->whereNotNull('user_id')
                 ->where('user_id', '!=', $newUserId)
+                ->when($member->invited_by, fn ($query) => $query->where('user_id', '!=', $member->invited_by))
                 ->pluck('user_id'))
             ->get();
 
         if ($recipients->isNotEmpty()) {
-            $member->setRelation('user', User::find($newUserId));
             Notification::send($recipients, new TeamMemberJoinedNotification($member));
         }
+    }
+
+    private function notifyInviter(WorkspaceMember $member, int $newUserId): void
+    {
+        if ($member->invited_by === null || $member->invited_by === $newUserId) {
+            return;
+        }
+
+        User::find($member->invited_by)?->notify(new InvitationAcceptedNotification($member));
     }
 }

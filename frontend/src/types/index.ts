@@ -101,6 +101,22 @@ export interface PrivateLinkOpenedNotificationPayload {
   referrer_host: string | null
 }
 
+export interface InvitationAcceptedNotificationPayload {
+  kind: 'invitation_accepted'
+  workspace_id: number
+  workspace_name: string
+  member_name: string | null
+  member_role: WorkspaceRole
+}
+
+export interface MemberRoleChangedNotificationPayload {
+  kind: 'member_role_changed'
+  workspace_id: number
+  workspace_name: string
+  new_role: WorkspaceRole
+  changed_by_name: string | null
+}
+
 // `kind` is a discriminant — a new backend notification type becomes a new
 // tagged member of this union (plus its own *NotificationPayload interface
 // above), and every switch on `kind` in the frontend gets a compile error
@@ -110,6 +126,8 @@ export type AppNotification =
   | { id: string; kind: 'epk_published'; payload: EpkPublishedNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'team_member_joined'; payload: TeamMemberJoinedNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'private_link_opened'; payload: PrivateLinkOpenedNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'invitation_accepted'; payload: InvitationAcceptedNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'member_role_changed'; payload: MemberRoleChangedNotificationPayload; read_at: string | null; created_at: string }
 
 // Mirrors backend/config/notification_preferences.php — only the channels
 // listed there are toggleable per kind, so this shape (not a generic
@@ -135,6 +153,8 @@ export interface NotificationPreferences {
   epk_published: { database: boolean }
   team_member_joined: { database: boolean }
   private_link_opened: { mail: boolean; database: boolean }
+  invitation_accepted: { mail: boolean; database: boolean }
+  member_role_changed: { mail: boolean; database: boolean }
 }
 
 export type EpkStatus = 'draft' | 'published' | 'archived'

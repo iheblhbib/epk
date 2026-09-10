@@ -467,6 +467,16 @@
         "title": "私享链接被打开",
         "mailDescription": "当你可见的私享链接首次被打开时，接收邮件通知。",
         "databaseDescription": "当私享链接首次被打开时，显示提示通知。"
+      },
+      "invitationAccepted": {
+        "title": "邀请已接受",
+        "mailDescription": "当你邀请的人加入工作区时接收邮件。",
+        "databaseDescription": "当你邀请的人加入工作区时显示提示通知。"
+      },
+      "memberRoleChanged": {
+        "title": "你的角色已更改",
+        "mailDescription": "当管理员更改你在工作区中的角色时接收邮件。",
+        "databaseDescription": "当你在工作区中的角色更改时显示提示通知。"
       }
     },
     "activity": {
@@ -1146,7 +1156,10 @@
     "teamMemberJoinedBlurb": "{{member}} 以 {{role}} 身份加入了 {{workspace}}",
     "someone": "有人",
     "aPrivateLink": "私享链接",
-    "privateLinkOpenedBlurb": "有人通过{{link}}打开了“{{epk}}”{{context}}"
+    "privateLinkOpenedBlurb": "有人通过{{link}}打开了“{{epk}}”{{context}}",
+    "invitationAcceptedBlurb": "{{member}} 接受了你的邀请，以{{role}}身份加入了 {{workspace}}",
+    "memberRoleChangedByBlurb": "{{changer}} 将你在 {{workspace}} 的角色更改为{{role}}",
+    "memberRoleChangedBlurb": "你在 {{workspace}} 的角色现在是{{role}}"
   },
   "common": {
     "save": "保存更改",

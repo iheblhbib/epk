@@ -23,16 +23,19 @@ it('notifies existing members when someone accepts an invite and joins', functio
     $token = $workspace->members()->whereNotNull('invite_token')->first()->invite_token;
     $this->actingAs($invitee)->postJson("/api/invitations/{$token}/accept")->assertOk();
 
-    // Both the owner and the existing viewer get a "someone joined" bell —
-    // neither of them is the one who just joined.
-    expect($owner->fresh()->notifications()->where('data->kind', 'team_member_joined')->count())->toBe(1);
+    // The existing viewer (not the inviter) gets the generic "someone
+    // joined" bell.
     expect($existingMember->fresh()->notifications()->where('data->kind', 'team_member_joined')->count())->toBe(1);
 
     $notification = $existingMember->fresh()->notifications()->where('data->kind', 'team_member_joined')->first();
     expect($notification->data['member_name'])->toBe($invitee->name)
         ->and($notification->data['member_role'])->toBe('editor');
 
-    // The person who just joined doesn't get a "you joined" bell about
-    // themselves.
+    // The owner *is* the inviter here, so they get the specific
+    // "your invitation was accepted" notification instead of the broadcast.
+    expect($owner->fresh()->notifications()->where('data->kind', 'team_member_joined')->count())->toBe(0);
+    expect($owner->fresh()->notifications()->where('data->kind', 'invitation_accepted')->count())->toBe(1);
+
+    // The person who just joined doesn't get a bell about themselves.
     expect($invitee->fresh()->notifications()->where('data->kind', 'team_member_joined')->count())->toBe(0);
 });

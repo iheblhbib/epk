@@ -510,6 +510,42 @@ function NotificationsTab() {
             onCheckedChange={(checked) => toggle('private_link_opened', 'database', checked)}
           />
         </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.invitationAccepted.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.invitationAccepted.mailDescription')}
+            checked={preferences.invitation_accepted.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('invitation_accepted', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.invitationAccepted.databaseDescription')}
+            checked={preferences.invitation_accepted.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('invitation_accepted', 'database', checked)}
+          />
+        </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.memberRoleChanged.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.memberRoleChanged.mailDescription')}
+            checked={preferences.member_role_changed.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('member_role_changed', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.memberRoleChanged.databaseDescription')}
+            checked={preferences.member_role_changed.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('member_role_changed', 'database', checked)}
+          />
+        </div>
       </CardContent>
     </Card>
   )

@@ -467,6 +467,16 @@
         "title": "Link privado aberto",
         "mailDescription": "Receba um e-mail na primeira vez que alguém abre um link privado que você vê.",
         "databaseDescription": "Mostrar uma notificação na primeira vez que um link privado é aberto."
+      },
+      "invitationAccepted": {
+        "title": "Convite aceito",
+        "mailDescription": "Receba um e-mail quando alguém que você convidou entra no espaço de trabalho.",
+        "databaseDescription": "Mostrar uma notificação quando alguém que você convidou entra no espaço de trabalho."
+      },
+      "memberRoleChanged": {
+        "title": "A sua função mudou",
+        "mailDescription": "Receba um e-mail quando um administrador altera a sua função num espaço de trabalho.",
+        "databaseDescription": "Mostrar uma notificação quando a sua função num espaço de trabalho muda."
       }
     },
     "activity": {
@@ -1146,7 +1156,10 @@
     "teamMemberJoinedBlurb": "{{member}} juntou-se a {{workspace}} como {{role}}",
     "someone": "Alguém",
     "aPrivateLink": "um link privado",
-    "privateLinkOpenedBlurb": "\"{{epk}}\" foi aberto através de {{link}}{{context}}"
+    "privateLinkOpenedBlurb": "\"{{epk}}\" foi aberto através de {{link}}{{context}}",
+    "invitationAcceptedBlurb": "{{member}} aceitou o seu convite e entrou em {{workspace}} como {{role}}",
+    "memberRoleChangedByBlurb": "{{changer}} alterou a sua função em {{workspace}} para {{role}}",
+    "memberRoleChangedBlurb": "A sua função em {{workspace}} agora é {{role}}"
   },
   "common": {
     "save": "Guardar alterações",

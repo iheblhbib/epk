@@ -467,6 +467,16 @@
         "title": "فتح رابط خاص",
         "mailDescription": "احصل على بريد إلكتروني عند فتح رابط خاص يمكنك رؤيته لأول مرة.",
         "databaseDescription": "إظهار إشعار عند فتح رابط خاص لأول مرة."
+      },
+      "invitationAccepted": {
+        "title": "تم قبول الدعوة",
+        "mailDescription": "احصل على بريد إلكتروني عندما ينضم شخص دعوته إلى مساحة العمل.",
+        "databaseDescription": "إظهار إشعار عندما ينضم شخص دعوته إلى مساحة العمل."
+      },
+      "memberRoleChanged": {
+        "title": "تغيّر دورك",
+        "mailDescription": "احصل على بريد إلكتروني عندما يغيّر مسؤول دورك في مساحة عمل.",
+        "databaseDescription": "إظهار إشعار عندما يتغيّر دورك في مساحة عمل."
       }
     },
     "activity": {
@@ -1146,7 +1156,10 @@
     "teamMemberJoinedBlurb": "انضم {{member}} إلى {{workspace}} بصفة {{role}}",
     "someone": "شخص ما",
     "aPrivateLink": "رابط خاص",
-    "privateLinkOpenedBlurb": "تم فتح «{{epk}}» عبر {{link}}{{context}}"
+    "privateLinkOpenedBlurb": "تم فتح «{{epk}}» عبر {{link}}{{context}}",
+    "invitationAcceptedBlurb": "قبل {{member}} دعوتك وانضم إلى {{workspace}} بصفة {{role}}",
+    "memberRoleChangedByBlurb": "غيّر {{changer}} دورك في {{workspace}} إلى {{role}}",
+    "memberRoleChangedBlurb": "دورك في {{workspace}} الآن {{role}}"
   },
   "common": {
     "save": "حفظ التغييرات",

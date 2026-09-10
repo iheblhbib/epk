@@ -10,6 +10,8 @@ use App\Http\Resources\WorkspaceMemberResource;
 use App\Models\User;
 use App\Models\Workspace;
 use App\Models\WorkspaceMember;
+use App\Notifications\MemberRemovedNotification;
+use App\Notifications\MemberRoleChangedNotification;
 use App\Notifications\WorkspaceInvitationNotification;
 use App\Services\AuditLogger;
 use App\Services\PlanLimits;
@@ -92,6 +94,11 @@ class WorkspaceMemberController extends Controller
             $workspace->id
         );
 
+        // Only a member with an actual account gets told -- a pending
+        // invite whose role is bumped before it's accepted has nobody to
+        // notify, and the invite email carries the current role anyway.
+        $member->user?->notify(new MemberRoleChangedNotification($workspace, $member->role, $request->user()->name));
+
         return (new WorkspaceMemberResource($member->load(['user', 'inviter'])))->response();
     }
 
@@ -107,7 +114,13 @@ class WorkspaceMemberController extends Controller
             $workspace->id
         );
 
+        $removedUser = $member->user;
+
         $member->delete();
+
+        // Same as above -- revoking a pending invite isn't a "you were
+        // removed" event for anyone.
+        $removedUser?->notify(new MemberRemovedNotification($workspace, $request->user()->name));
 
         return response()->json(['message' => __('Member removed.')]);
     }

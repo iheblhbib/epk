@@ -467,6 +467,16 @@
         "title": "Private link opened",
         "mailDescription": "Get an email the first time someone opens a private link you can see.",
         "databaseDescription": "Show a bell notification the first time a private link is opened."
+      },
+      "invitationAccepted": {
+        "title": "Invitation accepted",
+        "mailDescription": "Get an email when someone you invited joins the workspace.",
+        "databaseDescription": "Show a bell notification when someone you invited joins the workspace."
+      },
+      "memberRoleChanged": {
+        "title": "Your role changed",
+        "mailDescription": "Get an email when an admin changes your role in a workspace.",
+        "databaseDescription": "Show a bell notification when your role in a workspace changes."
       }
     },
     "activity": {
@@ -1146,7 +1156,10 @@
     "teamMemberJoinedBlurb": "{{member}} joined {{workspace}} as {{role}}",
     "someone": "Someone",
     "aPrivateLink": "a private link",
-    "privateLinkOpenedBlurb": "\"{{epk}}\" was opened via {{link}}{{context}}"
+    "privateLinkOpenedBlurb": "\"{{epk}}\" was opened via {{link}}{{context}}",
+    "invitationAcceptedBlurb": "{{member}} accepted your invitation and joined {{workspace}} as {{role}}",
+    "memberRoleChangedByBlurb": "{{changer}} changed your role in {{workspace}} to {{role}}",
+    "memberRoleChangedBlurb": "Your role in {{workspace}} is now {{role}}"
   },
   "common": {
     "save": "Save changes",

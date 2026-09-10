@@ -1,4 +1,4 @@
-import { Bell, Eye, Loader2, Sparkles, UserPlus, Users } from 'lucide-react'
+import { Bell, Eye, Loader2, ShieldAlert, Sparkles, UserCheck, UserPlus, Users } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -150,6 +150,49 @@ function NotificationRow({ notification }: { notification: AppNotification }) {
             link: private_link_label ?? t('notifications.aPrivateLink'),
             context: country ? ` (${country})` : '',
           })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'invitation_accepted': {
+      const { workspace_name, member_name, member_role } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<UserCheck className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to="/team"
+          onClick={onOpen}
+        >
+          {t('notifications.invitationAcceptedBlurb', {
+            member: member_name ?? t('notifications.someone'),
+            workspace: workspace_name,
+            role: t(`common.roles.${member_role}`),
+          })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'member_role_changed': {
+      const { workspace_name, new_role, changed_by_name } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<ShieldAlert className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to="/team"
+          onClick={onOpen}
+        >
+          {changed_by_name
+            ? t('notifications.memberRoleChangedByBlurb', {
+                changer: changed_by_name,
+                workspace: workspace_name,
+                role: t(`common.roles.${new_role}`),
+              })
+            : t('notifications.memberRoleChangedBlurb', {
+                workspace: workspace_name,
+                role: t(`common.roles.${new_role}`),
+              })}
         </NotificationRowShell>
       )
     }
