@@ -53,14 +53,24 @@ This is what lets a workspace's plan update automatically the moment someone pay
 Dashboard → **Developers → Webhooks → Add endpoint**:
 
 - **Endpoint URL**: `https://api.karthagopm.com/api/stripe/webhook` (or wherever your backend is deployed — see [`cpanel-deployment.md`](cpanel-deployment.md) for the subdomain split this app expects)
-- **Events to send** — select exactly these three:
+- **Events to send** — select exactly these four:
   - `customer.subscription.created`
   - `customer.subscription.updated`
   - `customer.subscription.deleted`
+  - `invoice.payment_action_required` — a mid-cycle charge that needs the cardholder to authenticate (3-D Secure). The app emails them a link to complete it.
 
-  (A failed payment doesn't need its own event: Stripe already flips the subscription's `status` to `past_due` and fires `customer.subscription.updated`, which the app already listens for.)
+  (A plain failed payment doesn't need its own event: Stripe flips the subscription's `status` to `past_due` and fires `customer.subscription.updated`, which the app already listens for. The `billing:reconcile` cron job is a safety net for *missed* webhooks — not a substitute for subscribing to the right events here.)
 
 After creating the endpoint, click into it and reveal the **Signing secret** (`whsec_...`) → that's your `STRIPE_WEBHOOK_SECRET`. This is what `StripeWebhookController` uses to verify a request genuinely came from Stripe and not a forged POST to a guessed URL — nothing about this endpoint requires being logged in, so this signature check is the entire security model for it.
+
+### Also configure in the Dashboard (not code)
+
+These aren't `.env` values but the billing flow depends on them:
+
+- **Customer portal** (Settings → Billing → Customer portal): turn on "Update payment method", "Cancel subscription", and "Switch plans" (and add every Price you sell). The app's **Manage billing** button opens this portal and nothing else — if plan-switching isn't enabled here, that button can't change plans.
+- **Failed-payment retries** (Settings → Billing → Manage failed payments): choose how many times / over how many days Stripe retries a failed charge, and what happens when it gives up — **mark the subscription `unpaid` or cancel it**. The app treats `past_due` as a grace period with full access; that grace only ends when Stripe moves the subscription to `unpaid`/`canceled`, so "leave it `past_due` forever" would mean the workspace never locks.
+- **Customer emails** (Settings → Emails): enable "Successful payments" (receipts) and "Failed payments" if you want Stripe's own transactional emails alongside the app's.
+- **Stripe Tax** (Settings → Tax): if you sell to EU customers, VAT is a legal obligation. Enable Stripe Tax or handle VAT manually — the app doesn't.
 
 ## 6. Test it end-to-end
 

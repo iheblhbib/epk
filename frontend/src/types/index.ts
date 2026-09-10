@@ -896,7 +896,7 @@ export interface BillingUsageMetric {
   limit: number | null
 }
 
-export type SubscriptionStatus = 'trialing' | 'active' | 'canceled' | 'past_due'
+export type SubscriptionStatus = 'trialing' | 'active' | 'canceled' | 'past_due' | 'unpaid'
 
 export interface BillingData {
   plan: SubscriptionPlan
@@ -904,6 +904,12 @@ export interface BillingData {
   trial_ends_at: string | null
   billing_interval: 'monthly' | 'yearly' | null
   current_period_ends_at: string | null
+  // Set when the subscription is scheduled to cancel at period end — still
+  // fully active until this date.
+  cancels_at: string | null
+  // When access is lost if nothing changes; null while active or in the
+  // past_due grace period.
+  access_ends_at: string | null
   has_stripe_customer: boolean
   usage: {
     epks: BillingUsageMetric

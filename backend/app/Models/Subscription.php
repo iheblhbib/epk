@@ -24,7 +24,9 @@ class Subscription extends Model
         'trial_ends_at',
         'billing_interval',
         'trial_reminder_stage',
+        'renewal_reminded_at',
         'canceled_at',
+        'cancels_at',
     ];
 
     protected function casts(): array
@@ -35,6 +37,8 @@ class Subscription extends Model
             'current_period_ends_at' => 'datetime',
             'trial_ends_at' => 'datetime',
             'canceled_at' => 'datetime',
+            'cancels_at' => 'datetime',
+            'renewal_reminded_at' => 'datetime',
         ];
     }
 

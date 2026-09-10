@@ -36,6 +36,9 @@ class StripeWebhookController extends Controller
                 $event->data->object
             ),
             'customer.subscription.deleted' => $stripe->handleSubscriptionDeleted($event->data->object),
+            // A mid-cycle charge needs 3-D Secure authentication from the
+            // cardholder before it can go through.
+            'invoice.payment_action_required' => $stripe->handlePaymentActionRequired($event->data->object),
             default => null,
         };
 

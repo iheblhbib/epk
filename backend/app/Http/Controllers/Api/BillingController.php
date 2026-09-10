@@ -26,6 +26,13 @@ class BillingController extends Controller
                 'trial_ends_at' => $workspace->subscription?->trial_ends_at,
                 'billing_interval' => $workspace->subscription?->billing_interval,
                 'current_period_ends_at' => $workspace->subscription?->current_period_ends_at,
+                // Set when the subscription is scheduled to cancel at period
+                // end — still fully active until this date.
+                'cancels_at' => $workspace->subscription?->cancels_at,
+                // When this workspace loses access if nothing changes: the
+                // trial's end, or null while active / in the past_due grace
+                // period.
+                'access_ends_at' => $planLimits->accessEndsAt($workspace),
                 'has_stripe_customer' => $workspace->subscription?->stripe_customer_id !== null,
                 'usage' => [
                     'epks' => ['used' => $workspace->epks()->count(), 'limit' => $planLimits->maxEpks($workspace)],

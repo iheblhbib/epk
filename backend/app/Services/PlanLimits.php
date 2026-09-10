@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use App\Models\Workspace;
+use Carbon\CarbonInterface;
 
 /**
  * Resolves a workspace's effective plan limits/features from config/plans.php.
@@ -96,8 +97,33 @@ class PlanLimits
     {
         $subscription = $workspace->subscription;
 
-        return $subscription?->status === SubscriptionStatus::Active
-            || ($subscription?->status === SubscriptionStatus::Trialing && $subscription->trial_ends_at?->isFuture());
+        return match ($subscription?->status) {
+            SubscriptionStatus::Active => true,
+            // Grace: a failed renewal charge that Stripe is still retrying
+            // keeps full access. Once Stripe gives up it moves the
+            // subscription to Unpaid or Canceled, both of which lock.
+            SubscriptionStatus::PastDue => true,
+            SubscriptionStatus::Trialing => (bool) $subscription->trial_ends_at?->isFuture(),
+            default => false,
+        };
+    }
+
+    /**
+     * When this workspace loses access if nothing changes — the trial's end
+     * for a running trial, null for an active or grace-period (past_due)
+     * subscription, and "now" (already lost) for anything locked. Surfaced
+     * on the billing endpoint so the frontend can show one consistent
+     * "access ends / ended on" line.
+     */
+    public function accessEndsAt(Workspace $workspace): ?CarbonInterface
+    {
+        $subscription = $workspace->subscription;
+
+        return match ($subscription?->status) {
+            SubscriptionStatus::Trialing => $subscription->trial_ends_at,
+            SubscriptionStatus::Canceled, SubscriptionStatus::Unpaid => $subscription->canceled_at ?? now(),
+            default => null,
+        };
     }
 
     public function remainingStorageBytes(Workspace $workspace): ?int

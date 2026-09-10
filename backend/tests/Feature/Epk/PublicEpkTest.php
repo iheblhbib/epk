@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\SectionType;
+use App\Enums\SubscriptionStatus;
 use App\Models\Artist;
 use App\Models\Epk;
 use App\Models\Media;
@@ -818,4 +819,34 @@ it('treats an event dated today as upcoming, not past', function () {
 
     $events = $this->getJson("/api/public/epks/{$epk->slug}")->json('data.sections.0.config.events');
     expect($events[0]['is_past'])->toBeFalse();
+});
+
+it('410s a published epk whose workspace subscription was canceled', function () {
+    $epk = makePublishedEpk();
+    $epk->workspace->subscription()->update([
+        'status' => SubscriptionStatus::Canceled,
+        'trial_ends_at' => now()->subDay(),
+    ]);
+
+    $this->getJson("/api/public/epks/{$epk->slug}")->assertStatus(410);
+    $this->get("/api/public/epks/{$epk->slug}/pdf")->assertStatus(410);
+});
+
+it('410s a published epk whose trial expired with no paid plan', function () {
+    $epk = makePublishedEpk();
+    $epk->workspace->subscription()->update(['trial_ends_at' => now()->subDay()]);
+
+    $this->getJson("/api/public/epks/{$epk->slug}")->assertStatus(410);
+});
+
+it('keeps a published epk live during the past_due grace period', function () {
+    $epk = makePublishedEpk(['title' => 'Still Live']);
+    $epk->workspace->subscription()->update([
+        'status' => SubscriptionStatus::PastDue,
+        'trial_ends_at' => null,
+    ]);
+
+    $this->getJson("/api/public/epks/{$epk->slug}")
+        ->assertOk()
+        ->assertJsonPath('data.title', 'Still Live');
 });

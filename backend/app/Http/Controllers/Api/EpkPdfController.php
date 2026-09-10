@@ -5,11 +5,14 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Epk;
 use App\Services\EpkPdfService;
+use App\Services\PlanLimits;
 use Illuminate\Http\Response;
 use Illuminate\Support\Str;
 
 class EpkPdfController extends Controller
 {
+    public function __construct(private readonly PlanLimits $planLimits) {}
+
     /**
      * Authenticated download from the builder — any workspace member (same
      * ability as viewing the EPK at all), regardless of publish status, so
@@ -29,7 +32,9 @@ class EpkPdfController extends Controller
      */
     public function downloadPublic(string $slug, EpkPdfService $pdf): Response
     {
-        $epk = Epk::query()->published()->where('slug', $slug)->firstOrFail();
+        $epk = Epk::query()->published()->where('slug', $slug)->with('workspace.subscription')->firstOrFail();
+
+        abort_unless($this->planLimits->hasActiveAccess($epk->workspace), 410, __('This press kit is temporarily unavailable.'));
 
         return $this->respondWithPdf($pdf->render($epk), $epk->title);
     }

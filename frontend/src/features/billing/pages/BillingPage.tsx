@@ -118,28 +118,41 @@ function PlanCard({
 }
 
 function SubscriptionStatusBanner({ billing, t }: { billing: BillingData; t: TFunction }) {
-  // Both of these are hard lockouts (the access-gate middleware rejects
-  // every request except the billing routes themselves) — a toast fired
-  // just before the redirect that landed the user here can't be relied on
-  // to survive the navigation, so this banner is the durable explanation.
+  // The lockout states (the access-gate middleware rejects every request
+  // except the billing routes themselves) — a toast fired just before the
+  // redirect that landed the user here can't be relied on to survive the
+  // navigation, so this banner is the durable explanation.
   const isCanceled = billing.subscription_status === 'canceled'
+  const isUnpaid = billing.subscription_status === 'unpaid'
   const isExpiredTrial =
     billing.subscription_status === 'trialing' && !!billing.trial_ends_at && new Date(billing.trial_ends_at) <= new Date()
 
-  if (isCanceled || isExpiredTrial) {
+  if (isCanceled || isUnpaid || isExpiredTrial) {
     return (
       <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
         <AlertTriangle className="size-4 shrink-0" />
-        {t('billing.lockedOut')}
+        {t(isUnpaid ? 'billing.suspendedForNonPayment' : 'billing.lockedOut')}
       </div>
     )
   }
 
+  // past_due is now a grace state — Stripe is still retrying and the
+  // workspace keeps working — so it's a warning, not a lockout.
   if (billing.subscription_status === 'past_due') {
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
+      <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
         <AlertTriangle className="size-4 shrink-0" />
         {t('billing.pastDueWarning')}
+      </div>
+    )
+  }
+
+  // Scheduled to cancel at period end — still fully active, just a heads-up.
+  if (billing.cancels_at && new Date(billing.cancels_at) > new Date()) {
+    return (
+      <div className="flex items-center gap-2 rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">
+        <AlertTriangle className="size-4 shrink-0" />
+        {t('billing.cancelScheduled', { date: new Date(billing.cancels_at).toLocaleDateString() })}
       </div>
     )
   }

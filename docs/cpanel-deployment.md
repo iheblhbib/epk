@@ -95,6 +95,7 @@ Laravel's scheduler needs exactly one cron entry, regardless of how many schedul
 
 | Command | Schedule | What it sends |
 |---|---|---|
+| `billing:reconcile` | daily 06:00 | nothing — re-pulls subscription state from Stripe to catch any missed webhook |
 | `billing:trial-reminders` | daily 07:00 | trial ends in 3 days / 1 day / has ended |
 | `epks:draft-nudge` | daily 08:00 | "your EPK has been a draft for a week" |
 | `epks:view-milestones` | daily 08:15 | "your EPK just passed 100 / 500 / 1,000… views" |

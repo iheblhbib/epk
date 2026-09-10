@@ -37,6 +37,8 @@ function billingResponse(overrides: Partial<BillingData> = {}) {
       trial_ends_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
       billing_interval: null,
       current_period_ends_at: null,
+      cancels_at: null,
+      access_ends_at: null,
       has_stripe_customer: false,
       usage: {
         epks: { used: 0, limit: 1 },

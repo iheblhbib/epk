@@ -5,9 +5,12 @@ use App\Enums\SubscriptionStatus;
 use App\Enums\WorkspaceRole;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Notifications\PaymentActionRequiredNotification;
 use App\Notifications\PaymentFailedNotification;
 use App\Notifications\SubscriptionActivatedNotification;
 use App\Notifications\SubscriptionCanceledNotification;
+use App\Notifications\SubscriptionCancelScheduledNotification;
+use App\Notifications\SubscriptionSuspendedNotification;
 use Illuminate\Support\Facades\Notification;
 use Stripe\WebhookSignature;
 
@@ -173,6 +176,19 @@ function postStripeWebhook(string $payload): void
     ], $payload)->assertOk();
 }
 
+it('marks a subscription unpaid and emails a suspension notice when Stripe exhausts retries', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::PastDue);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'status' => 'unpaid',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    expect($workspace->subscription()->first()->status)->toBe(SubscriptionStatus::Unpaid);
+    Notification::assertSentTo($workspace->adminUsers(), SubscriptionSuspendedNotification::class);
+});
+
 it('emails owners and admins when a payment fails and the subscription goes past_due', function () {
     Notification::fake();
     $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
@@ -229,6 +245,74 @@ it('emails owners and admins when a trial converts to a paid subscription', func
         $workspace->adminUsers(),
         SubscriptionActivatedNotification::class,
         fn ($notification) => $notification->recovered === false
+    );
+});
+
+it('records a scheduled cancellation and emails a heads-up once', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
+    $endsAt = 1_800_000_000;
+
+    $payload = stripeSubscriptionPayload([
+        'cancel_at_period_end' => true,
+        'cancel_at' => $endsAt,
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]);
+    postStripeWebhook($payload);
+
+    $subscription = $workspace->subscription()->first();
+    expect($subscription->status)->toBe(SubscriptionStatus::Active)
+        ->and($subscription->cancels_at?->timestamp)->toBe($endsAt);
+    Notification::assertSentToTimes(
+        $workspace->adminUsers()->first(),
+        SubscriptionCancelScheduledNotification::class,
+        1
+    );
+
+    // A repeat webhook carrying the same scheduled cancellation doesn't re-email.
+    postStripeWebhook($payload);
+    Notification::assertSentToTimes(
+        $workspace->adminUsers()->first(),
+        SubscriptionCancelScheduledNotification::class,
+        1
+    );
+});
+
+it('clears the scheduled cancellation when the user reactivates', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
+    $workspace->subscription()->update(['cancels_at' => now()->addWeek()]);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'cancel_at_period_end' => false,
+        'cancel_at' => null,
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    expect($workspace->subscription()->first()->cancels_at)->toBeNull();
+});
+
+it('emails a 3-D Secure confirmation link when a renewal needs authentication', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
+    $workspace->subscription()->update(['stripe_subscription_id' => 'sub_3ds']);
+
+    $payload = json_encode([
+        'id' => 'evt_'.uniqid(),
+        'object' => 'event',
+        'type' => 'invoice.payment_action_required',
+        'data' => ['object' => [
+            'id' => 'in_test',
+            'object' => 'invoice',
+            'subscription' => 'sub_3ds',
+            'hosted_invoice_url' => 'https://invoice.stripe.test/i/abc123',
+        ]],
+    ]);
+    postStripeWebhook($payload);
+
+    Notification::assertSentTo(
+        $workspace->adminUsers(),
+        PaymentActionRequiredNotification::class
     );
 });
 

@@ -8,6 +8,7 @@ use App\Http\Resources\PublicEpkResource;
 use App\Models\Epk;
 use App\Models\Media;
 use App\Services\MusicZipBuilder;
+use App\Services\PlanLimits;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -18,7 +19,25 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PublicEpkController extends Controller
 {
-    public function __construct(private readonly MusicZipBuilder $zipBuilder) {}
+    public function __construct(
+        private readonly MusicZipBuilder $zipBuilder,
+        private readonly PlanLimits $planLimits,
+    ) {}
+
+    /**
+     * A published EPK still 410s if its workspace has lost access — an
+     * expired trial, or a canceled/unpaid subscription. `past_due` (Stripe
+     * still retrying) keeps the page live, same grace the owner gets.
+     * Matches the private-link gate (PrivatePageController::findActiveLink).
+     */
+    private function assertWorkspaceActive(Epk $epk): void
+    {
+        abort_unless(
+            $this->planLimits->hasActiveAccess($epk->workspace),
+            410,
+            __('This press kit is temporarily unavailable.'),
+        );
+    }
 
     /**
      * Unauthenticated lookup by slug. Scoping to `published` here — rather
@@ -55,9 +74,12 @@ class PublicEpkController extends Controller
         $epk = $scope(Epk::query()->published())
             ->with([
                 'artist',
+                'workspace.subscription',
                 'sections' => fn ($query) => $query->where('is_enabled', true)->orderBy('position'),
             ])
             ->firstOrFail();
+
+        $this->assertWorkspaceActive($epk);
 
         // So PublicSectionConfigResolver can build a slug-scoped download URL
         // for Downloads-section files without an extra query per section —
@@ -81,9 +103,10 @@ class PublicEpkController extends Controller
         $epk = Epk::query()
             ->published()
             ->where('slug', $slug)
-            ->with(['sections' => fn ($query) => $query->whereIn('type', [SectionType::Downloads->value, SectionType::Music->value])->where('is_enabled', true)])
+            ->with(['workspace.subscription', 'sections' => fn ($query) => $query->whereIn('type', [SectionType::Downloads->value, SectionType::Music->value])->where('is_enabled', true)])
             ->firstOrFail();
 
+        $this->assertWorkspaceActive($epk);
         abort_unless($this->allowedMediaIds($epk)->contains($media->id), 404);
 
         return Storage::disk($media->disk)->download($media->path, $media->original_filename);
@@ -100,8 +123,10 @@ class PublicEpkController extends Controller
         $epk = Epk::query()
             ->published()
             ->where('slug', $slug)
-            ->with(['sections' => fn ($query) => $query->where('type', SectionType::Music->value)->where('is_enabled', true)])
+            ->with(['workspace.subscription', 'sections' => fn ($query) => $query->where('type', SectionType::Music->value)->where('is_enabled', true)])
             ->firstOrFail();
+
+        $this->assertWorkspaceActive($epk);
 
         $mediaIds = $this->allowedMediaIds($epk);
         abort_if($mediaIds->isEmpty(), 404);
@@ -121,8 +146,10 @@ class PublicEpkController extends Controller
         $epk = Epk::query()
             ->published()
             ->where('slug', $slug)
-            ->with(['sections' => fn ($query) => $query->where('type', SectionType::Downloads->value)->where('is_enabled', true)])
+            ->with(['workspace.subscription', 'sections' => fn ($query) => $query->where('type', SectionType::Downloads->value)->where('is_enabled', true)])
             ->firstOrFail();
+
+        $this->assertWorkspaceActive($epk);
 
         $mediaIds = $this->allowedMediaIds($epk);
         abort_if($mediaIds->isEmpty(), 404);

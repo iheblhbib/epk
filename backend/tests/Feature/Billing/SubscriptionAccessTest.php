@@ -60,6 +60,24 @@ it('blocks a canceled subscription with no active trial', function () {
         ->assertStatus(402);
 });
 
+it('keeps access during the past_due grace period while Stripe retries', function () {
+    [$workspace, $owner] = accessTestWorkspace();
+    $workspace->subscription()->update(['status' => SubscriptionStatus::PastDue, 'trial_ends_at' => null]);
+
+    $this->actingAs($owner)
+        ->getJson("/api/workspaces/{$workspace->id}")
+        ->assertOk();
+});
+
+it('blocks an unpaid subscription once Stripe has exhausted its retries', function () {
+    [$workspace, $owner] = accessTestWorkspace();
+    $workspace->subscription()->update(['status' => SubscriptionStatus::Unpaid, 'trial_ends_at' => null]);
+
+    $this->actingAs($owner)
+        ->getJson("/api/workspaces/{$workspace->id}")
+        ->assertStatus(402);
+});
+
 it('never blocks the billing routes themselves, even when locked out', function () {
     [$workspace, $owner] = accessTestWorkspace();
     $workspace->subscription()->update(['trial_ends_at' => now()->subDay()]);

@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Enums\SubscriptionStatus;
 use App\Models\Workspace;
 use App\Services\PlanLimits;
 use Closure;
@@ -36,7 +37,11 @@ class EnsureSubscriptionIsActive
         }
 
         if (! $this->planLimits->hasActiveAccess($workspace)) {
-            abort(402, __('Your trial has ended. Choose a plan to keep using this workspace.'));
+            abort(402, match ($workspace->subscription?->status) {
+                SubscriptionStatus::Unpaid => __('We could not process payment for this workspace. Update your payment method to unlock it.'),
+                SubscriptionStatus::Canceled => __('This workspace\'s subscription was canceled. Choose a plan to unlock it.'),
+                default => __('Your trial has ended. Choose a plan to keep using this workspace.'),
+            });
         }
 
         return $next($request);
