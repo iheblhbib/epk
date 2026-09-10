@@ -207,6 +207,8 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
 
     Route::get('/epks/{epk}/private-links', [PrivateLinkController::class, 'index']);
     Route::post('/epks/{epk}/private-links', [PrivateLinkController::class, 'store']);
+    Route::post('/epks/{epk}/private-links/{privateLink}/send', [PrivateLinkController::class, 'send'])
+        ->middleware('throttle:10,1');
     Route::put('/epks/{epk}/private-links/{privateLink}', [PrivateLinkController::class, 'update']);
     Route::delete('/epks/{epk}/private-links/{privateLink}', [PrivateLinkController::class, 'destroy']);
 

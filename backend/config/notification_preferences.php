@@ -24,4 +24,5 @@ return [
     'workspace_invitation' => ['mail', 'database'],
     'epk_published' => ['database'],
     'team_member_joined' => ['database'],
+    'private_link_opened' => ['mail', 'database'],
 ];

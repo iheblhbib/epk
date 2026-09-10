@@ -1,4 +1,4 @@
-import { Bell, Loader2, Sparkles, UserPlus, Users } from 'lucide-react'
+import { Bell, Eye, Loader2, Sparkles, UserPlus, Users } from 'lucide-react'
 import { useState, type ReactNode } from 'react'
 import { useTranslation } from 'react-i18next'
 import { Link } from 'react-router-dom'
@@ -130,6 +130,25 @@ function NotificationRow({ notification }: { notification: AppNotification }) {
             member: member_name ?? t('notifications.someone'),
             workspace: workspace_name,
             role: t(`common.roles.${member_role}`),
+          })}
+        </NotificationRowShell>
+      )
+    }
+
+    case 'private_link_opened': {
+      const { epk_id, epk_title, private_link_label, country } = notification.payload
+      return (
+        <NotificationRowShell
+          icon={<Eye className="size-4 text-primary" />}
+          isUnread={isUnread}
+          createdAt={notification.created_at}
+          to={`/epks/${epk_id}/builder`}
+          onClick={onOpen}
+        >
+          {t('notifications.privateLinkOpenedBlurb', {
+            epk: epk_title,
+            link: private_link_label ?? t('notifications.aPrivateLink'),
+            context: country ? ` (${country})` : '',
           })}
         </NotificationRowShell>
       )

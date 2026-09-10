@@ -1,4 +1,4 @@
-import { Ban, Copy, Link2, Plus, RotateCcw, Trash2 } from 'lucide-react'
+import { Ban, Copy, Link2, Mail, Plus, RotateCcw, Send, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { toast } from 'sonner'
@@ -15,10 +15,13 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
 import {
   useCreatePrivateLink,
   useDeletePrivateLink,
   usePrivateLinks,
+  useSendPrivateLink,
   useUpdatePrivateLink,
 } from '@/features/epks/hooks/usePrivateLinks'
 import type { PrivateLink } from '@/types'
@@ -30,10 +33,107 @@ function statusLabel(link: PrivateLink, t: TFunction): { text: string; variant: 
   return { text: t('epkBuilder.privateLinks.status.active'), variant: 'default' }
 }
 
+function SendLinkForm({ epkId, link, onDone }: { epkId: number; link: PrivateLink; onDone: () => void }) {
+  const { t } = useTranslation()
+  const sendLink = useSendPrivateLink(epkId)
+  const [email, setEmail] = useState('')
+  const [name, setName] = useState('')
+  const [note, setNote] = useState('')
+  const [includePassword, setIncludePassword] = useState(true)
+  const [password, setPassword] = useState('')
+
+  return (
+    <form
+      className="space-y-2.5 rounded-md bg-muted/60 p-2.5"
+      onSubmit={(event) => {
+        event.preventDefault()
+        sendLink.mutate(
+          {
+            linkId: link.id,
+            payload: {
+              recipient_email: email,
+              recipient_name: name || null,
+              message: note || null,
+              include_password: link.requires_password && includePassword,
+              password: link.requires_password && includePassword ? password : null,
+            },
+          },
+          {
+            onSuccess: () => {
+              toast.success(t('epkBuilder.privateLinks.send.toastSent'))
+              onDone()
+            },
+            onError: (error) => {
+              const detail = (error as { response?: { data?: { errors?: { password?: string[] } } } }).response?.data
+                ?.errors?.password?.[0]
+              toast.error(detail ?? t('epkBuilder.privateLinks.send.toastError'))
+            },
+          }
+        )
+      }}
+    >
+      <div className="space-y-1.5">
+        <Label htmlFor={`send-email-${link.id}`}>{t('epkBuilder.privateLinks.send.emailField')}</Label>
+        <Input
+          id={`send-email-${link.id}`}
+          type="email"
+          required
+          placeholder="journalist@example.com"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+        />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor={`send-name-${link.id}`}>{t('epkBuilder.privateLinks.send.nameField')}</Label>
+        <Input id={`send-name-${link.id}`} value={name} onChange={(event) => setName(event.target.value)} />
+      </div>
+      <div className="space-y-1.5">
+        <Label htmlFor={`send-note-${link.id}`}>{t('epkBuilder.privateLinks.send.noteField')}</Label>
+        <Textarea
+          id={`send-note-${link.id}`}
+          rows={2}
+          placeholder={t('epkBuilder.privateLinks.send.notePlaceholder')}
+          value={note}
+          onChange={(event) => setNote(event.target.value)}
+        />
+      </div>
+      {link.requires_password && (
+        <div className="space-y-2">
+          <div className="flex items-center justify-between gap-3">
+            <Label htmlFor={`send-incpw-${link.id}`} className="text-xs font-normal text-muted-foreground">
+              {t('epkBuilder.privateLinks.send.includePassword')}
+            </Label>
+            <Switch id={`send-incpw-${link.id}`} checked={includePassword} onCheckedChange={setIncludePassword} />
+          </div>
+          {includePassword && (
+            <Input
+              type="text"
+              required
+              placeholder={t('epkBuilder.privateLinks.send.confirmPasswordPlaceholder')}
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+            />
+          )}
+        </div>
+      )}
+      <div className="flex gap-1.5">
+        <Button type="submit" size="sm" disabled={sendLink.isPending}>
+          <Send className="size-3.5" />
+          {sendLink.isPending ? t('epkBuilder.privateLinks.send.sending') : t('epkBuilder.privateLinks.send.submit')}
+        </Button>
+        <Button type="button" size="sm" variant="ghost" onClick={onDone}>
+          {t('common.cancel')}
+        </Button>
+      </div>
+    </form>
+  )
+}
+
 function LinkRow({ epkId, link }: { epkId: number; link: PrivateLink }) {
   const { t } = useTranslation()
   const updateLink = useUpdatePrivateLink(epkId)
   const deleteLink = useDeletePrivateLink(epkId)
+  const [sendOpen, setSendOpen] = useState(false)
   // An inline confirm step rather than a nested <ConfirmDialog> — a Dialog
   // opened from inside another Dialog's content trips Base UI's focus
   // trapping (it aria-hides the outer dialog while a button inside it still
@@ -64,6 +164,20 @@ function LinkRow({ epkId, link }: { epkId: number; link: PrivateLink }) {
           : t('epkBuilder.privateLinks.viewCount_other', { count: link.view_count })}
       </p>
 
+      {link.sends && link.sends.length > 0 && (
+        <p className="truncate text-xs text-muted-foreground">
+          {t('epkBuilder.privateLinks.send.sentTo', {
+            recipients: link.sends
+              .map((send) => send.recipient_name || send.recipient_email)
+              .slice(0, 3)
+              .join(', '),
+            count: link.sends.length,
+          })}
+          {link.sends.length > 3 &&
+            ` ${t('epkBuilder.privateLinks.send.sentToMore', { count: link.sends.length - 3 })}`}
+        </p>
+      )}
+
       <div className="flex flex-wrap items-center gap-1.5">
         <Button
           type="button"
@@ -77,6 +191,12 @@ function LinkRow({ epkId, link }: { epkId: number; link: PrivateLink }) {
           <Copy className="size-3.5" />
           {t('epkBuilder.privateLinks.copyLink')}
         </Button>
+        {!link.revoked_at && link.is_active && (
+          <Button type="button" variant="outline" size="sm" onClick={() => setSendOpen((open) => !open)}>
+            <Mail className="size-3.5" />
+            {t('epkBuilder.privateLinks.send.trigger')}
+          </Button>
+        )}
         {link.revoked_at ? (
           <Button
             type="button"
@@ -121,6 +241,8 @@ function LinkRow({ epkId, link }: { epkId: number; link: PrivateLink }) {
           </Button>
         )}
       </div>
+
+      {sendOpen && <SendLinkForm epkId={epkId} link={link} onDone={() => setSendOpen(false)} />}
 
       {confirmingDelete && (
         <div className="flex items-center justify-between gap-2 rounded-md bg-destructive/10 px-2.5 py-2 text-sm">

@@ -462,6 +462,11 @@
       "teamMemberJoined": {
         "title": "新成员加入",
         "databaseDescription": "当有人加入您的工作区时显示提醒通知。"
+      },
+      "privateLinkOpened": {
+        "title": "私享链接被打开",
+        "mailDescription": "当你可见的私享链接首次被打开时，接收邮件通知。",
+        "databaseDescription": "当私享链接首次被打开时，显示提示通知。"
       }
     },
     "activity": {
@@ -839,6 +844,21 @@
       "passwordPlaceholder": "留空表示不设密码",
       "expiresField": "有效期（可选）",
       "createLink": "创建链接",
+      "send": {
+        "trigger": "通过邮件发送",
+        "emailField": "收件人邮箱",
+        "nameField": "收件人姓名（可选）",
+        "noteField": "个人留言（可选）",
+        "notePlaceholder": "为收件人添加一条简短留言",
+        "includePassword": "在邮件中包含密码",
+        "confirmPasswordPlaceholder": "确认链接密码",
+        "submit": "发送",
+        "sending": "发送中…",
+        "sentTo": "已发送给 {{recipients}}",
+        "sentToMore": "+{{count}} 人",
+        "toastSent": "链接已发送",
+        "toastError": "无法发送链接"
+      },
       "toasts": {
         "copied": "链接已复制",
         "reactivated": "链接已重新启用",
@@ -1124,7 +1144,9 @@
     "epkPublishedByBlurb": "{{publisher}} 发布了《{{epk}}》",
     "epkPublishedBlurb": "《{{epk}}》已发布",
     "teamMemberJoinedBlurb": "{{member}} 以 {{role}} 身份加入了 {{workspace}}",
-    "someone": "有人"
+    "someone": "有人",
+    "aPrivateLink": "私享链接",
+    "privateLinkOpenedBlurb": "有人通过{{link}}打开了“{{epk}}”{{context}}"
   },
   "common": {
     "save": "保存更改",

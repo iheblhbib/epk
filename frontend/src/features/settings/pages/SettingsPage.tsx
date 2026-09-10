@@ -492,6 +492,24 @@ function NotificationsTab() {
             onCheckedChange={(checked) => toggle('team_member_joined', 'database', checked)}
           />
         </div>
+
+        <div className="space-y-3 border-t pt-6">
+          <h3 className="text-sm font-medium text-foreground">{t('settings.notifications.privateLinkOpened.title')}</h3>
+          <PreferenceRow
+            label={t('settings.notifications.channel.email')}
+            description={t('settings.notifications.privateLinkOpened.mailDescription')}
+            checked={preferences.private_link_opened.mail}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('private_link_opened', 'mail', checked)}
+          />
+          <PreferenceRow
+            label={t('settings.notifications.channel.inApp')}
+            description={t('settings.notifications.privateLinkOpened.databaseDescription')}
+            checked={preferences.private_link_opened.database}
+            disabled={updatePreferences.isPending}
+            onCheckedChange={(checked) => toggle('private_link_opened', 'database', checked)}
+          />
+        </div>
       </CardContent>
     </Card>
   )

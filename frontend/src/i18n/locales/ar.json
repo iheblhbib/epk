@@ -462,6 +462,11 @@
       "teamMemberJoined": {
         "title": "انضمام عضو جديد للفريق",
         "databaseDescription": "عرض إشعار عندما ينضم أحدهم إلى مساحة عملك."
+      },
+      "privateLinkOpened": {
+        "title": "فتح رابط خاص",
+        "mailDescription": "احصل على بريد إلكتروني عند فتح رابط خاص يمكنك رؤيته لأول مرة.",
+        "databaseDescription": "إظهار إشعار عند فتح رابط خاص لأول مرة."
       }
     },
     "activity": {
@@ -839,6 +844,21 @@
       "passwordPlaceholder": "اتركه فارغًا لعدم وجود كلمة مرور",
       "expiresField": "تاريخ الانتهاء (اختياري)",
       "createLink": "إنشاء رابط",
+      "send": {
+        "trigger": "إرسال بالبريد الإلكتروني",
+        "emailField": "بريد المستلم الإلكتروني",
+        "nameField": "اسم المستلم (اختياري)",
+        "noteField": "ملاحظة شخصية (اختياري)",
+        "notePlaceholder": "أضف رسالة قصيرة للمستلم",
+        "includePassword": "تضمين كلمة المرور في البريد الإلكتروني",
+        "confirmPasswordPlaceholder": "أكِّد كلمة مرور الرابط",
+        "submit": "إرسال",
+        "sending": "جارٍ الإرسال…",
+        "sentTo": "أُرسل إلى {{recipients}}",
+        "sentToMore": "+{{count}} آخرين",
+        "toastSent": "تم إرسال الرابط",
+        "toastError": "تعذّر إرسال الرابط"
+      },
       "toasts": {
         "copied": "تم نسخ الرابط",
         "reactivated": "تمت إعادة تفعيل الرابط",
@@ -1124,7 +1144,9 @@
     "epkPublishedByBlurb": "نشر {{publisher}} \"{{epk}}\"",
     "epkPublishedBlurb": "تم نشر \"{{epk}}\"",
     "teamMemberJoinedBlurb": "انضم {{member}} إلى {{workspace}} بصفة {{role}}",
-    "someone": "شخص ما"
+    "someone": "شخص ما",
+    "aPrivateLink": "رابط خاص",
+    "privateLinkOpenedBlurb": "تم فتح «{{epk}}» عبر {{link}}{{context}}"
   },
   "common": {
     "save": "حفظ التغييرات",

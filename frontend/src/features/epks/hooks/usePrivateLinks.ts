@@ -3,8 +3,10 @@ import {
   createPrivateLink,
   deletePrivateLink,
   listPrivateLinks,
+  sendPrivateLink,
   updatePrivateLink,
   type CreatePrivateLinkPayload,
+  type SendPrivateLinkPayload,
   type UpdatePrivateLinkPayload,
 } from '@/api/privateLinks'
 
@@ -33,6 +35,16 @@ export function useUpdatePrivateLink(epkId: number) {
   return useMutation({
     mutationFn: ({ linkId, payload }: { linkId: number; payload: UpdatePrivateLinkPayload }) =>
       updatePrivateLink(epkId, linkId, payload),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: privateLinksKey(epkId) }),
+  })
+}
+
+export function useSendPrivateLink(epkId: number) {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: ({ linkId, payload }: { linkId: number; payload: SendPrivateLinkPayload }) =>
+      sendPrivateLink(epkId, linkId, payload),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: privateLinksKey(epkId) }),
   })
 }

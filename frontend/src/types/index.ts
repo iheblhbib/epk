@@ -90,6 +90,17 @@ export interface TeamMemberJoinedNotificationPayload {
   member_role: WorkspaceRole
 }
 
+export interface PrivateLinkOpenedNotificationPayload {
+  kind: 'private_link_opened'
+  epk_id: number
+  epk_title: string
+  workspace_id: number
+  private_link_id: number
+  private_link_label: string | null
+  country: string | null
+  referrer_host: string | null
+}
+
 // `kind` is a discriminant — a new backend notification type becomes a new
 // tagged member of this union (plus its own *NotificationPayload interface
 // above), and every switch on `kind` in the frontend gets a compile error
@@ -98,6 +109,7 @@ export type AppNotification =
   | { id: string; kind: 'workspace_invitation'; payload: WorkspaceInvitationNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'epk_published'; payload: EpkPublishedNotificationPayload; read_at: string | null; created_at: string }
   | { id: string; kind: 'team_member_joined'; payload: TeamMemberJoinedNotificationPayload; read_at: string | null; created_at: string }
+  | { id: string; kind: 'private_link_opened'; payload: PrivateLinkOpenedNotificationPayload; read_at: string | null; created_at: string }
 
 // Mirrors backend/config/notification_preferences.php — only the channels
 // listed there are toggleable per kind, so this shape (not a generic
@@ -122,6 +134,7 @@ export interface NotificationPreferences {
   workspace_invitation: { mail: boolean; database: boolean }
   epk_published: { database: boolean }
   team_member_joined: { database: boolean }
+  private_link_opened: { mail: boolean; database: boolean }
 }
 
 export type EpkStatus = 'draft' | 'published' | 'archived'
@@ -593,6 +606,15 @@ export interface PublicEpk {
 
 // --- Private Links ---
 
+export interface PrivateLinkSend {
+  id: number
+  recipient_email: string
+  recipient_name: string | null
+  included_password: boolean
+  sender_name: string | null
+  created_at: string
+}
+
 export interface PrivateLink {
   id: number
   label: string | null
@@ -603,6 +625,8 @@ export interface PrivateLink {
   is_active: boolean
   view_count: number
   last_viewed_at: string | null
+  // Present on list + after a send; absent on the create response.
+  sends?: PrivateLinkSend[]
   created_at: string
 }
 

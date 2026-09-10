@@ -462,6 +462,11 @@
       "teamMemberJoined": {
         "title": "Novo membro da equipa",
         "databaseDescription": "Mostrar uma notificação quando alguém se juntar ao seu espaço de trabalho."
+      },
+      "privateLinkOpened": {
+        "title": "Link privado aberto",
+        "mailDescription": "Receba um e-mail na primeira vez que alguém abre um link privado que você vê.",
+        "databaseDescription": "Mostrar uma notificação na primeira vez que um link privado é aberto."
       }
     },
     "activity": {
@@ -839,6 +844,21 @@
       "passwordPlaceholder": "Deixe em branco para nenhuma",
       "expiresField": "Expiração (opcional)",
       "createLink": "Criar link",
+      "send": {
+        "trigger": "Enviar por e-mail",
+        "emailField": "E-mail do destinatário",
+        "nameField": "Nome do destinatário (opcional)",
+        "noteField": "Nota pessoal (opcional)",
+        "notePlaceholder": "Adicione uma mensagem curta para o destinatário",
+        "includePassword": "Incluir a palavra-passe no e-mail",
+        "confirmPasswordPlaceholder": "Confirme a palavra-passe do link",
+        "submit": "Enviar",
+        "sending": "A enviar…",
+        "sentTo": "Enviado para {{recipients}}",
+        "sentToMore": "+{{count}} outros",
+        "toastSent": "Link enviado",
+        "toastError": "Não foi possível enviar o link"
+      },
       "toasts": {
         "copied": "Link copiado",
         "reactivated": "Link reativado",
@@ -1124,7 +1144,9 @@
     "epkPublishedByBlurb": "{{publisher}} publicou \"{{epk}}\"",
     "epkPublishedBlurb": "\"{{epk}}\" foi publicado",
     "teamMemberJoinedBlurb": "{{member}} juntou-se a {{workspace}} como {{role}}",
-    "someone": "Alguém"
+    "someone": "Alguém",
+    "aPrivateLink": "um link privado",
+    "privateLinkOpenedBlurb": "\"{{epk}}\" foi aberto através de {{link}}{{context}}"
   },
   "common": {
     "save": "Guardar alterações",

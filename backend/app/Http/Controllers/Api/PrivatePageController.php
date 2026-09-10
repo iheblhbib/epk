@@ -12,6 +12,8 @@ use App\Models\Epk;
 use App\Models\EpkSection;
 use App\Models\Media;
 use App\Models\PrivateLink;
+use App\Models\User;
+use App\Notifications\PrivateLinkOpenedNotification;
 use App\Services\AnalyticsEventLogger;
 use App\Services\MusicZipBuilder;
 use App\Services\PlanLimits;
@@ -19,6 +21,7 @@ use App\Services\PublicSectionConfigResolver;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
@@ -49,7 +52,7 @@ class PrivatePageController extends Controller
             return response()->json(['message' => __('A password is required.'), 'requires_password' => true], 401);
         }
 
-        return $this->respondWith($link);
+        return $this->respondWith($request, $link);
     }
 
     public function verify(Request $request, string $token): JsonResponse
@@ -64,7 +67,7 @@ class PrivatePageController extends Controller
 
         $this->markVerified($request, $link);
 
-        return $this->respondWith($link);
+        return $this->respondWith($request, $link);
     }
 
     public function storeEvent(StoreAnalyticsEventRequest $request, string $token): JsonResponse
@@ -197,7 +200,7 @@ class PrivatePageController extends Controller
         return $link;
     }
 
-    private function respondWith(PrivateLink $link): JsonResponse
+    private function respondWith(Request $request, PrivateLink $link): JsonResponse
     {
         $epk = Epk::query()
             ->where('id', $link->epk_id)
@@ -209,9 +212,52 @@ class PrivatePageController extends Controller
 
         $epk->sections->each(fn ($section) => $section->setRelation('epk', $epk));
         $this->resolver->forPrivateLink($link);
+
+        // Capture "was this the first ever open" before recordView() bumps it —
+        // the model was loaded fresh in findActiveLink(), so view_count here is
+        // the real pre-increment value.
+        $isFirstOpen = $link->view_count === 0;
         $link->recordView();
 
+        if ($isFirstOpen) {
+            $link->setRelation('epk', $epk);
+            $this->notifyLinkOpened($request, $link);
+        }
+
         return (new PublicEpkResource($epk))->response();
+    }
+
+    /**
+     * First-open notification to the link's creator plus the workspace's
+     * owners and admins (deduped) — editors and viewers are left out.
+     */
+    private function notifyLinkOpened(Request $request, PrivateLink $link): void
+    {
+        $recipientIds = $link->epk->workspace->members()
+            ->where('status', 'active')
+            ->whereNotNull('user_id')
+            ->whereIn('role', ['owner', 'admin'])
+            ->pluck('user_id')
+            ->push($link->created_by)
+            ->filter()
+            ->unique();
+
+        $recipients = User::query()->whereIn('id', $recipientIds)->get();
+
+        if ($recipients->isEmpty()) {
+            return;
+        }
+
+        $referer = $request->header('Referer');
+        $refererHost = $referer ? parse_url($referer, PHP_URL_HOST) : null;
+        $country = $request->server('GEOIP_COUNTRY_CODE') ?: $request->header('CF-IPCountry');
+        $country = is_string($country) && strtolower($country) !== 'xx' ? strtoupper(substr($country, 0, 2)) : null;
+
+        Notification::send($recipients, new PrivateLinkOpenedNotification(
+            $link,
+            $country,
+            $refererHost ? strtolower((string) preg_replace('/^www\./', '', $refererHost)) : null,
+        ));
     }
 
     private function sessionKey(PrivateLink $link): string

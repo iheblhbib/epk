@@ -14,6 +14,14 @@ export interface UpdatePrivateLinkPayload {
   revoked?: boolean
 }
 
+export interface SendPrivateLinkPayload {
+  recipient_email: string
+  recipient_name?: string | null
+  message?: string | null
+  include_password?: boolean
+  password?: string | null
+}
+
 export async function listPrivateLinks(epkId: number): Promise<PrivateLink[]> {
   const { data } = await apiClient.get<ApiCollection<PrivateLink>>(`/api/epks/${epkId}/private-links`)
   return data.data
@@ -30,6 +38,18 @@ export async function updatePrivateLink(
   payload: UpdatePrivateLinkPayload
 ): Promise<PrivateLink> {
   const { data } = await apiClient.put<ApiResource<PrivateLink>>(`/api/epks/${epkId}/private-links/${linkId}`, payload)
+  return data.data
+}
+
+export async function sendPrivateLink(
+  epkId: number,
+  linkId: number,
+  payload: SendPrivateLinkPayload
+): Promise<PrivateLink> {
+  const { data } = await apiClient.post<ApiResource<PrivateLink>>(
+    `/api/epks/${epkId}/private-links/${linkId}/send`,
+    payload
+  )
   return data.data
 }
 

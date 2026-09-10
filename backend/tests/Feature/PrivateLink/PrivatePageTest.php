@@ -3,11 +3,15 @@
 use App\Enums\EpkStatus;
 use App\Enums\SectionType;
 use App\Enums\SubscriptionStatus;
+use App\Enums\WorkspaceRole;
 use App\Models\Artist;
 use App\Models\Epk;
 use App\Models\Media;
 use App\Models\PrivateLink;
+use App\Models\User;
 use App\Models\Workspace;
+use App\Notifications\PrivateLinkOpenedNotification;
+use Illuminate\Support\Facades\Notification;
 use Illuminate\Support\Facades\Storage;
 
 /**
@@ -311,4 +315,80 @@ it('resolves download urls through the private route, not the public one', funct
 
     $url = $response->json('data.sections.0.config.files.0.url');
     expect($url)->toContain("/private/{$link->token}/downloads/{$media->id}");
+});
+
+/**
+ * Same as epkWithLink() but seeds a team: an owner, an admin, an editor
+ * (also the link's creator), and a viewer — so the "opened" notification's
+ * recipient set (creator + owners/admins, never editors/viewers) is
+ * actually testable.
+ *
+ * @return array{0: PrivateLink, 1: User, 2: User, 3: User, 4: User}
+ */
+function epkWithLinkAndTeam(): array
+{
+    $link = epkWithLink();
+    $workspace = $link->epk->workspace;
+
+    $owner = User::factory()->create();
+    $admin = User::factory()->create();
+    $creator = User::factory()->create();
+    $viewer = User::factory()->create();
+
+    $workspace->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
+    $workspace->members()->create(['user_id' => $admin->id, 'role' => WorkspaceRole::Admin, 'status' => 'active', 'joined_at' => now()]);
+    $workspace->members()->create(['user_id' => $creator->id, 'role' => WorkspaceRole::Editor, 'status' => 'active', 'joined_at' => now()]);
+    $workspace->members()->create(['user_id' => $viewer->id, 'role' => WorkspaceRole::Viewer, 'status' => 'active', 'joined_at' => now()]);
+
+    $link->update(['created_by' => $creator->id]);
+
+    return [$link, $owner, $admin, $creator, $viewer];
+}
+
+it('notifies the link creator and workspace owners/admins the first time a link is opened', function () {
+    Notification::fake();
+    [$link, $owner, $admin, $creator, $viewer] = epkWithLinkAndTeam();
+
+    $this->getJson("/api/private/{$link->token}")->assertOk();
+
+    Notification::assertSentTo([$owner, $admin, $creator], PrivateLinkOpenedNotification::class);
+    Notification::assertNotSentTo($viewer, PrivateLinkOpenedNotification::class);
+});
+
+it('does not notify again on later views of the same link', function () {
+    Notification::fake();
+    [$link, , , $creator] = epkWithLinkAndTeam();
+
+    $this->getJson("/api/private/{$link->token}")->assertOk();
+    Notification::assertSentToTimes($creator, PrivateLinkOpenedNotification::class, 1);
+
+    $this->getJson("/api/private/{$link->token}")->assertOk();
+    Notification::assertSentToTimes($creator, PrivateLinkOpenedNotification::class, 1);
+});
+
+it('respects a recipient opt-out of the opened-notification mail channel', function () {
+    Notification::fake();
+    [$link, , , $creator] = epkWithLinkAndTeam();
+    $creator->update(['notification_preferences' => ['private_link_opened' => ['mail' => false]]]);
+
+    $this->getJson("/api/private/{$link->token}")->assertOk();
+
+    Notification::assertSentTo(
+        $creator,
+        PrivateLinkOpenedNotification::class,
+        fn ($notification, $channels) => $channels === ['database']
+    );
+});
+
+it('fires the opened notification only after the password clears, not on the gated request', function () {
+    Notification::fake();
+    [$link, , , $creator] = epkWithLinkAndTeam();
+    $link->setPassword('correct-horse');
+    $link->save();
+
+    $this->getJson("/api/private/{$link->token}")->assertUnauthorized();
+    Notification::assertNothingSent();
+
+    $this->postJson("/api/private/{$link->token}/verify", ['password' => 'correct-horse'])->assertOk();
+    Notification::assertSentToTimes($creator, PrivateLinkOpenedNotification::class, 1);
 });
