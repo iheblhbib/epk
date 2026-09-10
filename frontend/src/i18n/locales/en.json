@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "myEpks": "My EPKs",
+    "artists": "Artists",
     "mediaLibrary": "Media Library",
     "analytics": "Analytics",
     "contacts": "Contacts",
@@ -209,7 +210,8 @@
     "currentPasswordRequired": "Current password is required",
     "titleRequired": "Title is required",
     "selectOrCreateArtist": "Select or create an artist",
-    "artistNameRequired": "Artist name is required"
+    "artistNameRequired": "Artist name is required",
+    "urlInvalid": "Enter a valid URL"
   },
   "password": {
     "show": "Show password",
@@ -220,6 +222,49 @@
       "uppercase": "An uppercase letter",
       "number": "A number",
       "symbol": "A symbol (e.g. !@#$%)"
+    }
+  },
+  "artists": {
+    "pageDescription": "Manage the artists your press kits belong to.",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPKs",
+    "dialog": {
+      "addTitle": "New artist",
+      "editTitle": "Edit artist",
+      "description": "These details feed the defaults across all of this artist's press kits."
+    },
+    "fields": {
+      "name": "Name",
+      "stageName": "Stage name",
+      "genre": "Genre",
+      "country": "Country",
+      "selectCountry": "Select a country",
+      "city": "City",
+      "shortBio": "Short bio",
+      "website": "Website",
+      "bookingEmail": "Booking email",
+      "pressEmail": "Press email",
+      "managementEmail": "Management email",
+      "location": "Location",
+      "epks": "EPKs"
+    },
+    "toasts": {
+      "created": "Artist created",
+      "updated": "Artist updated",
+      "deleted": "Artist deleted",
+      "createError": "Could not create the artist",
+      "updateError": "Could not update the artist",
+      "deleteError": "Could not delete the artist"
+    },
+    "deleteDialog": {
+      "title": "Delete artist",
+      "description": "\"{{name}}\" will be permanently removed."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Create a workspace from the dashboard before adding artists.",
+      "noneTitle": "No artists yet",
+      "canEditDescription": "Add your first artist to start building press kits for them.",
+      "viewOnlyDescription": "No artists have been added to this workspace yet."
     }
   },
   "contacts": {

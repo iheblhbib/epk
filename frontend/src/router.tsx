@@ -15,6 +15,7 @@ import { RegisterPage } from '@/features/auth/pages/RegisterPage'
 import { ResetPasswordPage } from '@/features/auth/pages/ResetPasswordPage'
 import { VerifyEmailPage } from '@/features/auth/pages/VerifyEmailPage'
 import { AnalyticsPage } from '@/features/analytics/pages/AnalyticsPage'
+import { ArtistsPage } from '@/features/artists/pages/ArtistsPage'
 import { EpkBuilderPage } from '@/features/epks/builder/EpkBuilderPage'
 import { EpksListPage } from '@/features/epks/pages/EpksListPage'
 import { PrivateEpkPage } from '@/features/private-epk/PrivateEpkPage'
@@ -70,6 +71,7 @@ export const router = createBrowserRouter([
           { path: '/', element: <DashboardHome /> },
           { path: '/epks', element: <EpksListPage /> },
           { path: '/epks/:epkId/builder', element: <EpkBuilderPage /> },
+          { path: '/artists', element: <ArtistsPage /> },
           { path: '/media', element: <MediaLibraryPage /> },
           { path: '/analytics', element: <AnalyticsPage /> },
           { path: '/contacts', element: <ContactsPage /> },

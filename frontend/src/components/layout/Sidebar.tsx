@@ -3,6 +3,7 @@ import {
   CreditCard,
   FolderOpen,
   LayoutDashboard,
+  Mic2,
   Settings,
   ShieldCheck,
   Sparkles,
@@ -17,6 +18,7 @@ import { useAuth } from '@/providers/AuthProvider'
 const NAV_ITEMS = [
   { to: '/', labelKey: 'nav.dashboard', icon: LayoutDashboard, end: true },
   { to: '/epks', labelKey: 'nav.myEpks', icon: Sparkles, end: false },
+  { to: '/artists', labelKey: 'nav.artists', icon: Mic2, end: false },
   { to: '/media', labelKey: 'nav.mediaLibrary', icon: FolderOpen, end: false },
   { to: '/analytics', labelKey: 'nav.analytics', icon: BarChart3, end: false },
   { to: '/contacts', labelKey: 'nav.contacts', icon: Users, end: false },

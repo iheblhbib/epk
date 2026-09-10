@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Dashboard",
     "myEpks": "Meine EPKs",
+    "artists": "Künstler",
     "mediaLibrary": "Medienbibliothek",
     "analytics": "Statistiken",
     "contacts": "Kontakte",
@@ -209,7 +210,8 @@
     "currentPasswordRequired": "Aktuelles Passwort ist erforderlich",
     "titleRequired": "Titel ist erforderlich",
     "selectOrCreateArtist": "Wählen oder erstellen Sie einen Künstler",
-    "artistNameRequired": "Künstlername ist erforderlich"
+    "artistNameRequired": "Künstlername ist erforderlich",
+    "urlInvalid": "Gültige URL eingeben"
   },
   "password": {
     "show": "Passwort anzeigen",
@@ -220,6 +222,49 @@
       "uppercase": "Ein Großbuchstabe",
       "number": "Eine Zahl",
       "symbol": "Ein Symbol (z. B. !@#$%)"
+    }
+  },
+  "artists": {
+    "pageDescription": "Verwalte die Künstler, zu denen deine Pressemappen gehören.",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPKs",
+    "dialog": {
+      "addTitle": "Neuer Künstler",
+      "editTitle": "Künstler bearbeiten",
+      "description": "Diese Angaben liefern die Standardwerte für alle Pressemappen dieses Künstlers."
+    },
+    "fields": {
+      "name": "Name",
+      "stageName": "Künstlername",
+      "genre": "Genre",
+      "country": "Land",
+      "selectCountry": "Land auswählen",
+      "city": "Stadt",
+      "shortBio": "Kurzbio",
+      "website": "Website",
+      "bookingEmail": "Booking-E-Mail",
+      "pressEmail": "Presse-E-Mail",
+      "managementEmail": "Management-E-Mail",
+      "location": "Standort",
+      "epks": "EPKs"
+    },
+    "toasts": {
+      "created": "Künstler erstellt",
+      "updated": "Künstler aktualisiert",
+      "deleted": "Künstler gelöscht",
+      "createError": "Künstler konnte nicht erstellt werden",
+      "updateError": "Künstler konnte nicht aktualisiert werden",
+      "deleteError": "Künstler konnte nicht gelöscht werden"
+    },
+    "deleteDialog": {
+      "title": "Künstler löschen",
+      "description": "„{{name}}“ wird dauerhaft entfernt."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Erstelle im Dashboard einen Arbeitsbereich, bevor du Künstler hinzufügst.",
+      "noneTitle": "Noch keine Künstler",
+      "canEditDescription": "Füge deinen ersten Künstler hinzu, um Pressemappen zu erstellen.",
+      "viewOnlyDescription": "Diesem Arbeitsbereich wurden noch keine Künstler hinzugefügt."
     }
   },
   "contacts": {

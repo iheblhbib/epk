@@ -46,6 +46,20 @@ it('lists only artists belonging to the workspace', function () {
     expect($response->json('data'))->toHaveCount(2);
 });
 
+it('includes each artist\'s EPK count in the list, for the management page', function () {
+    [$workspace, $viewer] = workspaceWithRole(WorkspaceRole::Viewer);
+    $withEpks = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    $withoutEpks = Artist::factory()->create(['workspace_id' => $workspace->id]);
+    Epk::factory()->count(2)->create(['workspace_id' => $workspace->id, 'artist_id' => $withEpks->id]);
+
+    $response = $this->actingAs($viewer)->getJson("/api/workspaces/{$workspace->id}/artists");
+
+    $response->assertOk();
+    $byId = collect($response->json('data'))->keyBy('id');
+    expect($byId[$withEpks->id]['epks_count'])->toBe(2);
+    expect($byId[$withoutEpks->id]['epks_count'])->toBe(0);
+});
+
 it('updates an artist as an editor', function () {
     [$workspace, $editor] = workspaceWithRole(WorkspaceRole::Editor);
     $artist = Artist::factory()->create(['workspace_id' => $workspace->id, 'name' => 'Old Name']);

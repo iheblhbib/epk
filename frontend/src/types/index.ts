@@ -141,6 +141,8 @@ export interface Artist {
   management_email: string | null
   profile_image_url: string | null
   cover_image_url: string | null
+  /** Present only on the workspace artist list (ArtistController::index). */
+  epks_count?: number
   created_at: string
   updated_at: string
 }

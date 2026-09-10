@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "仪表盘",
     "myEpks": "我的 EPK",
+    "artists": "艺人",
     "mediaLibrary": "媒体库",
     "analytics": "数据分析",
     "contacts": "联系人",
@@ -209,7 +210,8 @@
     "currentPasswordRequired": "当前密码为必填项",
     "titleRequired": "标题为必填项",
     "selectOrCreateArtist": "请选择或创建一位艺人",
-    "artistNameRequired": "艺人姓名为必填项"
+    "artistNameRequired": "艺人姓名为必填项",
+    "urlInvalid": "请输入有效的网址"
   },
   "password": {
     "show": "显示密码",
@@ -220,6 +222,49 @@
       "uppercase": "一个大写字母",
       "number": "一个数字",
       "symbol": "一个符号（例如 !@#$%）"
+    }
+  },
+  "artists": {
+    "pageDescription": "管理你的宣传资料所属的艺人。",
+    "epkCount_one": "{{count}} 个 EPK",
+    "epkCount_other": "{{count}} 个 EPK",
+    "dialog": {
+      "addTitle": "新建艺人",
+      "editTitle": "编辑艺人",
+      "description": "这些信息会作为该艺人所有宣传资料的默认值。"
+    },
+    "fields": {
+      "name": "姓名",
+      "stageName": "艺名",
+      "genre": "流派",
+      "country": "国家/地区",
+      "selectCountry": "选择国家/地区",
+      "city": "城市",
+      "shortBio": "简短简介",
+      "website": "网站",
+      "bookingEmail": "演出预订邮箱",
+      "pressEmail": "媒体邮箱",
+      "managementEmail": "经纪邮箱",
+      "location": "所在地",
+      "epks": "EPK"
+    },
+    "toasts": {
+      "created": "已创建艺人",
+      "updated": "已更新艺人",
+      "deleted": "已删除艺人",
+      "createError": "无法创建艺人",
+      "updateError": "无法更新艺人",
+      "deleteError": "无法删除艺人"
+    },
+    "deleteDialog": {
+      "title": "删除艺人",
+      "description": "将永久删除“{{name}}”。"
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "请先在仪表板中创建工作区，然后再添加艺人。",
+      "noneTitle": "尚无艺人",
+      "canEditDescription": "添加你的第一位艺人，开始为其制作宣传资料。",
+      "viewOnlyDescription": "此工作区尚未添加任何艺人。"
     }
   },
   "contacts": {

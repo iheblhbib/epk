@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "Painel",
     "myEpks": "Os meus EPK",
+    "artists": "Artistas",
     "mediaLibrary": "Biblioteca de media",
     "analytics": "Estatísticas",
     "contacts": "Contactos",
@@ -209,7 +210,8 @@
     "currentPasswordRequired": "A palavra-passe atual é obrigatória",
     "titleRequired": "O título é obrigatório",
     "selectOrCreateArtist": "Selecione ou crie um artista",
-    "artistNameRequired": "O nome do artista é obrigatório"
+    "artistNameRequired": "O nome do artista é obrigatório",
+    "urlInvalid": "Insira um URL válido"
   },
   "password": {
     "show": "Mostrar palavra-passe",
@@ -220,6 +222,49 @@
       "uppercase": "Uma maiúscula",
       "number": "Um número",
       "symbol": "Um símbolo (ex. !@#$%)"
+    }
+  },
+  "artists": {
+    "pageDescription": "Faça a gestão dos artistas a que pertencem os seus press kits.",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPK",
+    "dialog": {
+      "addTitle": "Novo artista",
+      "editTitle": "Editar artista",
+      "description": "Estes dados preenchem os valores predefinidos de todos os press kits deste artista."
+    },
+    "fields": {
+      "name": "Nome",
+      "stageName": "Nome artístico",
+      "genre": "Género",
+      "country": "País",
+      "selectCountry": "Selecione um país",
+      "city": "Cidade",
+      "shortBio": "Biografia curta",
+      "website": "Site",
+      "bookingEmail": "Email de booking",
+      "pressEmail": "Email de imprensa",
+      "managementEmail": "Email de gestão",
+      "location": "Localização",
+      "epks": "EPK"
+    },
+    "toasts": {
+      "created": "Artista criado",
+      "updated": "Artista atualizado",
+      "deleted": "Artista eliminado",
+      "createError": "Não foi possível criar o artista",
+      "updateError": "Não foi possível atualizar o artista",
+      "deleteError": "Não foi possível eliminar o artista"
+    },
+    "deleteDialog": {
+      "title": "Eliminar artista",
+      "description": "\"{{name}}\" será removido permanentemente."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "Crie um espaço de trabalho no painel antes de adicionar artistas.",
+      "noneTitle": "Ainda não há artistas",
+      "canEditDescription": "Adicione o seu primeiro artista para começar a criar os press kits dele.",
+      "viewOnlyDescription": "Ainda não foram adicionados artistas a este espaço de trabalho."
     }
   },
   "contacts": {

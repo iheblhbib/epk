@@ -2,6 +2,7 @@
   "nav": {
     "dashboard": "لوحة التحكم",
     "myEpks": "ملفاتي الصحفية",
+    "artists": "الفنانون",
     "mediaLibrary": "مكتبة الوسائط",
     "analytics": "الإحصائيات",
     "contacts": "جهات الاتصال",
@@ -209,7 +210,8 @@
     "currentPasswordRequired": "كلمة المرور الحالية مطلوبة",
     "titleRequired": "العنوان مطلوب",
     "selectOrCreateArtist": "اختر فنانًا أو أنشئ واحدًا",
-    "artistNameRequired": "اسم الفنان مطلوب"
+    "artistNameRequired": "اسم الفنان مطلوب",
+    "urlInvalid": "أدخل رابطًا صالحًا"
   },
   "password": {
     "show": "إظهار كلمة المرور",
@@ -220,6 +222,49 @@
       "uppercase": "حرف كبير",
       "number": "رقم",
       "symbol": "رمز (مثل !@#$%)"
+    }
+  },
+  "artists": {
+    "pageDescription": "أدر الفنانين الذين تنتمي إليهم ملفاتك الصحفية.",
+    "epkCount_one": "{{count}} EPK",
+    "epkCount_other": "{{count}} EPK",
+    "dialog": {
+      "addTitle": "فنان جديد",
+      "editTitle": "تعديل الفنان",
+      "description": "تُستخدم هذه التفاصيل كقيم افتراضية في جميع ملفات هذا الفنان الصحفية."
+    },
+    "fields": {
+      "name": "الاسم",
+      "stageName": "اسم الشهرة",
+      "genre": "النوع",
+      "country": "البلد",
+      "selectCountry": "اختر بلدًا",
+      "city": "المدينة",
+      "shortBio": "نبذة مختصرة",
+      "website": "الموقع الإلكتروني",
+      "bookingEmail": "بريد الحجوزات",
+      "pressEmail": "بريد الصحافة",
+      "managementEmail": "بريد الإدارة",
+      "location": "الموقع",
+      "epks": "EPK"
+    },
+    "toasts": {
+      "created": "تم إنشاء الفنان",
+      "updated": "تم تحديث الفنان",
+      "deleted": "تم حذف الفنان",
+      "createError": "تعذر إنشاء الفنان",
+      "updateError": "تعذر تحديث الفنان",
+      "deleteError": "تعذر حذف الفنان"
+    },
+    "deleteDialog": {
+      "title": "حذف الفنان",
+      "description": "سيُحذف «{{name}}» نهائيًا."
+    },
+    "emptyState": {
+      "noWorkspaceDescription": "أنشئ مساحة عمل من لوحة التحكم قبل إضافة الفنانين.",
+      "noneTitle": "لا يوجد فنانون بعد",
+      "canEditDescription": "أضف أول فنان لك لبدء إنشاء ملفاته الصحفية.",
+      "viewOnlyDescription": "لم تتم إضافة أي فنانين إلى مساحة العمل هذه بعد."
     }
   },
   "contacts": {

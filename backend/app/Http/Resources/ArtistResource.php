@@ -26,6 +26,7 @@ class ArtistResource extends JsonResource
             'management_email' => $this->management_email,
             'profile_image_url' => $this->profile_image_path ? asset('storage/'.$this->profile_image_path) : null,
             'cover_image_url' => $this->cover_image_path ? asset('storage/'.$this->cover_image_path) : null,
+            'epks_count' => $this->whenCounted('epks'),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

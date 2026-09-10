@@ -18,7 +18,9 @@ class ArtistController extends Controller
     {
         $this->authorize('viewAny', [Artist::class, $workspace]);
 
-        return ArtistResource::collection($workspace->artists()->orderBy('name')->get())->response();
+        return ArtistResource::collection(
+            $workspace->artists()->withCount('epks')->orderBy('name')->get()
+        )->response();
     }
 
     public function store(StoreArtistRequest $request, Workspace $workspace, PlanLimits $planLimits): JsonResponse
