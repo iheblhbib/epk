@@ -27,14 +27,17 @@ class Workspace extends Model
 
     protected static function booted(): void
     {
-        // Every new workspace gets a 14-day trial at full Business-tier
-        // limits, no Stripe interaction at all -- see docs/superpowers/
-        // specs/2026-09-02-subscription-billing-overhaul-design.md. The
-        // access-gate middleware (EnsureSubscriptionIsActive) is what
-        // actually enforces the 14-day cutoff; this just sets it up.
+        // Every new workspace gets a 14-day trial at Starter-tier limits
+        // and features, no Stripe interaction at all -- see docs/superpowers/
+        // specs/2026-09-02-subscription-billing-overhaul-design.md. The trial
+        // is a taste of the entry tier: Pro/Business features (private links,
+        // custom themes, custom domains) stay locked until the workspace
+        // actually subscribes. The access-gate middleware
+        // (EnsureSubscriptionIsActive) enforces the 14-day cutoff; this just
+        // sets it up.
         static::created(function (Workspace $workspace) {
             $workspace->subscription()->create([
-                'plan' => SubscriptionPlan::Business,
+                'plan' => SubscriptionPlan::Starter,
                 'status' => SubscriptionStatus::Trialing,
                 'trial_ends_at' => now()->addDays(14),
             ]);

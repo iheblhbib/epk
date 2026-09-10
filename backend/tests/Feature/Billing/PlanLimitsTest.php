@@ -175,14 +175,14 @@ it('returns plan, usage, and the plan comparison table from the billing endpoint
         ->assertJsonStructure(['data' => ['plan', 'usage', 'plans' => ['starter', 'pro', 'business']]]);
 });
 
-it('returns plan business and subscription_status trialing for a fresh, never-subscribed workspace', function () {
+it('returns plan starter and subscription_status trialing for a fresh, never-subscribed workspace', function () {
     // Deliberately not using billingWorkspaceWithOwner() here -- that
     // helper immediately overwrites the subscription row to Active with no
     // trial. This test needs the real, untouched Workspace::booted() state:
-    // every new workspace gets a 14-day trial at full Business-tier limits,
-    // and BillingController::show() returns that `plan` column verbatim.
+    // every new workspace gets a 14-day trial at Starter-tier limits, and
+    // BillingController::show() returns that `plan` column verbatim.
     // No test previously asserted this combination, which is exactly why a
-    // trialing workspace being unable to check out into Business shipped
+    // trialing workspace being unable to check out into a plan shipped
     // unnoticed on the frontend (BillingPage.tsx computed "is this my
     // current plan" from `plan` alone).
     $owner = User::factory()->create();
@@ -192,6 +192,6 @@ it('returns plan business and subscription_status trialing for a fresh, never-su
     $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/billing");
 
     $response->assertOk()
-        ->assertJsonPath('data.plan', SubscriptionPlan::Business->value)
+        ->assertJsonPath('data.plan', SubscriptionPlan::Starter->value)
         ->assertJsonPath('data.subscription_status', SubscriptionStatus::Trialing->value);
 });

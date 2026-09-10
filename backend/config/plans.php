@@ -17,10 +17,12 @@
 | times. StripeBillingService::createCheckoutSession() picks between the
 | two based on which interval the frontend requested.
 |
-| There is no Free tier. Every new workspace gets a 14-day trial at full
-| Business-tier limits (see Workspace::booted()) with no Stripe object
-| created at all -- these three configs are only ever read once a real
-| Stripe price id needs resolving, either at checkout or from a webhook.
+| There is no Free tier. Every new workspace gets a 14-day trial at
+| Starter-tier limits and features (see Workspace::booted()) with no Stripe
+| object created at all -- upgrading to Pro/Business (and unlocking private
+| links, custom themes, custom domains) requires actually subscribing.
+| These configs are only ever read for limit checks and once a real Stripe
+| price id needs resolving, either at checkout or from a webhook.
 |
 | 'white_label' is recorded here as a plan flag but has no enforcement
 | point yet -- that feature doesn't exist in the app at all, so there's

@@ -25,15 +25,14 @@ const workspace = {
 function billingResponse(overrides: Partial<BillingData> = {}) {
   return {
     data: {
-      // A trialing workspace's `plan` is always 'business' — see
+      // A trialing workspace's `plan` is always 'starter' — see
       // Workspace::booted() on the backend, which grants every new
-      // workspace a 14-day trial at full Business-tier limits. Typing
-      // `overrides` loosely used to let a scenario below combine
-      // `plan: 'starter'` with `subscription_status: 'trialing'`, a
-      // combination the real backend can never produce, and that's exactly
-      // what hid the BillingPage bug this test file now also covers
-      // (a trialing workspace being unable to check out into Business).
-      plan: 'business',
+      // workspace a 14-day trial at Starter-tier limits and features.
+      // "Currently subscribed" is derived from `subscription_status`, never
+      // from `plan` alone — that conflation is what hid the BillingPage bug
+      // this file also covers (a trialing workspace being unable to check
+      // out into any plan because `plan` matched a card).
+      plan: 'starter',
       subscription_status: 'trialing',
       trial_ends_at: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
       billing_interval: null,
@@ -157,11 +156,11 @@ describe('BillingPage', () => {
 
   it('shows no current-plan badge and offers an upgrade CTA on all three tiers (including Business) while trialing', async () => {
     mockWorkspace()
-    // Default billingResponse() is plan: 'business', subscription_status:
+    // Default billingResponse() is plan: 'starter', subscription_status:
     // 'trialing' — the real shape of a never-subscribed workspace. Before
-    // the fix, isCurrent was computed from `plan` alone, so this exact
-    // state made the Business card show "Current plan" with no way to
-    // actually check out into it.
+    // the fix, isCurrent was computed from `plan` alone, so a trialing
+    // workspace showed a "Current plan" badge with no way to actually
+    // check out into that tier.
     server.use(http.get(`${API_URL}/api/workspaces/:id/billing`, () => HttpResponse.json(billingResponse())))
 
     renderBillingPage()

@@ -211,11 +211,10 @@ export function BillingPage() {
   const canManage = isAdminLevel(currentWorkspace.my_role)
 
   // `billing.plan` is the tier the workspace's limits are computed at —
-  // during a trial that's always 'business' (see Workspace::booted()), not
+  // during a trial that's always 'starter' (see Workspace::booted()), not
   // a plan anyone is actually paying for. "Currently subscribed" has to be
   // derived from subscription_status instead, or a trialing workspace would
-  // show Business as its "current plan" with no way to actually check out
-  // into it.
+  // show Starter as its "current plan" and hide the upgrade buttons for it.
   const isSubscribed = billing.subscription_status === 'active' || billing.subscription_status === 'past_due'
   const currentPlanIndex = isSubscribed ? PLAN_ORDER.indexOf(billing.plan) : -1
 

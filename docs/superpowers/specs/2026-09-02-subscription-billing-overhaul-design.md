@@ -3,6 +3,14 @@
 **Status:** approved by user, ready for implementation planning
 **Date:** 2026-09-02
 
+> **Amendment 2026-09-12:** the 14-day trial now runs at **Starter-tier
+> limits and features**, not Business. Pro/Business features (private links,
+> custom themes, custom domains) stay locked until the workspace subscribes.
+> `Workspace::booted()` and `config/plans.php` are the source of truth; the
+> "full Business-tier limits" passages below describe the original design.
+> Applies to workspaces created after that date — existing trials were left
+> untouched.
+
 ## Motivation
 
 The current billing model (`config/plans.php`: Free/Pro/Business, a single
