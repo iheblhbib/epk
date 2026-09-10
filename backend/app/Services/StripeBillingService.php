@@ -6,7 +6,11 @@ use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use App\Models\Subscription;
 use App\Models\Workspace;
+use App\Notifications\PaymentFailedNotification;
+use App\Notifications\SubscriptionActivatedNotification;
+use App\Notifications\SubscriptionCanceledNotification;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Notification;
 use RuntimeException;
 use Stripe\Event;
 use Stripe\Exception\SignatureVerificationException;
@@ -149,7 +153,46 @@ class StripeBillingService
             $attributes['status'] = $this->mapStatus($stripeSubscription->status);
         }
 
+        $previousStatus = Subscription::where('workspace_id', $workspaceId)->first()?->status;
+
         Subscription::updateOrCreate(['workspace_id' => $workspaceId], $attributes);
+
+        $this->notifyOnStatusChange(
+            (int) $workspaceId,
+            $previousStatus,
+            $attributes['status'] ?? $previousStatus,
+        );
+    }
+
+    /**
+     * Emails a workspace's owners/admins when its subscription status
+     * *changes* into a state worth telling them about. Keyed on the
+     * transition, not the destination state, so Stripe's webhook retries
+     * (which resend the same event) never resend the same email.
+     */
+    private function notifyOnStatusChange(int $workspaceId, ?SubscriptionStatus $from, ?SubscriptionStatus $to): void
+    {
+        if ($from === $to || $to === null) {
+            return;
+        }
+
+        $notification = match (true) {
+            $to === SubscriptionStatus::PastDue => fn (Workspace $w) => new PaymentFailedNotification($w),
+            $to === SubscriptionStatus::Active && in_array($from, [SubscriptionStatus::Trialing, SubscriptionStatus::PastDue], true) => fn (Workspace $w) => new SubscriptionActivatedNotification($w, recovered: $from === SubscriptionStatus::PastDue),
+            $to === SubscriptionStatus::Canceled => fn (Workspace $w) => new SubscriptionCanceledNotification($w),
+            default => null,
+        };
+
+        if ($notification === null) {
+            return;
+        }
+
+        $workspace = Workspace::with('subscription')->find($workspaceId);
+        $recipients = $workspace?->adminUsers();
+
+        if ($workspace && $recipients?->isNotEmpty()) {
+            Notification::send($recipients, $notification($workspace));
+        }
     }
 
     /**
@@ -168,12 +211,16 @@ class StripeBillingService
             return;
         }
 
+        $previousStatus = Subscription::where('workspace_id', $workspaceId)->first()?->status;
+
         Subscription::where('workspace_id', $workspaceId)->update([
             'status' => SubscriptionStatus::Canceled,
             'stripe_subscription_id' => null,
             'billing_interval' => null,
             'canceled_at' => now(),
         ]);
+
+        $this->notifyOnStatusChange((int) $workspaceId, $previousStatus, SubscriptionStatus::Canceled);
     }
 
     /**

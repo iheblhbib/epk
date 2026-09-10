@@ -23,6 +23,7 @@ class Subscription extends Model
         'current_period_ends_at',
         'trial_ends_at',
         'billing_interval',
+        'trial_reminder_stage',
         'canceled_at',
     ];
 

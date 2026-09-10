@@ -91,7 +91,9 @@ Laravel's scheduler needs exactly one cron entry, regardless of how many schedul
 * * * * * cd /home/youruser/api.karthagopm.com && php artisan schedule:run >> /dev/null 2>&1
 ```
 
-**As of this phase, `routes/console.php` doesn't register any scheduled tasks** — there's nothing for this cron entry to actually trigger yet (no queued jobs exist anywhere in the app either — every notification sends synchronously specifically so a deploy with no queue worker never silently drops one, see [`WorkspaceInvitationNotification`](../backend/app/Notifications/WorkspaceInvitationNotification.php)). Set up the cron entry anyway; it's inert until something is scheduled and costs nothing to have running. Laravel's database-driven session garbage collection (pruning expired rows from the `sessions` table) already happens automatically via its built-in probabilistic "lottery" on ordinary requests — no cron needed for that specifically.
+**This cron entry is now required, not optional.** `routes/console.php` schedules `billing:trial-reminders` to run once a day (07:00 server time) — it emails workspace owners/admins that their free trial ends in 3 days, then 1 day, then that it has ended. Without the `schedule:run` cron actually running, those emails never go out. The command is idempotent (a `subscriptions.trial_reminder_stage` marker), so a double-run or a day the cron misses is harmless — it just sends whichever reminder is now due, once.
+
+Still no queue worker anywhere: every notification (including these) sends synchronously during the scheduled run, specifically so a host with no worker process never silently drops one (see [`WorkspaceInvitationNotification`](../backend/app/Notifications/WorkspaceInvitationNotification.php)). Laravel's database-driven session garbage collection already happens via its built-in "lottery" on ordinary requests — no cron needed for that specifically.
 
 ## 6. Redeploying after the first deploy
 

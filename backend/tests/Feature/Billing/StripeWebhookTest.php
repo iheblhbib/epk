@@ -2,7 +2,13 @@
 
 use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
+use App\Enums\WorkspaceRole;
+use App\Models\User;
 use App\Models\Workspace;
+use App\Notifications\PaymentFailedNotification;
+use App\Notifications\SubscriptionActivatedNotification;
+use App\Notifications\SubscriptionCanceledNotification;
+use Illuminate\Support\Facades\Notification;
 use Stripe\WebhookSignature;
 
 function stripeSubscriptionPayload(array $overrides = []): string
@@ -144,4 +150,100 @@ it('ignores an event for a workspace that no longer exists without erroring', fu
         'HTTP_Stripe-Signature' => signedStripeHeaders($payload)['Stripe-Signature'],
         'CONTENT_TYPE' => 'application/json',
     ], $payload)->assertOk();
+});
+
+/** Owner + admin on a workspace, so subscription notifications have recipients. */
+function webhookWorkspaceWithAdmins(SubscriptionStatus $status): Workspace
+{
+    $workspace = Workspace::factory()->create();
+    $workspace->subscription()->update(['plan' => SubscriptionPlan::Pro, 'status' => $status]);
+    foreach ([WorkspaceRole::Owner, WorkspaceRole::Admin] as $role) {
+        $user = User::factory()->create();
+        $workspace->members()->create(['user_id' => $user->id, 'role' => $role, 'status' => 'active', 'joined_at' => now()]);
+    }
+
+    return $workspace;
+}
+
+function postStripeWebhook(string $payload): void
+{
+    test()->call('POST', '/api/stripe/webhook', [], [], [], [
+        'HTTP_Stripe-Signature' => signedStripeHeaders($payload)['Stripe-Signature'],
+        'CONTENT_TYPE' => 'application/json',
+    ], $payload)->assertOk();
+}
+
+it('emails owners and admins when a payment fails and the subscription goes past_due', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'status' => 'past_due',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    Notification::assertSentTo(
+        $workspace->adminUsers(),
+        PaymentFailedNotification::class
+    );
+});
+
+it('does not re-email on a repeat past_due webhook', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::PastDue);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'status' => 'past_due',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    Notification::assertNothingSent();
+});
+
+it('emails owners and admins when the subscription recovers to active', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::PastDue);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'status' => 'active',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    Notification::assertSentTo(
+        $workspace->adminUsers(),
+        SubscriptionActivatedNotification::class,
+        fn ($notification) => $notification->recovered === true
+    );
+});
+
+it('emails owners and admins when a trial converts to a paid subscription', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Trialing);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        'status' => 'active',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    Notification::assertSentTo(
+        $workspace->adminUsers(),
+        SubscriptionActivatedNotification::class,
+        fn ($notification) => $notification->recovered === false
+    );
+});
+
+it('emails owners and admins when the subscription is canceled on Stripe', function () {
+    Notification::fake();
+    $workspace = webhookWorkspaceWithAdmins(SubscriptionStatus::Active);
+    $workspace->subscription()->update(['stripe_subscription_id' => 'sub_test_123']);
+
+    postStripeWebhook(stripeSubscriptionPayload([
+        '_event_type' => 'customer.subscription.deleted',
+        'metadata' => ['workspace_id' => (string) $workspace->id],
+    ]));
+
+    Notification::assertSentTo(
+        $workspace->adminUsers(),
+        SubscriptionCanceledNotification::class
+    );
 });

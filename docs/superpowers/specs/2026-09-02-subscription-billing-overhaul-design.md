@@ -10,6 +10,16 @@
 > "full Business-tier limits" passages below describe the original design.
 > Applies to workspaces created after that date — existing trials were left
 > untouched.
+>
+> **Amendment 2026-09-13:** billing emails added. A daily scheduled command
+> (`billing:trial-reminders`, in `routes/console.php` — the app's first
+> scheduled task, so the `schedule:run` cron is now mandatory) emails
+> owners/admins at trial − 3 days, − 1 day, and on lapse, deduped via a new
+> `subscriptions.trial_reminder_stage` column. `StripeBillingService` fires
+> `PaymentFailedNotification` / `SubscriptionActivatedNotification` /
+> `SubscriptionCanceledNotification` on the corresponding status
+> *transition* (so Stripe's webhook retries don't double-send). All
+> mail-only, always sent — no preference toggle, like the security alerts.
 
 ## Motivation
 

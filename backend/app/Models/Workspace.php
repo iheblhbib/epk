@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Enums\SubscriptionPlan;
 use App\Enums\SubscriptionStatus;
 use Database\Factories\WorkspaceFactory;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -98,5 +99,23 @@ class Workspace extends Model
     public function subscription(): HasOne
     {
         return $this->hasOne(Subscription::class);
+    }
+
+    /**
+     * The users who can act on this workspace's billing and settings —
+     * owners and admins with an actual account. Recipients for
+     * billing/subscription notifications.
+     *
+     * @return Collection<int, User>
+     */
+    public function adminUsers(): Collection
+    {
+        return User::query()
+            ->whereIn('id', $this->members()
+                ->where('status', 'active')
+                ->whereIn('role', ['owner', 'admin'])
+                ->whereNotNull('user_id')
+                ->pluck('user_id'))
+            ->get();
     }
 }
