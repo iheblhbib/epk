@@ -4,6 +4,10 @@ import { Button } from '@/components/ui/button'
 import { Card, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { EmptyState } from '@/components/common/EmptyState'
 import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
+import { PageViewsChart } from '@/features/analytics/components/PageViewsChart'
+import { useWorkspaceAnalytics } from '@/features/analytics/hooks/useAnalytics'
+import { DashboardActivityFeed } from '@/features/dashboard/components/DashboardActivityFeed'
+import { TopEpkCard } from '@/features/dashboard/components/TopEpkCard'
 import { EpkFormDialog } from '@/features/epks/components/EpkFormDialog'
 import { useEpks } from '@/features/epks/hooks/useEpks'
 import { CreateWorkspaceDialog } from '@/features/workspaces/components/CreateWorkspaceDialog'
@@ -15,6 +19,7 @@ export function DashboardHome() {
   const { user } = useAuth()
   const { currentWorkspace, isLoading, setCurrentWorkspaceId } = useCurrentWorkspace()
   const { data: epks } = useEpks(currentWorkspace?.id)
+  const { data: analytics } = useWorkspaceAnalytics(currentWorkspace?.id)
   const firstName = user?.name.split(' ')[0]
 
   if (isLoading) {
@@ -45,8 +50,8 @@ export function DashboardHome() {
   const stats = [
     { label: t('dashboard.stats.totalEpks'), value: String(epks?.length ?? 0) },
     { label: t('dashboard.stats.publishedEpks'), value: String(epks?.filter((epk) => epk.status === 'published').length ?? 0) },
-    { label: t('dashboard.stats.totalViews'), value: '0' },
-    { label: t('dashboard.stats.downloads'), value: '0' },
+    { label: t('dashboard.stats.totalViews'), value: String(analytics?.totals.page_views ?? 0) },
+    { label: t('dashboard.stats.downloads'), value: String(analytics?.totals.downloads ?? 0) },
   ]
 
   return (
@@ -71,6 +76,13 @@ export function DashboardHome() {
         ))}
       </div>
 
+      {analytics && (
+        <>
+          <PageViewsChart points={analytics.daily_page_views} />
+          {analytics.top_epk && <TopEpkCard topEpk={analytics.top_epk} />}
+        </>
+      )}
+
       {epks?.length === 0 && (
         <EmptyState
           icon={Sparkles}
@@ -89,6 +101,8 @@ export function DashboardHome() {
           }
         />
       )}
+
+      <DashboardActivityFeed workspaceId={currentWorkspace.id} />
     </div>
   )
 }

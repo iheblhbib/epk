@@ -7,3 +7,10 @@ export async function getEpkAnalytics(epkId: number, range?: { from?: string; to
   })
   return data.data
 }
+
+export async function getWorkspaceAnalytics(workspaceId: number, range?: { from?: string; to?: string }): Promise<AnalyticsSummary> {
+  const { data } = await apiClient.get<ApiResource<AnalyticsSummary>>(`/api/workspaces/${workspaceId}/analytics`, {
+    params: range,
+  })
+  return data.data
+}

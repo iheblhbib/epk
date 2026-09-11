@@ -1119,6 +1119,15 @@
       "publishedEpks": "الملفات الصحفية المنشورة",
       "totalViews": "إجمالي المشاهدات",
       "downloads": "التنزيلات"
+    },
+    "activity": {
+      "title": "النشاط الأخير",
+      "empty": "لا يوجد نشاط حديث بعد."
+    },
+    "topEpk": {
+      "title": "أفضل ملف صحفي أداءً",
+      "viewCount_one": "{{count}} مشاهدة في هذه الفترة",
+      "viewCount_other": "{{count}} مشاهدة في هذه الفترة"
     }
   },
   "notFound": {

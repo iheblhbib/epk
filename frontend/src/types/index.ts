@@ -732,6 +732,10 @@ export interface AnalyticsSummary {
   devices: AnalyticsDeviceBreakdown[]
   top_downloads: AnalyticsDownload[]
   top_private_links: AnalyticsPrivateLinkBreakdown[]
+  // Present only on the workspace-wide endpoint (getWorkspaceAnalytics) --
+  // undefined/absent on the per-EPK one, since a single EPK's own "top
+  // EPK" would be itself.
+  top_epk?: { id: number; title: string; views: number } | null
 }
 
 // --- Contacts ---

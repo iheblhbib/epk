@@ -1,9 +1,9 @@
 import { apiClient } from '@/api/client'
 import type { AppNotification, ApiPaginated, ApiResource } from '@/types'
 
-export async function listNotifications(page = 1): Promise<ApiPaginated<AppNotification>> {
+export async function listNotifications(page = 1, workspaceId?: number): Promise<ApiPaginated<AppNotification>> {
   const { data } = await apiClient.get<ApiPaginated<AppNotification>>('/api/notifications', {
-    params: { page },
+    params: { page, workspace_id: workspaceId },
   })
   return data
 }

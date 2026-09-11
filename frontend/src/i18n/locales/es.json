@@ -1119,6 +1119,15 @@
       "publishedEpks": "EPK publicados",
       "totalViews": "Vistas totales",
       "downloads": "Descargas"
+    },
+    "activity": {
+      "title": "Actividad reciente",
+      "empty": "Aún no hay actividad reciente."
+    },
+    "topEpk": {
+      "title": "EPK con mejor rendimiento",
+      "viewCount_one": "{{count}} vista en este período",
+      "viewCount_other": "{{count}} vistas en este período"
     }
   },
   "notFound": {

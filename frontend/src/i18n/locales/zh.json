@@ -1119,6 +1119,14 @@
       "publishedEpks": "已发布的 EPK",
       "totalViews": "总浏览量",
       "downloads": "下载量"
+    },
+    "activity": {
+      "title": "近期动态",
+      "empty": "暂无近期动态。"
+    },
+    "topEpk": {
+      "title": "表现最佳的 EPK",
+      "viewCount_other": "{{count}} 次浏览（本期）"
     }
   },
   "notFound": {

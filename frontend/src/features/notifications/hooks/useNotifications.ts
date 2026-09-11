@@ -39,6 +39,14 @@ export function useNotifications(enabled: boolean) {
   })
 }
 
+export function useWorkspaceActivity(workspaceId: number | undefined) {
+  return useQuery({
+    queryKey: ['workspaces', workspaceId, 'notifications'],
+    queryFn: () => listNotifications(1, workspaceId),
+    enabled: workspaceId !== undefined,
+  })
+}
+
 export function useMarkNotificationAsRead() {
   const queryClient = useQueryClient()
 
