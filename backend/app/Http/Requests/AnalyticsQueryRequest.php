@@ -8,7 +8,13 @@ class AnalyticsQueryRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()->can('view', $this->route('epk'));
+        // Bound to whichever route this request is used on -- the per-EPK
+        // analytics route (`epk` param) or the workspace-wide one
+        // (`workspace` param). Exactly one of these is present depending on
+        // which route matched.
+        $subject = $this->route('epk') ?? $this->route('workspace');
+
+        return $subject !== null && $this->user()->can('view', $subject);
     }
 
     public function rules(): array

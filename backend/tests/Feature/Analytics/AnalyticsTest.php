@@ -175,3 +175,64 @@ it('counts unique visitors by distinct visitor_hash, not raw event count', funct
     $response->assertOk();
     $response->assertJsonPath('data.totals.unique_visitors', 2);
 });
+
+// --- Workspace-wide aggregation ---
+
+it('denies workspace analytics to a non-member', function () {
+    [$workspace] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+    $outsider = User::factory()->create();
+
+    $this->actingAs($outsider)->getJson("/api/workspaces/{$workspace->id}/analytics")->assertForbidden();
+});
+
+it('aggregates page views across every epk in the workspace', function () {
+    [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+    $epkA = publishedEpkFor($workspace);
+    $epkB = publishedEpkFor($workspace);
+
+    AnalyticsEvent::factory()->for($epkA)->type(AnalyticsEventType::PageView)->count(2)->create();
+    AnalyticsEvent::factory()->for($epkB)->type(AnalyticsEventType::PageView)->count(3)->create();
+
+    $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/analytics");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.totals.page_views', 5);
+});
+
+it('names the epk with the most views as top_epk', function () {
+    [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+    $epkA = publishedEpkFor($workspace);
+    $epkB = publishedEpkFor($workspace);
+
+    AnalyticsEvent::factory()->for($epkA)->type(AnalyticsEventType::PageView)->count(1)->create();
+    AnalyticsEvent::factory()->for($epkB)->type(AnalyticsEventType::PageView)->count(4)->create();
+
+    $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/analytics");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.top_epk.id', $epkB->id);
+    $response->assertJsonPath('data.top_epk.title', $epkB->title);
+    $response->assertJsonPath('data.top_epk.views', 4);
+});
+
+it('returns a null top_epk and all-zero totals when the workspace has no page views yet', function () {
+    [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+    publishedEpkFor($workspace);
+
+    $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/analytics");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.top_epk', null);
+    $response->assertJsonPath('data.totals.page_views', 0);
+});
+
+it('returns all-zero totals for a workspace with no epks at all', function () {
+    [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+
+    $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/analytics");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.totals.page_views', 0);
+    $response->assertJsonPath('data.daily_page_views', []);
+    $response->assertJsonPath('data.top_epk', null);
+});

@@ -219,6 +219,8 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
         ->middleware('throttle:10,1');
     Route::delete('/epks/{epk}/custom-domain', [EpkCustomDomainController::class, 'destroy']);
 
+    Route::get('/workspaces/{workspace}/analytics', [AnalyticsController::class, 'forWorkspace']);
+
     Route::get('/workspaces/{workspace}/contacts', [ContactController::class, 'index']);
     Route::post('/workspaces/{workspace}/contacts', [ContactController::class, 'store']);
     Route::get('/workspaces/{workspace}/contacts/export', [ContactController::class, 'export']);
