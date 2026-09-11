@@ -11,7 +11,13 @@ class NotificationController extends Controller
 {
     public function index(Request $request): JsonResponse
     {
-        $notifications = $request->user()->notifications()->paginate(15);
+        $query = $request->user()->notifications();
+
+        if ($request->filled('workspace_id')) {
+            $query->where('data->workspace_id', $request->integer('workspace_id'));
+        }
+
+        $notifications = $query->paginate(15);
 
         return NotificationResource::collection($notifications)->response();
     }

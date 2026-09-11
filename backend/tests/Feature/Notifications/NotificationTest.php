@@ -161,3 +161,28 @@ it('automatically marks the invite notification as read once accepted', function
 
     $this->actingAs($invitee)->getJson('/api/notifications/unread-count')->assertJson(['count' => 0]);
 });
+
+it('filters notifications to a single workspace when workspace_id is given', function () {
+    [$workspaceA, $owner] = makeWorkspaceWithOwnerForNotifications();
+    $workspaceB = Workspace::factory()->create(['created_by' => $owner->id]);
+    $workspaceB->members()->create(['user_id' => $owner->id, 'role' => WorkspaceRole::Owner, 'status' => 'active', 'joined_at' => now()]);
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspaceA->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ])->assertCreated();
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspaceB->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Viewer->value,
+    ])->assertCreated();
+
+    $this->actingAs($invitee)->getJson('/api/notifications')
+        ->assertOk()
+        ->assertJsonCount(2, 'data');
+
+    $this->actingAs($invitee)->getJson("/api/notifications?workspace_id={$workspaceA->id}")
+        ->assertOk()
+        ->assertJsonCount(1, 'data')
+        ->assertJsonPath('data.0.payload.workspace_id', $workspaceA->id);
+});
