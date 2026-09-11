@@ -9,6 +9,7 @@ use App\Services\PlanLimits;
 use App\Services\StripeBillingService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 use RuntimeException;
@@ -104,5 +105,24 @@ class BillingController extends Controller
         }
 
         return response()->json(['data' => ['url' => $url]]);
+    }
+
+    /**
+     * A quick in-app glance at recent charges, pulled live from Stripe (not
+     * stored locally — see StripeBillingService::listInvoices). Degrades to
+     * an empty, flagged list rather than a 500 if Stripe can't be reached,
+     * since this is a nice-to-have, not core billing functionality.
+     */
+    public function invoices(Workspace $workspace, StripeBillingService $stripe): JsonResponse
+    {
+        $this->authorize('view', $workspace);
+
+        try {
+            return response()->json(['data' => $stripe->listInvoices($workspace)]);
+        } catch (\Throwable $e) {
+            Log::warning('Could not fetch Stripe invoice history.', ['workspace_id' => $workspace->id, 'error' => $e->getMessage()]);
+
+            return response()->json(['data' => [], 'unavailable' => true]);
+        }
     }
 }

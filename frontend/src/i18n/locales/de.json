@@ -608,6 +608,24 @@
     },
     "emptyState": {
       "noWorkspaceDescription": "Erstellen Sie einen Arbeitsbereich über das Dashboard, um Abrechnungsdetails zu sehen."
+    },
+    "history": {
+      "title": "Zahlungsverlauf",
+      "description": "Letzte Rechnungen für diesen Arbeitsbereich.",
+      "empty": "Noch keine Rechnungen.",
+      "unavailable": "Der Zahlungsverlauf ist vorübergehend nicht verfügbar.",
+      "date": "Datum",
+      "period": "Abrechnungszeitraum",
+      "amount": "Betrag",
+      "status": "Status",
+      "viewInvoice": "Rechnung ansehen",
+      "statuses": {
+        "paid": "Bezahlt",
+        "open": "Offen",
+        "draft": "Entwurf",
+        "uncollectible": "Uneinbringlich",
+        "void": "Storniert"
+      }
     }
   },
   "team": {

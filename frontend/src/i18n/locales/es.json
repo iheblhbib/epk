@@ -608,6 +608,24 @@
     },
     "emptyState": {
       "noWorkspaceDescription": "Crea un espacio de trabajo desde el panel para ver los detalles de facturación."
+    },
+    "history": {
+      "title": "Historial de pagos",
+      "description": "Facturas recientes de este espacio de trabajo.",
+      "empty": "Aún no hay facturas.",
+      "unavailable": "El historial de pagos no está disponible temporalmente.",
+      "date": "Fecha",
+      "period": "Período de facturación",
+      "amount": "Importe",
+      "status": "Estado",
+      "viewInvoice": "Ver factura",
+      "statuses": {
+        "paid": "Pagada",
+        "open": "Abierta",
+        "draft": "Borrador",
+        "uncollectible": "Incobrable",
+        "void": "Anulada"
+      }
     }
   },
   "team": {

@@ -17,6 +17,7 @@ use Illuminate\Support\Facades\Notification;
 use RuntimeException;
 use Stripe\Event;
 use Stripe\Exception\SignatureVerificationException;
+use Stripe\Invoice as StripeInvoice;
 use Stripe\StripeClient;
 use Stripe\Subscription as StripeSubscription;
 use Stripe\Webhook;
@@ -43,6 +44,38 @@ class StripeBillingService
     public function __construct(?StripeClient $client = null)
     {
         $this->client = $client ?? new StripeClient(config('services.stripe.secret'));
+    }
+
+    /**
+     * The most recent invoices for this workspace's Stripe customer, newest
+     * first (Stripe's own default order) — used for the in-app payment
+     * history, so admins don't have to open the Customer Portal for a quick
+     * glance. Full documents (hosted page, PDF) stay on Stripe; nothing
+     * here is stored locally.
+     *
+     * @return list<array{number: ?string, status: ?string, amount_paid: int, currency: string, created: int, period_start: int, period_end: int, hosted_invoice_url: ?string, invoice_pdf: ?string}>
+     */
+    public function listInvoices(Workspace $workspace, int $limit = 12): array
+    {
+        $customerId = $workspace->subscription?->stripe_customer_id;
+
+        if ($customerId === null) {
+            return [];
+        }
+
+        $invoices = $this->client->invoices->all(['customer' => $customerId, 'limit' => $limit]);
+
+        return collect($invoices->data)->map(fn (StripeInvoice $invoice) => [
+            'number' => $invoice->number,
+            'status' => $invoice->status,
+            'amount_paid' => $invoice->amount_paid,
+            'currency' => $invoice->currency,
+            'created' => $invoice->created,
+            'period_start' => $invoice->period_start,
+            'period_end' => $invoice->period_end,
+            'hosted_invoice_url' => $invoice->hosted_invoice_url,
+            'invoice_pdf' => $invoice->invoice_pdf,
+        ])->all();
     }
 
     /**

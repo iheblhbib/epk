@@ -238,4 +238,76 @@ describe('BillingPage', () => {
 
     expect(await screen.findByText(/choose a plan to keep using this workspace/i)).toBeInTheDocument()
   })
+
+  it('lists past invoices with their amount, date, and a link to the hosted invoice', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ plan: 'pro', subscription_status: 'active', trial_ends_at: null, has_stripe_customer: true }))
+      ),
+      http.get(`${API_URL}/api/workspaces/:id/billing/invoices`, () =>
+        HttpResponse.json({
+          data: [
+            {
+              number: 'INV-0001',
+              status: 'paid',
+              amount_paid: 3200,
+              currency: 'eur',
+              created: 1_800_000_000,
+              period_start: 1_797_000_000,
+              period_end: 1_800_000_000,
+              hosted_invoice_url: 'https://invoice.stripe.com/i/test_123',
+              invoice_pdf: 'https://invoice.stripe.com/i/test_123/pdf',
+            },
+          ],
+        })
+      )
+    )
+
+    renderBillingPage()
+
+    const link = await screen.findByRole('link', { name: /view invoice/i })
+    expect(link).toHaveAttribute('href', 'https://invoice.stripe.com/i/test_123')
+    expect(screen.getByText('€32.00')).toBeInTheDocument()
+  })
+
+  it('shows an empty state when a subscribed workspace has no invoices yet', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ plan: 'pro', subscription_status: 'active', trial_ends_at: null, has_stripe_customer: true }))
+      ),
+      http.get(`${API_URL}/api/workspaces/:id/billing/invoices`, () => HttpResponse.json({ data: [] }))
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/no invoices yet/i)).toBeInTheDocument()
+  })
+
+  it('shows an unavailable message when Stripe cannot be reached for invoice history', async () => {
+    mockWorkspace()
+    server.use(
+      http.get(`${API_URL}/api/workspaces/:id/billing`, () =>
+        HttpResponse.json(billingResponse({ plan: 'pro', subscription_status: 'active', trial_ends_at: null, has_stripe_customer: true }))
+      ),
+      http.get(`${API_URL}/api/workspaces/:id/billing/invoices`, () =>
+        HttpResponse.json({ data: [], unavailable: true })
+      )
+    )
+
+    renderBillingPage()
+
+    expect(await screen.findByText(/payment history is temporarily unavailable/i)).toBeInTheDocument()
+  })
+
+  it('does not show the payment history card for a workspace that has never had a Stripe customer', async () => {
+    mockWorkspace()
+    server.use(http.get(`${API_URL}/api/workspaces/:id/billing`, () => HttpResponse.json(billingResponse())))
+
+    renderBillingPage()
+
+    await screen.findByText('Starter')
+    expect(screen.queryByText(/payment history/i)).not.toBeInTheDocument()
+  })
 })

@@ -608,6 +608,24 @@
     },
     "emptyState": {
       "noWorkspaceDescription": "Créez un espace de travail depuis le tableau de bord pour voir les détails de facturation."
+    },
+    "history": {
+      "title": "Historique des paiements",
+      "description": "Factures récentes pour cet espace de travail.",
+      "empty": "Aucune facture pour le moment.",
+      "unavailable": "L'historique des paiements est temporairement indisponible.",
+      "date": "Date",
+      "period": "Période de facturation",
+      "amount": "Montant",
+      "status": "Statut",
+      "viewInvoice": "Voir la facture",
+      "statuses": {
+        "paid": "Payée",
+        "open": "Ouverte",
+        "draft": "Brouillon",
+        "uncollectible": "Irrécouvrable",
+        "void": "Annulée"
+      }
     }
   },
   "team": {

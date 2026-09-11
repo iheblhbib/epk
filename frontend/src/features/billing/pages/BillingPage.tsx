@@ -10,6 +10,7 @@ import { Switch } from '@/components/ui/switch'
 import { EmptyState } from '@/components/common/EmptyState'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import type { BillingInterval } from '@/api/billing'
+import { PaymentHistoryCard } from '@/features/billing/components/PaymentHistoryCard'
 import { UsageBar } from '@/features/billing/components/UsageBar'
 import { useBilling, useCreateCheckoutSession, useCreatePortalSession } from '@/features/billing/hooks/useBilling'
 import { useCurrentWorkspace } from '@/features/workspaces/hooks/useCurrentWorkspace'
@@ -335,6 +336,8 @@ export function BillingPage() {
           })}
         </div>
       </div>
+
+      {canManage && billing.has_stripe_customer && <PaymentHistoryCard workspaceId={currentWorkspace.id} />}
     </div>
   )
 }

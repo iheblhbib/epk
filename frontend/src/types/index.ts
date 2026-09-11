@@ -919,3 +919,19 @@ export interface BillingData {
   }
   plans: Record<SubscriptionPlan, PlanDetails>
 }
+
+export type InvoiceStatus = 'draft' | 'open' | 'paid' | 'uncollectible' | 'void'
+
+export interface BillingInvoice {
+  number: string | null
+  status: InvoiceStatus | null
+  // Cents (or the smallest unit of `currency`) -- Stripe's own convention.
+  amount_paid: number
+  currency: string
+  // Unix timestamps (seconds), as Stripe returns them.
+  created: number
+  period_start: number
+  period_end: number
+  hosted_invoice_url: string | null
+  invoice_pdf: string | null
+}

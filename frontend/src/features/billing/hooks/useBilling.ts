@@ -1,5 +1,5 @@
 import { useMutation, useQuery } from '@tanstack/react-query'
-import { createCheckoutSession, createPortalSession, getBilling, type BillingInterval } from '@/api/billing'
+import { createCheckoutSession, createPortalSession, getBilling, getInvoices, type BillingInterval } from '@/api/billing'
 import type { SubscriptionPlan } from '@/types'
 
 export function useBilling(workspaceId: number | undefined) {
@@ -7,6 +7,18 @@ export function useBilling(workspaceId: number | undefined) {
     queryKey: ['workspaces', workspaceId, 'billing'],
     queryFn: () => getBilling(workspaceId as number),
     enabled: workspaceId !== undefined,
+  })
+}
+
+// Only fetched once a workspace actually has a Stripe customer -- a
+// never-subscribed (still trialing) workspace has no invoices to show,
+// and the endpoint would just return an empty list anyway, so this skips
+// the request entirely rather than firing it needlessly.
+export function useInvoices(workspaceId: number | undefined, enabled: boolean) {
+  return useQuery({
+    queryKey: ['workspaces', workspaceId, 'billing', 'invoices'],
+    queryFn: () => getInvoices(workspaceId as number),
+    enabled: workspaceId !== undefined && enabled,
   })
 }
 

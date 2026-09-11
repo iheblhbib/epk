@@ -608,6 +608,24 @@
     },
     "emptyState": {
       "noWorkspaceDescription": "请先在仪表盘中创建工作区，以查看账单详情。"
+    },
+    "history": {
+      "title": "付款记录",
+      "description": "此工作区的近期账单。",
+      "empty": "暂无账单。",
+      "unavailable": "付款记录暂时不可用。",
+      "date": "日期",
+      "period": "计费周期",
+      "amount": "金额",
+      "status": "状态",
+      "viewInvoice": "查看账单",
+      "statuses": {
+        "paid": "已付款",
+        "open": "未付款",
+        "draft": "草稿",
+        "uncollectible": "无法收取",
+        "void": "已作废"
+      }
     }
   },
   "team": {

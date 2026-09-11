@@ -230,6 +230,7 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
 
     Route::withoutMiddleware('subscription-active')->group(function () {
         Route::get('/workspaces/{workspace}/billing', [BillingController::class, 'show']);
+        Route::get('/workspaces/{workspace}/billing/invoices', [BillingController::class, 'invoices']);
         Route::post('/workspaces/{workspace}/billing/checkout', [BillingController::class, 'checkout'])
             ->middleware('throttle:10,1');
         Route::post('/workspaces/{workspace}/billing/portal', [BillingController::class, 'portal'])

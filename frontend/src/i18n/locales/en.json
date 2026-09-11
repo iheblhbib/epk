@@ -608,6 +608,24 @@
     },
     "emptyState": {
       "noWorkspaceDescription": "Create a workspace from the dashboard to see billing details."
+    },
+    "history": {
+      "title": "Payment history",
+      "description": "Recent invoices for this workspace.",
+      "empty": "No invoices yet.",
+      "unavailable": "Payment history is temporarily unavailable.",
+      "date": "Date",
+      "period": "Billing period",
+      "amount": "Amount",
+      "status": "Status",
+      "viewInvoice": "View invoice",
+      "statuses": {
+        "paid": "Paid",
+        "open": "Open",
+        "draft": "Draft",
+        "uncollectible": "Uncollectible",
+        "void": "Void"
+      }
     }
   },
   "team": {
