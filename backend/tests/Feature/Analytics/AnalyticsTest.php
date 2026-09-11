@@ -226,6 +226,27 @@ it('returns a null top_epk and all-zero totals when the workspace has no page vi
     $response->assertJsonPath('data.totals.page_views', 0);
 });
 
+it('tallies top_downloads by filename across every epk in the workspace', function () {
+    [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
+    $epkA = publishedEpkFor($workspace);
+    $epkB = publishedEpkFor($workspace);
+
+    AnalyticsEvent::factory()->for($epkA)->type(AnalyticsEventType::Download)->count(2)->create([
+        'meta' => ['filename' => 'presskit.pdf'],
+    ]);
+    AnalyticsEvent::factory()->for($epkB)->type(AnalyticsEventType::Download)->create([
+        'meta' => ['filename' => 'photo.jpg'],
+    ]);
+
+    $response = $this->actingAs($owner)->getJson("/api/workspaces/{$workspace->id}/analytics");
+
+    $response->assertOk();
+    $response->assertJsonPath('data.top_downloads.0.filename', 'presskit.pdf');
+    $response->assertJsonPath('data.top_downloads.0.count', 2);
+    $response->assertJsonPath('data.top_downloads.1.filename', 'photo.jpg');
+    $response->assertJsonPath('data.top_downloads.1.count', 1);
+});
+
 it('returns all-zero totals for a workspace with no epks at all', function () {
     [$workspace, $owner] = analyticsWorkspaceWithMember(WorkspaceRole::Owner);
 

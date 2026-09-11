@@ -170,9 +170,19 @@ class AnalyticsAggregator
             ->map(fn ($row) => ['device_type' => $row->device_type, 'count' => (int) $row->count])
             ->all();
 
+        // Scoped to the whole workspace (every EPK, 30-day window by
+        // default), so unlike summarize()'s identical-looking block --
+        // which is naturally bounded by one EPK's own download volume --
+        // this can't be left to hydrate every matching row into PHP: a busy
+        // workspace could have far more download events than we'd ever want
+        // to json_decode() on every Dashboard load. Cap at the most recent
+        // 1000 download events (well above the top-8 we report) and do the
+        // filename tally over that bounded set instead.
         $topDownloads = (clone $base())
             ->where('type', AnalyticsEventType::Download->value)
             ->whereNotNull('meta')
+            ->orderByDesc('analytics_events.created_at')
+            ->limit(1000)
             ->get(['meta'])
             ->map(fn ($row) => json_decode((string) $row->meta, true)['filename'] ?? null)
             ->filter()
