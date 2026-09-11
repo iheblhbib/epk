@@ -39,9 +39,14 @@ export function useNotifications(enabled: boolean) {
   })
 }
 
-export function useWorkspaceActivity(workspaceId: number | undefined) {
+export function useWorkspaceNotifications(workspaceId: number | undefined) {
   return useQuery({
-    queryKey: ['workspaces', workspaceId, 'notifications'],
+    // Keyed under the same 'notifications' namespace that
+    // useMarkNotificationAsRead/useMarkAllNotificationsAsRead invalidate
+    // (queryClient.invalidateQueries({ queryKey: notificationsKey })), so
+    // marking a notification read elsewhere (e.g. the Topbar bell) also
+    // busts this query instead of leaving stale unread state on screen.
+    queryKey: [...notificationsKey, 'workspace', workspaceId],
     queryFn: () => listNotifications(1, workspaceId),
     enabled: workspaceId !== undefined,
   })

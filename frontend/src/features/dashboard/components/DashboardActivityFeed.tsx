@@ -2,11 +2,11 @@ import { useTranslation } from 'react-i18next'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { LoadingSkeleton } from '@/components/common/LoadingSkeleton'
 import { NotificationRow } from '@/components/common/NotificationRow'
-import { useWorkspaceActivity } from '@/features/notifications/hooks/useNotifications'
+import { useWorkspaceNotifications } from '@/features/notifications/hooks/useNotifications'
 
 export function DashboardActivityFeed({ workspaceId }: { workspaceId: number }) {
   const { t } = useTranslation()
-  const { data, isLoading } = useWorkspaceActivity(workspaceId)
+  const { data, isLoading } = useWorkspaceNotifications(workspaceId)
 
   return (
     <Card>
