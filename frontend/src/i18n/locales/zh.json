@@ -73,6 +73,7 @@
       "activity": {
         "title": "近期动态",
         "empty": "暂无近期动态。",
+        "error": "无法加载近期动态。",
         "signedUp": "{{name}} 已注册",
         "workspaceCreated": "{{creator}} 创建了「{{name}}」"
       }

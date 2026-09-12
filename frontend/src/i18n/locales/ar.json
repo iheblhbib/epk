@@ -73,6 +73,7 @@
       "activity": {
         "title": "النشاط الأخير",
         "empty": "لا يوجد نشاط حديث بعد.",
+        "error": "تعذر تحميل النشاط الأخير.",
         "signedUp": "انضم {{name}}",
         "workspaceCreated": "أنشأ {{creator}} \"{{name}}\""
       }

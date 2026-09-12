@@ -73,6 +73,7 @@
       "activity": {
         "title": "Letzte Aktivität",
         "empty": "Noch keine Aktivität.",
+        "error": "Konnte die letzte Aktivität nicht laden.",
         "signedUp": "{{name}} hat sich registriert",
         "workspaceCreated": "{{creator}} hat \"{{name}}\" erstellt"
       }

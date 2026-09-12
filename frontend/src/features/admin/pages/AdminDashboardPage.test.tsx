@@ -104,4 +104,16 @@ describe('AdminDashboardPage', () => {
     await screen.findByText('€48.88')
     expect(await screen.findByText(/No recent activity/i)).toBeInTheDocument()
   })
+
+  it('shows an error message when activity fetch fails', async () => {
+    server.use(
+      http.get(`${API_URL}/api/admin/stats`, () => HttpResponse.json(statsResponse())),
+      http.get(`${API_URL}/api/admin/activity`, () => HttpResponse.error())
+    )
+
+    renderPage()
+
+    await screen.findByText('€48.88')
+    expect(await screen.findByText(/Couldn't load recent activity/i)).toBeInTheDocument()
+  })
 })

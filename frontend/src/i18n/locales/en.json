@@ -73,6 +73,7 @@
       "activity": {
         "title": "Recent activity",
         "empty": "No recent activity yet.",
+        "error": "Couldn't load recent activity.",
         "signedUp": "{{name}} signed up",
         "workspaceCreated": "{{creator}} created \"{{name}}\""
       }

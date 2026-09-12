@@ -29,7 +29,7 @@ function ActivityRow({ entry }: { entry: AdminActivityEntry }) {
 
 export function AdminActivityFeed() {
   const { t } = useTranslation()
-  const { data, isLoading } = useAdminActivity()
+  const { data, isLoading, isError } = useAdminActivity()
 
   return (
     <Card>
@@ -39,6 +39,8 @@ export function AdminActivityFeed() {
       <CardContent>
         {isLoading ? (
           <LoadingSkeleton />
+        ) : isError ? (
+          <p className="text-sm text-muted-foreground">{t('admin.dashboard.activity.error')}</p>
         ) : !data || data.length === 0 ? (
           <p className="text-sm text-muted-foreground">{t('admin.dashboard.activity.empty')}</p>
         ) : (

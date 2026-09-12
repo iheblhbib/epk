@@ -73,6 +73,7 @@
       "activity": {
         "title": "Activité récente",
         "empty": "Aucune activité récente pour le moment.",
+        "error": "Impossible de charger l'activité récente.",
         "signedUp": "{{name}} s'est inscrit(e)",
         "workspaceCreated": "{{creator}} a créé « {{name}} »"
       }
