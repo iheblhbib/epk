@@ -5,7 +5,7 @@ import { ChartCardShell } from '@/features/analytics/components/ChartCardShell'
 
 ChartJS.register(ArcElement, Tooltip)
 
-const COLORS = ['#6D5EF9', '#10b981', '#f59e0b', '#94a3b8']
+const COLORS = ['#cc1417', '#10b981', '#f59e0b', '#94a3b8']
 
 const OPTIONS: ChartOptions<'doughnut'> = {
   responsive: true,

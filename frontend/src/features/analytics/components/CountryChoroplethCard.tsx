@@ -69,7 +69,7 @@ export function CountryChoroplethCard({ rows }: { rows: { country: string; count
                     axis: 'x',
                     quantize: 5,
                     legend: { position: 'bottom-right' },
-                    interpolate: (v: number) => `rgba(109, 94, 249, ${0.15 + v * 0.75})`,
+                    interpolate: (v: number) => `rgba(204, 20, 23, ${0.15 + v * 0.75})`,
                     min: 0,
                     max,
                   },

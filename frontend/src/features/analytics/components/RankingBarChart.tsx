@@ -33,7 +33,7 @@ export function RankingBarChart({
           <Bar
             data={{
               labels: rows.map((row) => row.label),
-              datasets: [{ data: rows.map((row) => row.count), backgroundColor: '#6D5EF9', borderRadius: 4 }],
+              datasets: [{ data: rows.map((row) => row.count), backgroundColor: '#cc1417', borderRadius: 4 }],
             }}
             options={OPTIONS}
           />
