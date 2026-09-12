@@ -175,6 +175,8 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
 
     Route::post('/invitations/{token}/accept', [WorkspaceInvitationController::class, 'accept'])
         ->middleware('throttle:20,1');
+    Route::get('/invitations', [WorkspaceInvitationController::class, 'index']);
+    Route::delete('/invitations/{token}', [WorkspaceInvitationController::class, 'decline']);
 
     Route::get('/workspaces/{workspace}/artists', [ArtistController::class, 'index']);
     Route::post('/workspaces/{workspace}/artists', [ArtistController::class, 'store']);

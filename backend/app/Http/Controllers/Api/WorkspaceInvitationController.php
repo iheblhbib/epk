@@ -49,6 +49,62 @@ class WorkspaceInvitationController extends Controller
     }
 
     /**
+     * Pending invitations addressed to the authenticated user's email --
+     * the in-app counterpart to the emailed token link, for a user who's
+     * already logged in and browsing the workspace switcher. Matched by
+     * email (case-insensitively, same as accept()/login()), not by any
+     * stored user_id, since a pending invite is-by-definition not yet
+     * linked to an account.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        // Mirrors authorizeOwnership()'s two cases: an invite to an
+        // already-registered email has user_id set immediately by
+        // WorkspaceMemberController::store() even while still Pending, while
+        // an invite to a not-yet-registered email leaves user_id null until
+        // accepted -- both are "pending invitations belonging to this user".
+        $invitations = WorkspaceMember::where('status', WorkspaceMemberStatus::Pending)
+            ->where(function ($query) use ($user) {
+                $query->where('user_id', $user->id)
+                    ->orWhere(function ($query) use ($user) {
+                        $query->whereNull('user_id')
+                            ->whereRaw('lower(invited_email) = ?', [strtolower($user->email)]);
+                    });
+            })
+            ->with(['workspace:id,name', 'inviter:id,name'])
+            ->latest()
+            ->get()
+            ->map(fn (WorkspaceMember $member) => [
+                'token' => $member->invite_token,
+                'workspace' => ['id' => $member->workspace->id, 'name' => $member->workspace->name],
+                'role' => $member->role,
+                'invited_by' => $member->inviter?->name,
+                'created_at' => $member->created_at,
+            ]);
+
+        return response()->json(['data' => $invitations]);
+    }
+
+    /**
+     * Decline an invitation addressed to you. There's no "declined" status
+     * in WorkspaceMemberStatus -- deleting the pending row is functionally
+     * identical to the invite never having existed, and avoids adding a
+     * status value only this one action would ever set.
+     */
+    public function decline(Request $request, string $token): JsonResponse
+    {
+        $member = $this->resolvePending($token);
+
+        $this->authorizeOwnership($member, $request->user());
+
+        $member->delete();
+
+        return response()->json(null, 204);
+    }
+
+    /**
      * Accept as the currently authenticated user — the path for someone
      * who already had a session (or just logged into an existing account
      * from this same page).
@@ -58,14 +114,7 @@ class WorkspaceInvitationController extends Controller
         $member = $this->resolvePending($token);
 
         $user = $request->user();
-        $ownsInvite = $member->user_id === $user->id
-            || ($member->user_id === null && strcasecmp((string) $member->invited_email, $user->email) === 0);
-
-        if (! $ownsInvite) {
-            throw ValidationException::withMessages([
-                'token' => __('This invitation was not addressed to your account.'),
-            ]);
-        }
+        $this->authorizeOwnership($member, $user);
 
         $this->activate($member, $user->id);
 
@@ -180,6 +229,22 @@ class WorkspaceInvitationController extends Controller
         }
 
         return $member;
+    }
+
+    /**
+     * The rule accept() already applied inline -- extracted so index() and
+     * decline() share the exact same check rather than re-deriving it.
+     */
+    private function authorizeOwnership(WorkspaceMember $member, User $user): void
+    {
+        $ownsInvite = $member->user_id === $user->id
+            || ($member->user_id === null && strcasecmp((string) $member->invited_email, $user->email) === 0);
+
+        if (! $ownsInvite) {
+            throw ValidationException::withMessages([
+                'token' => __('This invitation was not addressed to your account.'),
+            ]);
+        }
     }
 
     private function activate(WorkspaceMember $member, int $userId): void

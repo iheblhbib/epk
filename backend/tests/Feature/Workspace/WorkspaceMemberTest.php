@@ -280,3 +280,117 @@ it('lets a member leave a workspace unless they are the sole owner', function ()
 
     $this->assertDatabaseMissing('workspace_members', ['workspace_id' => $workspace->id, 'user_id' => $editor->id]);
 });
+
+it('lists pending invitations addressed to the authenticated users email', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $response = $this->actingAs($invitee)->getJson('/api/invitations');
+
+    $response->assertOk();
+    expect($response->json('data'))->toHaveCount(1);
+    $response->assertJsonPath('data.0.workspace.name', $workspace->name)
+        ->assertJsonPath('data.0.role', WorkspaceRole::Editor->value)
+        ->assertJsonPath('data.0.invited_by', $owner->name);
+});
+
+it('does not list another users pending invitations', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $stranger = User::factory()->create(['email' => 'stranger@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $response = $this->actingAs($stranger)->getJson('/api/invitations');
+
+    $response->assertOk();
+    expect($response->json('data'))->toHaveCount(0);
+});
+
+it('matches pending invitations to the authenticated users email case-insensitively', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'Invitee@Example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Viewer->value,
+    ]);
+
+    $response = $this->actingAs($invitee)->getJson('/api/invitations');
+
+    $response->assertOk();
+    expect($response->json('data'))->toHaveCount(1);
+});
+
+it('excludes an already-accepted invitation from the pending list', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $token = $workspace->members()->where('user_id', $invitee->id)->first()->invite_token;
+    $this->actingAs($invitee)->postJson("/api/invitations/{$token}/accept")->assertOk();
+
+    $response = $this->actingAs($invitee)->getJson('/api/invitations');
+
+    $response->assertOk();
+    expect($response->json('data'))->toHaveCount(0);
+});
+
+it('lets an invitee decline their invitation, deleting it', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $member = $workspace->members()->where('user_id', $invitee->id)->first();
+    $token = $member->invite_token;
+
+    $this->actingAs($invitee)->deleteJson("/api/invitations/{$token}")->assertNoContent();
+
+    $this->assertDatabaseMissing('workspace_members', ['id' => $member->id]);
+});
+
+it('rejects declining an invitation addressed to someone else', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+    $stranger = User::factory()->create();
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $token = $workspace->members()->where('user_id', $invitee->id)->first()->invite_token;
+
+    $this->actingAs($stranger)->deleteJson("/api/invitations/{$token}")->assertUnprocessable();
+    $this->assertDatabaseHas('workspace_members', ['invite_token' => $token]);
+});
+
+it('makes a declined invitation token unusable afterward', function () {
+    [$workspace, $owner] = makeWorkspaceWithOwner();
+    $invitee = User::factory()->create(['email' => 'invitee@example.com']);
+
+    $this->actingAs($owner)->postJson("/api/workspaces/{$workspace->id}/members", [
+        'email' => 'invitee@example.com',
+        'role' => WorkspaceRole::Editor->value,
+    ]);
+
+    $token = $workspace->members()->where('user_id', $invitee->id)->first()->invite_token;
+    $this->actingAs($invitee)->deleteJson("/api/invitations/{$token}")->assertNoContent();
+
+    $this->actingAs($invitee)->postJson("/api/invitations/{$token}/accept")->assertUnprocessable();
+});
