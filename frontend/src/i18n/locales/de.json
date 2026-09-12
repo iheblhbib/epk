@@ -57,7 +57,25 @@
       "pageViews30d": "Seitenaufrufe (30T)",
       "contacts": "Kontakte",
       "mediaFiles": "Mediendateien",
-      "storageUsed": "Genutzter Speicher"
+      "storageUsed": "Genutzter Speicher",
+      "billing": {
+        "mrr": "Monatlich wiederkehrender Umsatz",
+        "activeByPlan": "Aktive Abonnenten nach Tarif",
+        "trialConversionRate": "Testphase-zu-Bezahlt-Konversion",
+        "canceledLast30Days": "Gekündigt (30T)"
+      },
+      "growth": {
+        "title": "Wachstum",
+        "newUsers": "Neue Nutzer",
+        "newWorkspaces": "Neue Arbeitsbereiche",
+        "empty": "Noch keine Wachstumsdaten."
+      },
+      "activity": {
+        "title": "Letzte Aktivität",
+        "empty": "Noch keine Aktivität.",
+        "signedUp": "{{name}} hat sich registriert",
+        "workspaceCreated": "{{creator}} hat \"{{name}}\" erstellt"
+      }
     },
     "pagination": {
       "total": "{{count}} insgesamt",

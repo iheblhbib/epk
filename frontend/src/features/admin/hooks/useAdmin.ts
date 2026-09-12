@@ -1,6 +1,7 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   deleteAdminWorkspace,
+  getAdminActivity,
   getAdminStats,
   listAdminEpks,
   listAdminUsers,
@@ -14,6 +15,10 @@ import type { EpkStatus, SubscriptionPlan, UserRole } from '@/types'
 
 export function useAdminStats() {
   return useQuery({ queryKey: ['admin', 'stats'], queryFn: getAdminStats })
+}
+
+export function useAdminActivity() {
+  return useQuery({ queryKey: ['admin', 'activity'], queryFn: getAdminActivity })
 }
 
 export function useAdminUsers(params: { search?: string; page?: number }) {

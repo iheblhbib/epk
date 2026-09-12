@@ -57,7 +57,25 @@
       "pageViews30d": "页面浏览量（30天）",
       "contacts": "联系人",
       "mediaFiles": "媒体文件",
-      "storageUsed": "已用存储空间"
+      "storageUsed": "已用存储空间",
+      "billing": {
+        "mrr": "每月经常性收入",
+        "activeByPlan": "按套餐划分的活跃订阅者",
+        "trialConversionRate": "试用转付费转化率",
+        "canceledLast30Days": "已取消（30天）"
+      },
+      "growth": {
+        "title": "增长",
+        "newUsers": "新用户",
+        "newWorkspaces": "新工作区",
+        "empty": "暂无增长数据。"
+      },
+      "activity": {
+        "title": "近期动态",
+        "empty": "暂无近期动态。",
+        "signedUp": "{{name}} 已注册",
+        "workspaceCreated": "{{creator}} 创建了「{{name}}」"
+      }
     },
     "pagination": {
       "total": "共 {{count}} 条",

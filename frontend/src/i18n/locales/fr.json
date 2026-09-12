@@ -57,7 +57,25 @@
       "pageViews30d": "Vues de page (30j)",
       "contacts": "Contacts",
       "mediaFiles": "Fichiers média",
-      "storageUsed": "Stockage utilisé"
+      "storageUsed": "Stockage utilisé",
+      "billing": {
+        "mrr": "Revenu mensuel récurrent",
+        "activeByPlan": "Abonnés actifs par forfait",
+        "trialConversionRate": "Conversion essai → payant",
+        "canceledLast30Days": "Résiliés (30j)"
+      },
+      "growth": {
+        "title": "Croissance",
+        "newUsers": "Nouveaux utilisateurs",
+        "newWorkspaces": "Nouveaux espaces de travail",
+        "empty": "Aucune donnée de croissance pour le moment."
+      },
+      "activity": {
+        "title": "Activité récente",
+        "empty": "Aucune activité récente pour le moment.",
+        "signedUp": "{{name}} s'est inscrit(e)",
+        "workspaceCreated": "{{creator}} a créé « {{name}} »"
+      }
     },
     "pagination": {
       "total": "{{count}} au total",

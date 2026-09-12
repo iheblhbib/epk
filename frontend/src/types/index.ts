@@ -876,6 +876,21 @@ export interface AdminStats {
   media: { total: number; storage_bytes: number }
   contacts: { total: number }
   analytics: { total_page_views: number; page_views_last_30_days: number }
+  billing: {
+    mrr: number
+    active_by_plan: Record<SubscriptionPlan, number>
+    by_status: Record<SubscriptionStatus, number>
+    trial_conversion_rate: number
+    canceled_last_30_days: number
+  }
+  growth: { date: string; new_users: number; new_workspaces: number }[]
+}
+
+export interface AdminActivityEntry {
+  kind: 'user_signed_up' | 'workspace_created'
+  label: string
+  detail: string | null
+  created_at: string
 }
 
 // --- Billing ---

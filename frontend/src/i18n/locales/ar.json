@@ -57,7 +57,25 @@
       "pageViews30d": "مشاهدات الصفحة (30 يومًا)",
       "contacts": "جهات الاتصال",
       "mediaFiles": "ملفات الوسائط",
-      "storageUsed": "التخزين المستخدم"
+      "storageUsed": "التخزين المستخدم",
+      "billing": {
+        "mrr": "الإيراد الشهري المتكرر",
+        "activeByPlan": "المشتركون النشطون حسب الخطة",
+        "trialConversionRate": "تحويل التجربة إلى مدفوع",
+        "canceledLast30Days": "ملغى (30 يومًا)"
+      },
+      "growth": {
+        "title": "النمو",
+        "newUsers": "مستخدمون جدد",
+        "newWorkspaces": "مساحات عمل جديدة",
+        "empty": "لا توجد بيانات نمو بعد."
+      },
+      "activity": {
+        "title": "النشاط الأخير",
+        "empty": "لا يوجد نشاط حديث بعد.",
+        "signedUp": "انضم {{name}}",
+        "workspaceCreated": "أنشأ {{creator}} \"{{name}}\""
+      }
     },
     "pagination": {
       "total": "{{count}} إجمالًا",

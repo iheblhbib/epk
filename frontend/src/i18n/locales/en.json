@@ -57,7 +57,25 @@
       "pageViews30d": "Page views (30d)",
       "contacts": "Contacts",
       "mediaFiles": "Media files",
-      "storageUsed": "Storage used"
+      "storageUsed": "Storage used",
+      "billing": {
+        "mrr": "Monthly recurring revenue",
+        "activeByPlan": "Active subscribers by plan",
+        "trialConversionRate": "Trial → paid conversion",
+        "canceledLast30Days": "Canceled (30d)"
+      },
+      "growth": {
+        "title": "Growth",
+        "newUsers": "New users",
+        "newWorkspaces": "New workspaces",
+        "empty": "No growth data yet."
+      },
+      "activity": {
+        "title": "Recent activity",
+        "empty": "No recent activity yet.",
+        "signedUp": "{{name}} signed up",
+        "workspaceCreated": "{{creator}} created \"{{name}}\""
+      }
     },
     "pagination": {
       "total": "{{count}} total",

@@ -1,9 +1,14 @@
 import { Eye, FileStack, HardDrive, Users, UsersRound } from 'lucide-react'
 import { useTranslation } from 'react-i18next'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { StatTile } from '@/features/analytics/components/StatTile'
+import { BreakdownCard } from '@/features/analytics/components/BreakdownCard'
+import { AdminActivityFeed } from '@/features/admin/components/AdminActivityFeed'
+import { AdminGrowthChart } from '@/features/admin/components/AdminGrowthChart'
 import { useAdminStats } from '@/features/admin/hooks/useAdmin'
 import { formatBytes } from '@/lib/formatBytes'
+import { formatEuro } from '@/lib/planPricing'
 
 export function AdminDashboardPage() {
   const { t } = useTranslation()
@@ -37,6 +42,41 @@ export function AdminDashboardPage() {
           {formatBytes(stats.media.storage_bytes)}
         </p>
       </div>
+
+      <div className="grid grid-cols-2 gap-4 sm:grid-cols-3">
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('admin.dashboard.billing.mrr')}</CardTitle>
+          </CardHeader>
+          <CardContent className="font-heading text-2xl font-semibold text-foreground">{formatEuro(stats.billing.mrr)}</CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('admin.dashboard.billing.trialConversionRate')}</CardTitle>
+          </CardHeader>
+          <CardContent className="font-heading text-2xl font-semibold text-foreground">{stats.billing.trial_conversion_rate}%</CardContent>
+        </Card>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('admin.dashboard.billing.canceledLast30Days')}</CardTitle>
+          </CardHeader>
+          <CardContent className="font-heading text-2xl font-semibold text-foreground">{stats.billing.canceled_last_30_days}</CardContent>
+        </Card>
+      </div>
+
+      <BreakdownCard
+        title={t('admin.dashboard.billing.activeByPlan')}
+        emptyLabel={t('admin.dashboard.growth.empty')}
+        rows={[
+          { label: t('admin.workspaces.planStarter'), count: stats.billing.active_by_plan.starter },
+          { label: t('admin.workspaces.planPro'), count: stats.billing.active_by_plan.pro },
+          { label: t('admin.workspaces.planBusiness'), count: stats.billing.active_by_plan.business },
+        ]}
+      />
+
+      <AdminGrowthChart points={stats.growth} />
+
+      <AdminActivityFeed />
     </div>
   )
 }

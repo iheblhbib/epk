@@ -1,5 +1,6 @@
 import { apiClient } from '@/api/client'
 import type {
+  AdminActivityEntry,
   AdminEpk,
   AdminStats,
   AdminUser,
@@ -14,6 +15,11 @@ import type {
 
 export async function getAdminStats(): Promise<AdminStats> {
   const { data } = await apiClient.get<ApiResource<AdminStats>>('/api/admin/stats')
+  return data.data
+}
+
+export async function getAdminActivity(): Promise<AdminActivityEntry[]> {
+  const { data } = await apiClient.get<ApiResource<AdminActivityEntry[]>>('/api/admin/activity')
   return data.data
 }
 
