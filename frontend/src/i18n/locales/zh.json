@@ -701,7 +701,27 @@
       "submit": "创建工作区",
       "created": "工作区已创建",
       "error": "无法创建工作区"
-    }
+    },
+    "invitations": {
+      "title": "待处理的邀请",
+      "invitedBy": "{{name}} 邀请您以{{role}}身份加入 {{workspace}}",
+      "accept": "接受",
+      "decline": "拒绝",
+      "accepted": "邀请已接受",
+      "acceptError": "无法接受邀请，请重试。",
+      "declineError": "无法拒绝邀请，请重试。"
+    },
+    "search": {
+      "placeholder": "搜索工作区..."
+    },
+    "leave": {
+      "confirmTitle": "离开工作区？",
+      "confirmDescription": "在有人再次邀请您之前，您将无法访问 {{workspace}}。",
+      "action": "离开",
+      "success": "您已离开 {{workspace}}",
+      "error": "无法离开工作区，请重试。"
+    },
+    "settingsLink": "工作区设置"
   },
   "invitation": {
     "title": "邀请",

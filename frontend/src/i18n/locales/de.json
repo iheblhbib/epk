@@ -701,7 +701,27 @@
       "submit": "Arbeitsbereich erstellen",
       "created": "Arbeitsbereich erstellt",
       "error": "Der Arbeitsbereich konnte nicht erstellt werden"
-    }
+    },
+    "invitations": {
+      "title": "Ausstehende Einladungen",
+      "invitedBy": "{{name}} hat dich zu {{workspace}} als {{role}} eingeladen",
+      "accept": "Annehmen",
+      "decline": "Ablehnen",
+      "accepted": "Einladung angenommen",
+      "acceptError": "Die Einladung konnte nicht angenommen werden. Versuche es erneut.",
+      "declineError": "Die Einladung konnte nicht abgelehnt werden. Versuche es erneut."
+    },
+    "search": {
+      "placeholder": "Arbeitsbereiche durchsuchen..."
+    },
+    "leave": {
+      "confirmTitle": "Arbeitsbereich verlassen?",
+      "confirmDescription": "Du verlierst den Zugriff auf {{workspace}}, bis dich jemand erneut einlädt.",
+      "action": "Verlassen",
+      "success": "Du hast {{workspace}} verlassen",
+      "error": "Der Arbeitsbereich konnte nicht verlassen werden. Versuche es erneut."
+    },
+    "settingsLink": "Arbeitsbereichseinstellungen"
   },
   "invitation": {
     "title": "Einladung",

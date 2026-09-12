@@ -701,7 +701,27 @@
       "submit": "إنشاء مساحة العمل",
       "created": "تم إنشاء مساحة العمل",
       "error": "تعذّر إنشاء مساحة العمل"
-    }
+    },
+    "invitations": {
+      "title": "الدعوات المعلقة",
+      "invitedBy": "دعاك {{name}} للانضمام إلى {{workspace}} بصفة {{role}}",
+      "accept": "قبول",
+      "decline": "رفض",
+      "accepted": "تم قبول الدعوة",
+      "acceptError": "تعذر قبول الدعوة. حاول مرة أخرى.",
+      "declineError": "تعذر رفض الدعوة. حاول مرة أخرى."
+    },
+    "search": {
+      "placeholder": "البحث عن مساحات العمل..."
+    },
+    "leave": {
+      "confirmTitle": "مغادرة مساحة العمل؟",
+      "confirmDescription": "ستفقد إمكانية الوصول إلى {{workspace}} إلى أن يدعوك أحدهم مرة أخرى.",
+      "action": "مغادرة",
+      "success": "لقد غادرت {{workspace}}",
+      "error": "تعذرت مغادرة مساحة العمل. حاول مرة أخرى."
+    },
+    "settingsLink": "إعدادات مساحة العمل"
   },
   "invitation": {
     "title": "دعوة",

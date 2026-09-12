@@ -701,7 +701,27 @@
       "submit": "Crear espacio de trabajo",
       "created": "Espacio de trabajo creado",
       "error": "No se pudo crear el espacio de trabajo"
-    }
+    },
+    "invitations": {
+      "title": "Invitaciones pendientes",
+      "invitedBy": "{{name}} te invitó a unirte a {{workspace}} como {{role}}",
+      "accept": "Aceptar",
+      "decline": "Rechazar",
+      "accepted": "Invitación aceptada",
+      "acceptError": "No se pudo aceptar la invitación. Inténtalo de nuevo.",
+      "declineError": "No se pudo rechazar la invitación. Inténtalo de nuevo."
+    },
+    "search": {
+      "placeholder": "Buscar espacios de trabajo..."
+    },
+    "leave": {
+      "confirmTitle": "¿Abandonar el espacio de trabajo?",
+      "confirmDescription": "Perderás el acceso a {{workspace}} hasta que alguien vuelva a invitarte.",
+      "action": "Abandonar",
+      "success": "Has abandonado {{workspace}}",
+      "error": "No se pudo abandonar el espacio de trabajo. Inténtalo de nuevo."
+    },
+    "settingsLink": "Configuración del espacio de trabajo"
   },
   "invitation": {
     "title": "Invitación",

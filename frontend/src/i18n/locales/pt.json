@@ -701,7 +701,27 @@
       "submit": "Criar espaço de trabalho",
       "created": "Espaço de trabalho criado",
       "error": "Não foi possível criar o espaço de trabalho"
-    }
+    },
+    "invitations": {
+      "title": "Convites pendentes",
+      "invitedBy": "{{name}} convidou você para {{workspace}} como {{role}}",
+      "accept": "Aceitar",
+      "decline": "Recusar",
+      "accepted": "Convite aceito",
+      "acceptError": "Não foi possível aceitar o convite. Tente novamente.",
+      "declineError": "Não foi possível recusar o convite. Tente novamente."
+    },
+    "search": {
+      "placeholder": "Pesquisar espaços de trabalho..."
+    },
+    "leave": {
+      "confirmTitle": "Sair do espaço de trabalho?",
+      "confirmDescription": "Você perderá o acesso a {{workspace}} até que alguém o convide novamente.",
+      "action": "Sair",
+      "success": "Você saiu de {{workspace}}",
+      "error": "Não foi possível sair do espaço de trabalho. Tente novamente."
+    },
+    "settingsLink": "Configurações do espaço de trabalho"
   },
   "invitation": {
     "title": "Convite",
