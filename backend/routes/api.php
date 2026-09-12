@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Api\Admin\AdminActivityController;
 use App\Http\Controllers\Api\Admin\AdminAuditLogController;
 use App\Http\Controllers\Api\Admin\AdminEpkController;
 use App\Http\Controllers\Api\Admin\AdminStatsController;
@@ -249,6 +250,7 @@ Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'subscription-act
 
 Route::middleware(['auth:sanctum', 'active', 'tokens-enabled', 'admin'])->prefix('admin')->group(function () {
     Route::get('/stats', [AdminStatsController::class, 'index']);
+    Route::get('/activity', [AdminActivityController::class, 'index']);
 
     Route::get('/users', [AdminUserController::class, 'index']);
     Route::patch('/users/{user}', [AdminUserController::class, 'update']);

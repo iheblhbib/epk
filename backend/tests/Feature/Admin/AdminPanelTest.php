@@ -260,3 +260,25 @@ it('returns exactly 30 days of growth data, oldest first, including zero-signup 
     expect($growth[29]['date'])->toBe(now()->toDateString());
     expect(collect($growth)->sum('new_users'))->toBeGreaterThanOrEqual(1);
 });
+
+it('denies admin activity to a non-admin', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user)->getJson('/api/admin/activity')->assertForbidden();
+});
+
+it('interleaves recent signups and workspace creations by date, newest first, capped at 10', function () {
+    $admin = User::factory()->admin()->create(['created_at' => now()->subDays(10)]);
+
+    $oldUser = User::factory()->create(['name' => 'Old User', 'created_at' => now()->subDays(5)]);
+    $newWorkspace = Workspace::factory()->create(['name' => 'New Workspace', 'created_by' => $oldUser->id, 'created_at' => now()->subDay()]);
+    $newestUser = User::factory()->create(['name' => 'Newest User', 'created_at' => now()]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/activity');
+
+    $response->assertOk();
+    $activity = $response->json('data');
+    expect($activity[0])->toMatchArray(['kind' => 'user_signed_up', 'label' => 'Newest User']);
+    expect($activity[1])->toMatchArray(['kind' => 'workspace_created', 'label' => 'New Workspace']);
+    expect(count($activity))->toBeLessThanOrEqual(10);
+});
