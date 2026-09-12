@@ -10,6 +10,7 @@ import {
 } from 'chart.js'
 import { useTranslation } from 'react-i18next'
 import { Line } from 'react-chartjs-2'
+import { ChartCardShell } from '@/features/analytics/components/ChartCardShell'
 import type { AnalyticsDailyPoint } from '@/types'
 
 ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
@@ -48,8 +49,7 @@ export function PageViewsChart({ points }: { points: AnalyticsDailyPoint[] }) {
   }
 
   return (
-    <div className="rounded-xl border border-border bg-card p-4">
-      <p className="mb-3 text-xs font-medium tracking-wide text-muted-foreground uppercase">{t('analytics.pageViews')}</p>
+    <ChartCardShell title={t('analytics.pageViews')}>
       {points.every((point) => point.count === 0) ? (
         <div className="flex h-48 items-center justify-center text-sm text-muted-foreground">
           {t('analytics.noPageViews')}
@@ -59,6 +59,6 @@ export function PageViewsChart({ points }: { points: AnalyticsDailyPoint[] }) {
           <Line data={data} options={OPTIONS} />
         </div>
       )}
-    </div>
+    </ChartCardShell>
   )
 }
