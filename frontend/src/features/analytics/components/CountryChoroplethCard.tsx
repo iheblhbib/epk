@@ -47,7 +47,7 @@ export function CountryChoroplethCard({ rows }: { rows: { country: string; count
             type="choropleth"
             data={{
               labels: entries.map((entry) => entry.name),
-              datasets: [{ data: entries.map((entry) => ({ feature: entry.feature, value: entry.value })) }],
+              datasets: [{ data: entries.map((entry) => ({ feature: entry.feature, value: entry.value, name: entry.name })) }],
             }}
             options={
               {
