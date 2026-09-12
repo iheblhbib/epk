@@ -701,7 +701,27 @@
       "submit": "Create workspace",
       "created": "Workspace created",
       "error": "Could not create the workspace"
-    }
+    },
+    "invitations": {
+      "title": "Pending invites",
+      "invitedBy": "{{name}} invited you to {{workspace}} as {{role}}",
+      "accept": "Accept",
+      "decline": "Decline",
+      "accepted": "Invitation accepted",
+      "acceptError": "Couldn't accept the invitation. Try again.",
+      "declineError": "Couldn't decline the invitation. Try again."
+    },
+    "search": {
+      "placeholder": "Search workspaces..."
+    },
+    "leave": {
+      "confirmTitle": "Leave workspace?",
+      "confirmDescription": "You'll lose access to {{workspace}} until someone invites you back.",
+      "action": "Leave",
+      "success": "You left {{workspace}}",
+      "error": "Couldn't leave the workspace. Try again."
+    },
+    "settingsLink": "Workspace settings"
   },
   "invitation": {
     "title": "Invitation",
