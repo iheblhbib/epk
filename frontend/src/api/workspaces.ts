@@ -98,6 +98,23 @@ export async function acceptInvitation(token: string): Promise<WorkspaceMember> 
   return data.data
 }
 
+export interface PendingInvitation {
+  token: string
+  workspace: { id: number; name: string }
+  role: WorkspaceRole
+  invited_by: string | null
+  created_at: string
+}
+
+export async function listPendingInvitations(): Promise<PendingInvitation[]> {
+  const { data } = await apiClient.get<ApiResource<PendingInvitation[]>>('/api/invitations')
+  return data.data
+}
+
+export async function declineInvitation(token: string): Promise<void> {
+  await apiClient.delete(`/api/invitations/${token}`)
+}
+
 export async function loginForInvitation(token: string, password: string): Promise<WorkspaceMember> {
   await ensureCsrfCookie()
   const { data } = await apiClient.post<ApiResource<WorkspaceMember>>(`/api/invitations/${token}/login`, {

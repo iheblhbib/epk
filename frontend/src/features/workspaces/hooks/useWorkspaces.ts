@@ -2,9 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import {
   acceptInvitation,
   createWorkspace,
+  declineInvitation,
   deleteWorkspace,
   inviteWorkspaceMember,
   leaveWorkspace,
+  listPendingInvitations,
   listWorkspaceActivity,
   listWorkspaceMembers,
   listWorkspaces,
@@ -115,7 +117,23 @@ export function useAcceptInvitation() {
 
   return useMutation({
     mutationFn: (token: string) => acceptInvitation(token),
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: workspacesKey }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['invitations', 'pending'] })
+      queryClient.invalidateQueries({ queryKey: workspacesKey })
+    },
+  })
+}
+
+export function usePendingInvitations() {
+  return useQuery({ queryKey: ['invitations', 'pending'], queryFn: listPendingInvitations })
+}
+
+export function useDeclineInvitation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: (token: string) => declineInvitation(token),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['invitations', 'pending'] }),
   })
 }
 
