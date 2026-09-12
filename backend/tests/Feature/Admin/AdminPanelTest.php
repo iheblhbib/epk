@@ -123,7 +123,9 @@ it('lets an admin list and delete workspaces', function () {
     $this->actingAs($admin)->getJson('/api/admin/workspaces')
         ->assertOk()
         ->assertJsonPath('data.0.name', 'Acme Records')
-        ->assertJsonPath('data.0.members_count', 1);
+        ->assertJsonPath('data.0.members_count', 1)
+        ->assertJsonPath('data.0.subscription_status', 'trialing')
+        ->assertJsonPath('data.0.access_ends_at', $workspace->subscription->fresh()->trial_ends_at->toJSON());
 
     $this->actingAs($admin)->deleteJson("/api/admin/workspaces/{$workspace->id}")->assertOk();
 

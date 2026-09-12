@@ -7,12 +7,15 @@ use App\Enums\SubscriptionStatus;
 use App\Http\Controllers\Controller;
 use App\Models\Workspace;
 use App\Services\AuditLogger;
+use App\Services\PlanLimits;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 
 class AdminWorkspaceController extends Controller
 {
+    public function __construct(private readonly PlanLimits $planLimits) {}
+
     public function index(Request $request): JsonResponse
     {
         $workspaces = Workspace::query()
@@ -32,6 +35,8 @@ class AdminWorkspaceController extends Controller
                 'members_count' => $workspace->members_count,
                 'epks_count' => $workspace->epks_count,
                 'plan' => $workspace->subscription?->plan,
+                'subscription_status' => $workspace->subscription?->status,
+                'access_ends_at' => $this->planLimits->accessEndsAt($workspace),
                 'creator' => $workspace->creator ? ['id' => $workspace->creator->id, 'name' => $workspace->creator->name] : null,
                 'created_at' => $workspace->created_at,
             ])->items(),
