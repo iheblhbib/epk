@@ -33,6 +33,12 @@
 | canUseCustomDomains()) -- DNS/SSL for the domain itself is still a manual
 | step on the host, this only controls who's allowed to attach one.
 |
+| 'price_monthly' and 'price_yearly_effective_monthly' are the canonical
+| EUR prices for each tier, read by AdminBillingStats to compute MRR.
+| frontend/src/lib/planPricing.ts's PLAN_PRICING constant mirrors these
+| values for display purposes and must be kept in sync with them manually
+| -- there is no automated check that the two stay aligned.
+|
 */
 
 return [
