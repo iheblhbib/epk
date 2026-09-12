@@ -800,6 +800,8 @@ export interface AdminWorkspace {
   members_count: number
   epks_count: number
   plan: SubscriptionPlan | null
+  subscription_status: SubscriptionStatus | null
+  access_ends_at: string | null
   creator: { id: number; name: string } | null
   created_at: string
 }

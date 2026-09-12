@@ -123,7 +123,15 @@
         "members": "Mitglieder",
         "epks": "EPKs",
         "plan": "Tarif",
+        "subscriptionStatus": "Status",
         "created": "Erstellt"
+      },
+      "statusLabels": {
+        "trialing": "Testphase",
+        "active": "Aktiv",
+        "past_due": "Überfällig",
+        "unpaid": "Unbezahlt",
+        "canceled": "Gekündigt"
       }
     },
     "epks": {

@@ -5,6 +5,7 @@ import { toast } from 'sonner'
 import type { TFunction } from 'i18next'
 import { ConfirmDialog } from '@/components/common/ConfirmDialog'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -12,6 +13,14 @@ import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@
 import { AdminPagination } from '@/features/admin/components/AdminPagination'
 import { useAdminWorkspaces, useDeleteAdminWorkspace, useUpdateAdminWorkspacePlan } from '@/features/admin/hooks/useAdmin'
 import type { AdminWorkspace, SubscriptionPlan } from '@/types'
+
+const STATUS_VARIANT: Record<string, 'default' | 'secondary' | 'destructive' | 'outline'> = {
+  trialing: 'default',
+  active: 'secondary',
+  past_due: 'outline',
+  unpaid: 'destructive',
+  canceled: 'destructive',
+}
 
 function planItems(t: TFunction): Record<SubscriptionPlan, string> {
   return { starter: t('admin.workspaces.planStarter'), pro: t('admin.workspaces.planPro'), business: t('admin.workspaces.planBusiness') }
@@ -55,6 +64,13 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
             ))}
           </SelectContent>
         </Select>
+      </TableCell>
+      <TableCell>
+        {workspace.subscription_status && (
+          <Badge variant={STATUS_VARIANT[workspace.subscription_status]}>
+            {t(`admin.workspaces.statusLabels.${workspace.subscription_status}`)}
+          </Badge>
+        )}
       </TableCell>
       <TableCell className="text-muted-foreground">
         {new Date(workspace.created_at).toLocaleDateString()}
@@ -126,6 +142,7 @@ export function AdminWorkspacesPage() {
                   <TableHead>{t('admin.workspaces.columns.members')}</TableHead>
                   <TableHead>{t('admin.workspaces.columns.epks')}</TableHead>
                   <TableHead>{t('admin.workspaces.columns.plan')}</TableHead>
+                  <TableHead>{t('admin.workspaces.columns.subscriptionStatus')}</TableHead>
                   <TableHead>{t('admin.workspaces.columns.created')}</TableHead>
                   <TableHead className="text-end">{t('common.actions')}</TableHead>
                 </TableRow>

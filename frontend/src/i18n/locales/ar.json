@@ -123,7 +123,15 @@
         "members": "الأعضاء",
         "epks": "الملفات الصحفية",
         "plan": "الخطة",
+        "subscriptionStatus": "الحالة",
         "created": "تاريخ الإنشاء"
+      },
+      "statusLabels": {
+        "trialing": "تجريبي",
+        "active": "نشط",
+        "past_due": "متأخر السداد",
+        "unpaid": "غير مدفوع",
+        "canceled": "ملغى"
       }
     },
     "epks": {

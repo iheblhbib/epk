@@ -123,7 +123,15 @@
         "members": "Miembros",
         "epks": "EPK",
         "plan": "Plan",
+        "subscriptionStatus": "Estado",
         "created": "Creado"
+      },
+      "statusLabels": {
+        "trialing": "En prueba",
+        "active": "Activo",
+        "past_due": "Vencido",
+        "unpaid": "Impagado",
+        "canceled": "Cancelado"
       }
     },
     "epks": {
