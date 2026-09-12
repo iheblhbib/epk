@@ -49,6 +49,8 @@ return [
         'custom_domains' => false,
         'stripe_price_id_monthly' => env('STRIPE_PRICE_STARTER_MONTHLY'),
         'stripe_price_id_yearly' => env('STRIPE_PRICE_STARTER_YEARLY'),
+        'price_monthly' => 6.66,
+        'price_yearly_effective_monthly' => 5.55,
     ],
 
     'pro' => [
@@ -63,6 +65,8 @@ return [
         'custom_domains' => false,
         'stripe_price_id_monthly' => env('STRIPE_PRICE_PRO_MONTHLY'),
         'stripe_price_id_yearly' => env('STRIPE_PRICE_PRO_YEARLY'),
+        'price_monthly' => 26.66,
+        'price_yearly_effective_monthly' => 22.22,
     ],
 
     'business' => [
@@ -77,6 +81,8 @@ return [
         'custom_domains' => true,
         'stripe_price_id_monthly' => env('STRIPE_PRICE_BUSINESS_MONTHLY'),
         'stripe_price_id_yearly' => env('STRIPE_PRICE_BUSINESS_YEARLY'),
+        'price_monthly' => 99.99,
+        'price_yearly_effective_monthly' => 83.33,
     ],
 
 ];

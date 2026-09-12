@@ -1,6 +1,8 @@
 <?php
 
 use App\Enums\EpkStatus;
+use App\Enums\SubscriptionPlan;
+use App\Enums\SubscriptionStatus;
 use App\Enums\UserRole;
 use App\Enums\WorkspaceRole;
 use App\Models\Epk;
@@ -31,7 +33,7 @@ it('returns platform-wide stats to an admin', function () {
 
     $response->assertOk()
         ->assertJsonPath('data.users.total', 3)
-        ->assertJsonStructure(['data' => ['users', 'workspaces', 'epks', 'media', 'contacts', 'analytics']]);
+        ->assertJsonStructure(['data' => ['users', 'workspaces', 'epks', 'media', 'contacts', 'analytics', 'billing', 'growth']]);
 });
 
 it('lets an admin search and list users', function () {
@@ -155,4 +157,106 @@ it('lists audit log entries for an admin', function () {
     $response = $this->actingAs($admin)->getJson('/api/admin/audit-logs');
 
     $response->assertOk()->assertJsonPath('data.0.action', 'user.suspended');
+});
+
+it('computes MRR from active subscriptions, normalizing yearly to monthly', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+
+    $monthlyPro = Workspace::factory()->create();
+    $monthlyPro->subscription()->update(['status' => SubscriptionStatus::Active, 'plan' => SubscriptionPlan::Pro, 'billing_interval' => 'monthly', 'trial_ends_at' => null]);
+
+    $yearlyPro = Workspace::factory()->create();
+    $yearlyPro->subscription()->update(['status' => SubscriptionStatus::Active, 'plan' => SubscriptionPlan::Pro, 'billing_interval' => 'yearly', 'trial_ends_at' => null]);
+
+    // Not active -- must not contribute to MRR.
+    $pastDue = Workspace::factory()->create();
+    $pastDue->subscription()->update(['status' => SubscriptionStatus::PastDue, 'plan' => SubscriptionPlan::Business, 'billing_interval' => 'monthly', 'trial_ends_at' => null]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    // round() on both sides, not a raw float-literal comparison: 26.66 +
+    // 22.22 isn't exactly representable in binary floating point, and the
+    // backend's own round($mrr, 2) normalizes its side -- comparing against
+    // an un-rounded PHP expression risks a spurious float-precision mismatch.
+    $response->assertOk();
+    expect(round((float) $response->json('data.billing.mrr'), 2))->toBe(round(26.66 + 22.22, 2));
+});
+
+it('breaks active subscriptions down by plan and every subscription down by status', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+
+    $activeStarter = Workspace::factory()->create();
+    $activeStarter->subscription()->update(['status' => SubscriptionStatus::Active, 'plan' => SubscriptionPlan::Starter, 'billing_interval' => 'monthly', 'trial_ends_at' => null]);
+
+    $canceled = Workspace::factory()->create();
+    $canceled->subscription()->update(['status' => SubscriptionStatus::Canceled, 'plan' => SubscriptionPlan::Pro, 'canceled_at' => now(), 'trial_ends_at' => null]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    $response->assertOk()
+        ->assertJsonPath('data.billing.active_by_plan.starter', 1)
+        ->assertJsonPath('data.billing.active_by_plan.pro', 0)
+        ->assertJsonPath('data.billing.by_status.active', 1)
+        ->assertJsonPath('data.billing.by_status.canceled', 1);
+});
+
+it('computes trial conversion rate from stripe_customer_id, not status', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+
+    // Converted: has a stripe_customer_id (even though later canceled --
+    // cancellation never clears this field).
+    $converted = Workspace::factory()->create();
+    $converted->subscription()->update(['status' => SubscriptionStatus::Canceled, 'stripe_customer_id' => 'cus_converted', 'canceled_at' => now(), 'trial_ends_at' => null]);
+
+    // Never converted: still trialing, no stripe_customer_id.
+    Workspace::factory()->create();
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    $response->assertOk()->assertJsonPath('data.billing.trial_conversion_rate', 50.0);
+});
+
+it('returns a zero trial conversion rate rather than dividing by zero when no workspaces were created recently', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+
+    $old = Workspace::factory()->create(['created_at' => now()->subDays(60)]);
+    $old->subscription()->update(['trial_ends_at' => null]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    $response->assertOk()->assertJsonPath('data.billing.trial_conversion_rate', 0.0);
+});
+
+it('only counts cancellations within the last 30 days', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+
+    $recentlyCanceled = Workspace::factory()->create();
+    $recentlyCanceled->subscription()->update(['status' => SubscriptionStatus::Canceled, 'canceled_at' => now()->subDays(5), 'trial_ends_at' => null]);
+
+    $oldCanceled = Workspace::factory()->create();
+    $oldCanceled->subscription()->update(['status' => SubscriptionStatus::Canceled, 'canceled_at' => now()->subDays(60), 'trial_ends_at' => null]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    $response->assertOk()->assertJsonPath('data.billing.canceled_last_30_days', 1);
+});
+
+it('returns exactly 30 days of growth data, oldest first, including zero-signup days', function () {
+    Cache::forget('admin.stats');
+    $admin = User::factory()->admin()->create();
+    User::factory()->create(['created_at' => now()]);
+
+    $response = $this->actingAs($admin)->getJson('/api/admin/stats');
+
+    $response->assertOk();
+    $growth = $response->json('data.growth');
+    expect($growth)->toHaveCount(30);
+    expect($growth[0]['date'])->toBe(now()->subDays(29)->toDateString());
+    expect($growth[29]['date'])->toBe(now()->toDateString());
+    expect(collect($growth)->sum('new_users'))->toBeGreaterThanOrEqual(1);
 });

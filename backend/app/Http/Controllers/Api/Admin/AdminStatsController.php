@@ -11,11 +11,18 @@ use App\Models\Epk;
 use App\Models\Media;
 use App\Models\User;
 use App\Models\Workspace;
+use App\Services\AdminBillingStats;
+use App\Services\AdminGrowthStats;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Cache;
 
 class AdminStatsController extends Controller
 {
+    public function __construct(
+        private readonly AdminBillingStats $billingStats,
+        private readonly AdminGrowthStats $growthStats,
+    ) {}
+
     public function index(): JsonResponse
     {
         // A handful of COUNT/SUM scans across the whole platform on every
@@ -48,8 +55,10 @@ class AdminStatsController extends Controller
                     ->where('created_at', '>=', now()->subDays(30))
                     ->count(),
             ],
+            'billing' => $this->billingStats->summarize(),
+            'growth' => $this->growthStats->dailyGrowth(),
         ]);
 
-        return response()->json(['data' => $data]);
+        return response()->json(['data' => $data], 200, [], JSON_PRESERVE_ZERO_FRACTION);
     }
 }
