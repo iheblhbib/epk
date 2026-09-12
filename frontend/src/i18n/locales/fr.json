@@ -58,11 +58,14 @@
       "contacts": "Contacts",
       "mediaFiles": "Fichiers média",
       "storageUsed": "Stockage utilisé",
+      "error": "Impossible de charger les données du tableau de bord.",
       "billing": {
         "mrr": "Revenu mensuel récurrent",
         "activeByPlan": "Abonnés actifs par forfait",
         "trialConversionRate": "Conversion essai → payant",
-        "canceledLast30Days": "Résiliés (30j)"
+        "canceledLast30Days": "Résiliés (30j)",
+        "byStatus": "Abonnements par statut",
+        "byStatusEmpty": "Aucun abonnement pour le moment."
       },
       "growth": {
         "title": "Croissance",
@@ -132,7 +135,8 @@
         "past_due": "Impayé",
         "unpaid": "Non payé",
         "canceled": "Résilié"
-      }
+      },
+      "accessEndsAt": "Accès jusqu'au {{date}}"
     },
     "epks": {
       "title": "EPK",

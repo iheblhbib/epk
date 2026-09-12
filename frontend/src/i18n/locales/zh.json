@@ -58,11 +58,14 @@
       "contacts": "联系人",
       "mediaFiles": "媒体文件",
       "storageUsed": "已用存储空间",
+      "error": "无法加载仪表盘数据。",
       "billing": {
         "mrr": "每月经常性收入",
         "activeByPlan": "按套餐划分的活跃订阅者",
         "trialConversionRate": "试用转付费转化率",
-        "canceledLast30Days": "已取消（30天）"
+        "canceledLast30Days": "已取消（30天）",
+        "byStatus": "按状态划分的订阅",
+        "byStatusEmpty": "暂无订阅。"
       },
       "growth": {
         "title": "增长",
@@ -132,7 +135,8 @@
         "past_due": "逾期",
         "unpaid": "未付款",
         "canceled": "已取消"
-      }
+      },
+      "accessEndsAt": "访问权限将于 {{date}} 结束"
     },
     "epks": {
       "title": "EPK",

@@ -18,6 +18,7 @@ const OPTIONS: ChartOptions<'line'> = {
   responsive: true,
   maintainAspectRatio: false,
   plugins: {
+    legend: { display: false },
     tooltip: { intersect: false, mode: 'index' },
   },
   scales: {

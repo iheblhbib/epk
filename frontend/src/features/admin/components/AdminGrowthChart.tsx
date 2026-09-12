@@ -2,6 +2,7 @@ import {
   CategoryScale,
   Chart as ChartJS,
   Filler,
+  Legend,
   LinearScale,
   LineElement,
   PointElement,
@@ -11,12 +12,12 @@ import {
 import { useTranslation } from 'react-i18next'
 import { Line } from 'react-chartjs-2'
 
-ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Filler)
+ChartJS.register(CategoryScale, LinearScale, PointElement, LineElement, Tooltip, Legend, Filler)
 
 const OPTIONS: ChartOptions<'line'> = {
   responsive: true,
   maintainAspectRatio: false,
-  plugins: { tooltip: { intersect: false, mode: 'index' } },
+  plugins: { legend: { display: true, position: 'bottom' }, tooltip: { intersect: false, mode: 'index' } },
   scales: { x: { grid: { display: false } }, y: { beginAtZero: true, ticks: { precision: 0 } } },
 }
 

@@ -58,11 +58,14 @@
       "contacts": "جهات الاتصال",
       "mediaFiles": "ملفات الوسائط",
       "storageUsed": "التخزين المستخدم",
+      "error": "تعذر تحميل بيانات لوحة التحكم.",
       "billing": {
         "mrr": "الإيراد الشهري المتكرر",
         "activeByPlan": "المشتركون النشطون حسب الخطة",
         "trialConversionRate": "تحويل التجربة إلى مدفوع",
-        "canceledLast30Days": "ملغى (30 يومًا)"
+        "canceledLast30Days": "ملغى (30 يومًا)",
+        "byStatus": "الاشتراكات حسب الحالة",
+        "byStatusEmpty": "لا توجد اشتراكات بعد."
       },
       "growth": {
         "title": "النمو",
@@ -132,7 +135,8 @@
         "past_due": "متأخر السداد",
         "unpaid": "غير مدفوع",
         "canceled": "ملغى"
-      }
+      },
+      "accessEndsAt": "ينتهي الوصول في {{date}}"
     },
     "epks": {
       "title": "الملفات الصحفية",

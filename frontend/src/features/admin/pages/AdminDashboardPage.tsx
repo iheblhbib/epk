@@ -12,7 +12,11 @@ import { formatEuro } from '@/lib/planPricing'
 
 export function AdminDashboardPage() {
   const { t } = useTranslation()
-  const { data: stats, isLoading } = useAdminStats()
+  const { data: stats, isLoading, isError } = useAdminStats()
+
+  if (isError) {
+    return <p className="text-sm text-muted-foreground">{t('admin.dashboard.error')}</p>
+  }
 
   if (isLoading || !stats) {
     return <CardGridSkeleton />
@@ -71,6 +75,18 @@ export function AdminDashboardPage() {
           { label: t('admin.workspaces.planStarter'), count: stats.billing.active_by_plan.starter },
           { label: t('admin.workspaces.planPro'), count: stats.billing.active_by_plan.pro },
           { label: t('admin.workspaces.planBusiness'), count: stats.billing.active_by_plan.business },
+        ]}
+      />
+
+      <BreakdownCard
+        title={t('admin.dashboard.billing.byStatus')}
+        emptyLabel={t('admin.dashboard.billing.byStatusEmpty')}
+        rows={[
+          { label: t('admin.workspaces.statusLabels.trialing'), count: stats.billing.by_status.trialing },
+          { label: t('admin.workspaces.statusLabels.active'), count: stats.billing.by_status.active },
+          { label: t('admin.workspaces.statusLabels.past_due'), count: stats.billing.by_status.past_due },
+          { label: t('admin.workspaces.statusLabels.unpaid'), count: stats.billing.by_status.unpaid },
+          { label: t('admin.workspaces.statusLabels.canceled'), count: stats.billing.by_status.canceled },
         ]}
       />
 

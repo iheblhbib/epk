@@ -71,6 +71,11 @@ function WorkspaceRow({ workspace }: { workspace: AdminWorkspace }) {
             {t(`admin.workspaces.statusLabels.${workspace.subscription_status}`)}
           </Badge>
         )}
+        {workspace.access_ends_at && (
+          <p className="mt-1 text-xs text-muted-foreground">
+            {t('admin.workspaces.accessEndsAt', { date: new Date(workspace.access_ends_at).toLocaleDateString() })}
+          </p>
+        )}
       </TableCell>
       <TableCell className="text-muted-foreground">
         {new Date(workspace.created_at).toLocaleDateString()}

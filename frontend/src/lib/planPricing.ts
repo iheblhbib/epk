@@ -1,9 +1,11 @@
 import type { SubscriptionPlan } from '@/types'
 
 /**
- * Static display prices (EUR) — not read from the backend, since the
- * backend only ever needs Stripe price ids, not the human-facing numbers.
- * Keep these in sync with backend/config/plans.php's comment block and
+ * Static display prices (EUR). These must stay in sync with
+ * backend/config/plans.php's `price_monthly` / `price_yearly_effective_monthly`
+ * fields — the backend is now the source of truth, read by
+ * AdminBillingStats to compute MRR. Keep these in sync manually with that
+ * file and with
  * docs/superpowers/specs/2026-09-02-subscription-billing-overhaul-design.md
  * if either ever changes.
  */

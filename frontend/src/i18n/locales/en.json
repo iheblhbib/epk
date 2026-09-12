@@ -58,11 +58,14 @@
       "contacts": "Contacts",
       "mediaFiles": "Media files",
       "storageUsed": "Storage used",
+      "error": "Couldn't load dashboard data.",
       "billing": {
         "mrr": "Monthly recurring revenue",
         "activeByPlan": "Active subscribers by plan",
         "trialConversionRate": "Trial → paid conversion",
-        "canceledLast30Days": "Canceled (30d)"
+        "canceledLast30Days": "Canceled (30d)",
+        "byStatus": "Subscriptions by status",
+        "byStatusEmpty": "No subscriptions yet."
       },
       "growth": {
         "title": "Growth",
@@ -132,7 +135,8 @@
         "past_due": "Past due",
         "unpaid": "Unpaid",
         "canceled": "Canceled"
-      }
+      },
+      "accessEndsAt": "Access ends {{date}}"
     },
     "epks": {
       "title": "EPKs",

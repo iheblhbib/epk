@@ -7,7 +7,7 @@ import { server } from '@/test/server'
 
 const API_URL = 'http://localhost:8000'
 
-function workspacesResponse(status: string) {
+function workspacesResponse(status: string, accessEndsAt: string | null = null) {
   return {
     data: [
       {
@@ -18,7 +18,7 @@ function workspacesResponse(status: string) {
         epks_count: 2,
         plan: 'pro',
         subscription_status: status,
-        access_ends_at: null,
+        access_ends_at: accessEndsAt,
         creator: { id: 1, name: 'Ada Lovelace' },
         created_at: '2026-01-01T00:00:00.000000Z',
       },
@@ -52,5 +52,27 @@ describe('AdminWorkspacesPage', () => {
 
     const badge = await screen.findByText('Canceled')
     expect(badge.className).toMatch(/destructive/)
+  })
+
+  it('shows the access-ends-at date when present', async () => {
+    server.use(
+      http.get(`${API_URL}/api/admin/workspaces`, () =>
+        HttpResponse.json(workspacesResponse('trialing', '2026-02-14T00:00:00.000000Z'))
+      )
+    )
+
+    renderPage()
+
+    const expectedDate = new Date('2026-02-14T00:00:00.000000Z').toLocaleDateString()
+    expect(await screen.findByText(`Access ends ${expectedDate}`)).toBeInTheDocument()
+  })
+
+  it('does not show an access-ends-at line when the field is null', async () => {
+    server.use(http.get(`${API_URL}/api/admin/workspaces`, () => HttpResponse.json(workspacesResponse('active', null))))
+
+    renderPage()
+
+    await screen.findByText('Active')
+    expect(screen.queryByText(/Access ends/)).not.toBeInTheDocument()
   })
 })

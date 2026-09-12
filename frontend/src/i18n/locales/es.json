@@ -58,11 +58,14 @@
       "contacts": "Contactos",
       "mediaFiles": "Archivos multimedia",
       "storageUsed": "Almacenamiento usado",
+      "error": "No se pudieron cargar los datos del panel.",
       "billing": {
         "mrr": "Ingresos recurrentes mensuales",
         "activeByPlan": "Suscriptores activos por plan",
         "trialConversionRate": "Conversión de prueba a pago",
-        "canceledLast30Days": "Cancelados (30d)"
+        "canceledLast30Days": "Cancelados (30d)",
+        "byStatus": "Suscripciones por estado",
+        "byStatusEmpty": "Aún no hay suscripciones."
       },
       "growth": {
         "title": "Crecimiento",
@@ -132,7 +135,8 @@
         "past_due": "Vencido",
         "unpaid": "Impagado",
         "canceled": "Cancelado"
-      }
+      },
+      "accessEndsAt": "El acceso finaliza el {{date}}"
     },
     "epks": {
       "title": "EPK",

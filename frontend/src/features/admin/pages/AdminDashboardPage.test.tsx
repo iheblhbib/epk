@@ -76,6 +76,31 @@ describe('AdminDashboardPage', () => {
     expect(screen.getByText('Starter')).toBeInTheDocument()
   })
 
+  it('shows the by-status breakdown', async () => {
+    server.use(
+      http.get(`${API_URL}/api/admin/stats`, () => HttpResponse.json(statsResponse())),
+      http.get(`${API_URL}/api/admin/activity`, () => HttpResponse.json(activityResponse()))
+    )
+
+    renderPage()
+
+    await screen.findByText('€48.88')
+    expect(screen.getByText('Trialing')).toBeInTheDocument()
+    expect(screen.getByText('5')).toBeInTheDocument()
+  })
+
+  it('shows an error message when the stats fetch fails', async () => {
+    server.use(
+      http.get(`${API_URL}/api/admin/stats`, () => HttpResponse.error()),
+      http.get(`${API_URL}/api/admin/activity`, () => HttpResponse.json(activityResponse()))
+    )
+
+    renderPage()
+
+    expect(await screen.findByText(/Couldn't load dashboard data/i)).toBeInTheDocument()
+    expect(screen.queryByText('€48.88')).not.toBeInTheDocument()
+  })
+
   it('shows recent activity entries for both signups and workspace creations', async () => {
     server.use(
       http.get(`${API_URL}/api/admin/stats`, () => HttpResponse.json(statsResponse())),

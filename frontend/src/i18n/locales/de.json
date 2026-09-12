@@ -58,11 +58,14 @@
       "contacts": "Kontakte",
       "mediaFiles": "Mediendateien",
       "storageUsed": "Genutzter Speicher",
+      "error": "Dashboard-Daten konnten nicht geladen werden.",
       "billing": {
         "mrr": "Monatlich wiederkehrender Umsatz",
         "activeByPlan": "Aktive Abonnenten nach Tarif",
         "trialConversionRate": "Testphase-zu-Bezahlt-Konversion",
-        "canceledLast30Days": "Gekündigt (30T)"
+        "canceledLast30Days": "Gekündigt (30T)",
+        "byStatus": "Abonnements nach Status",
+        "byStatusEmpty": "Noch keine Abonnements."
       },
       "growth": {
         "title": "Wachstum",
@@ -132,7 +135,8 @@
         "past_due": "Überfällig",
         "unpaid": "Unbezahlt",
         "canceled": "Gekündigt"
-      }
+      },
+      "accessEndsAt": "Zugriff endet am {{date}}"
     },
     "epks": {
       "title": "EPKs",
