@@ -5,8 +5,10 @@ import { EmptyState } from '@/components/common/EmptyState'
 import { CardGridSkeleton } from '@/components/common/LoadingSkeleton'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { BreakdownCard } from '@/features/analytics/components/BreakdownCard'
+import { CountryChoroplethCard } from '@/features/analytics/components/CountryChoroplethCard'
+import { DeviceDonutChart } from '@/features/analytics/components/DeviceDonutChart'
 import { PageViewsChart } from '@/features/analytics/components/PageViewsChart'
+import { RankingBarChart } from '@/features/analytics/components/RankingBarChart'
 import { StatTile } from '@/features/analytics/components/StatTile'
 import { useEpkAnalytics } from '@/features/analytics/hooks/useAnalytics'
 import { useEpks } from '@/features/epks/hooks/useEpks'
@@ -121,27 +123,19 @@ export function AnalyticsPage() {
           <PageViewsChart points={analytics.daily_page_views} />
 
           <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <BreakdownCard
+            <RankingBarChart
               title={t('analytics.breakdowns.topReferrers')}
               emptyLabel={t('analytics.breakdowns.noReferrerData')}
               rows={analytics.top_referrers.map((row) => ({ label: row.referrer, count: row.count }))}
             />
-            <BreakdownCard
-              title={t('analytics.breakdowns.topCountries')}
-              emptyLabel={t('analytics.breakdowns.noCountryData')}
-              rows={analytics.top_countries.map((row) => ({ label: row.country, count: row.count }))}
-            />
-            <BreakdownCard
-              title={t('analytics.breakdowns.devices')}
-              emptyLabel={t('analytics.breakdowns.noDeviceData')}
-              rows={analytics.devices.map((row) => ({ label: row.device_type, count: row.count }))}
-            />
-            <BreakdownCard
+            <CountryChoroplethCard rows={analytics.top_countries} />
+            <DeviceDonutChart rows={analytics.devices} />
+            <RankingBarChart
               title={t('analytics.breakdowns.topDownloads')}
               emptyLabel={t('analytics.breakdowns.noDownloadData')}
               rows={analytics.top_downloads.map((row) => ({ label: row.filename, count: row.count }))}
             />
-            <BreakdownCard
+            <RankingBarChart
               title={t('analytics.breakdowns.topPrivateLinks')}
               emptyLabel={t('analytics.breakdowns.noPrivateLinkData')}
               rows={analytics.top_private_links.map((row) => ({ label: row.label, count: row.count }))}
